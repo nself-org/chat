@@ -168,7 +168,15 @@ export default function ActivityPage() {
                       <div
                         key={activity.id}
                         className={`hover:bg-muted/50 group relative flex cursor-pointer gap-3 rounded-lg p-3 transition-colors ${!activity.isRead ? 'bg-primary/5' : ''} `}
+                        role="button"
+                        tabIndex={0}
                         onClick={() => handleActivityClick(activity)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            handleActivityClick(activity)
+                          }
+                        }}
                       >
                         {/* Unread indicator */}
                         {!activity.isRead && (

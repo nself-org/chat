@@ -146,6 +146,7 @@ export default function ResetPasswordPage() {
                     required
                     disabled={isLoading}
                     minLength={8}
+                    /* eslint-disable-next-line jsx-a11y/no-autofocus */
                     autoFocus
                   />
                   <Button

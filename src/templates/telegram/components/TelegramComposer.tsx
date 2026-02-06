@@ -12,7 +12,7 @@
 import { useState, useRef, KeyboardEvent, ChangeEvent } from 'react'
 import { cn } from '@/lib/utils'
 import { TELEGRAM_COLORS } from '../config'
-import { Paperclip, Smile, Send, Mic, X, Image, File, Music, MapPin, Camera } from 'lucide-react'
+import { Paperclip, Smile, Send, Mic, X, Image as ImageIcon, File, Music, MapPin, Camera } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -141,7 +141,7 @@ export function TelegramComposer({
           {/* Attachment Menu */}
           {showAttachMenu && (
             <div className="absolute bottom-12 left-0 min-w-[180px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-[#232E3C] dark:bg-[#17212B]">
-              <AttachMenuItem icon={<Image className="h-5 w-5" />} label="Photo" />
+              <AttachMenuItem icon={<ImageIcon className="h-5 w-5" />} label="Photo" />
               <AttachMenuItem icon={<File className="h-5 w-5" />} label="Document" />
               <AttachMenuItem icon={<Camera className="h-5 w-5" />} label="Camera" />
               <AttachMenuItem icon={<Music className="h-5 w-5" />} label="Music" />

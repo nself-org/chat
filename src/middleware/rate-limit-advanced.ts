@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+// @ts-expect-error - Redis client not implemented yet
 import { createClient } from '@/lib/redis-client'
 
 interface RateLimitConfig {

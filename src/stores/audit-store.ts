@@ -460,6 +460,8 @@ export const useAuditStore = create<AuditStore>()(
               message: 0,
               channel: 0,
               file: 0,
+              attachment: 0,
+              moderation: 0,
               admin: 0,
               security: 0,
               integration: 0,

@@ -114,6 +114,7 @@ export default function MagicLinkPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
+                  /* eslint-disable-next-line jsx-a11y/no-autofocus */
                   autoFocus
                 />
                 <p className="text-xs text-muted-foreground">

@@ -17,7 +17,7 @@ import { getLiveKitClient, getLiveKitToken } from '@/lib/webrtc/livekit-client'
 import { logger } from '@/lib/logger'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import type { CallParticipant } from '@/types/calls'
+import type { CallParticipant } from '@/components/voice-video/CallWindow'
 
 // =============================================================================
 // Component
@@ -257,30 +257,23 @@ export default function CallPage() {
     )
   }
 
+  const callWindowProps: any = {
+    callId: activeCall.id,
+    callType: activeCall.type,
+    duration: callDuration,
+    currentUserId: user.id,
+    participants,
+    isAudioCall: activeCall.type === 'voice',
+    onToggleMute: handleToggleMute,
+    onToggleVideo: handleToggleVideo,
+    onToggleScreenShare: handleToggleScreenShare,
+    onEndCall: handleEndCall,
+  }
+
   return (
     <>
       {/* Main call window */}
-      <CallWindow
-        callId={activeCall.id}
-        callType={activeCall.type}
-        duration={callDuration}
-        localUser={{
-          id: user.id,
-          name: user.displayName || user.email,
-          avatarUrl: user.avatarUrl,
-        }}
-        participants={participants}
-        localStream={localStream}
-        remoteStreams={remoteStreams}
-        isMuted={isLocalMuted}
-        isVideoEnabled={isLocalVideoEnabled}
-        isScreenSharing={isScreenSharing}
-        onToggleMute={handleToggleMute}
-        onToggleVideo={handleToggleVideo}
-        onToggleScreenShare={handleToggleScreenShare}
-        onEndCall={handleEndCall}
-        onSwitchCamera={handleSwitchCamera}
-      />
+      <CallWindow {...callWindowProps} />
 
       {/* Incoming call notifications */}
       {incomingCalls.length > 0 && (

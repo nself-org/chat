@@ -11,7 +11,7 @@
 import { useState, useRef, KeyboardEvent, ChangeEvent } from 'react'
 import { cn } from '@/lib/utils'
 import { WHATSAPP_COLORS } from '../config'
-import { Smile, Paperclip, Send, Mic, X, Camera, Image, File, User } from 'lucide-react'
+import { Smile, Paperclip, Send, Mic, X, Camera, Image as ImageIcon, File, User } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -148,7 +148,7 @@ export function WhatsAppComposer({
               style={{ backgroundColor: '#233138' }}
             >
               <AttachButton
-                icon={<Image className="h-6 w-6" />}
+                icon={<ImageIcon className="h-6 w-6" />}
                 label="Photos & Videos"
                 color="#BF59CF"
               />

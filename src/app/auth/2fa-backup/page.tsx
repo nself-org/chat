@@ -98,6 +98,7 @@ export default function TwoFactorBackupPage() {
                 onChange={(e) => setBackupCode(e.target.value)}
                 required
                 disabled={isLoading}
+                /* eslint-disable-next-line jsx-a11y/no-autofocus */
                 autoFocus
                 className="font-mono"
               />

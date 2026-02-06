@@ -138,6 +138,7 @@ export function TelegramVoiceMessage({
         )}
         style={{ minWidth: TELEGRAM_BUBBLES.voice.minWidth }}
       >
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption -- Voice message audio does not have captions */}
         <audio ref={audioRef} src={audioUrl} preload="metadata" />
 
         {/* Play/Pause Button */}
@@ -154,8 +155,33 @@ export function TelegramVoiceMessage({
         {/* Waveform */}
         <div className="min-w-0 flex-1">
           <div
+            role="slider"
+            tabIndex={0}
+            aria-label="Voice message progress"
+            aria-valuemin={0}
+            aria-valuemax={Math.round(duration)}
+            aria-valuenow={Math.round(time)}
             className="flex h-7 cursor-pointer items-center gap-0.5"
             onClick={handleWaveformClick}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowRight') {
+                e.preventDefault()
+                const newTime = Math.min(time + 5, duration)
+                onSeek?.(newTime)
+                if (audioRef.current) {
+                  audioRef.current.currentTime = newTime
+                }
+                setLocalTime(newTime)
+              } else if (e.key === 'ArrowLeft') {
+                e.preventDefault()
+                const newTime = Math.max(time - 5, 0)
+                onSeek?.(newTime)
+                if (audioRef.current) {
+                  audioRef.current.currentTime = newTime
+                }
+                setLocalTime(newTime)
+              }
+            }}
           >
             {waveform.map((value, index) => {
               const barProgress = index / waveform.length

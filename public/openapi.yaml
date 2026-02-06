@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: nself-chat (nchat) API
-  version: 0.2.0
+  version: 0.9.1
   description: |
     **nself-chat (nchat)** is a white-label team communication platform combining features from Slack, Discord, and Telegram.
 

@@ -40,7 +40,9 @@ export function hashToken(token: string): string {
 export async function csrfProtection(
   request: NextRequest
 ): Promise<NextResponse | null> {
-  const { pathname, method } = new URL(request.url)
+  const url = new URL(request.url)
+  const { pathname } = url
+  const method = request.method
 
   // Skip for safe methods
   if (!PROTECTED_METHODS.includes(method)) {
@@ -110,7 +112,9 @@ export async function csrfProtection(
 export async function doubleSubmitCookie(
   request: NextRequest
 ): Promise<NextResponse | null> {
-  const { pathname, method } = new URL(request.url)
+  const url = new URL(request.url)
+  const { pathname } = url
+  const method = request.method
 
   if (!PROTECTED_METHODS.includes(method)) {
     return null

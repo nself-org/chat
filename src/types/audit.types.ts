@@ -108,18 +108,24 @@ export type MessageManagementAction =
  */
 export type ModerationAction =
   | 'user_warned'
+  | 'user_mute'
   | 'user_muted'
   | 'user_unmuted'
   | 'user_kicked'
   | 'user_banned'
   | 'user_unbanned'
+  | 'user_shadowbanned'
   | 'message_flagged'
   | 'message_hidden'
+  | 'content_flagged'
+  | 'content_deleted'
+  | 'content_hidden'
   | 'content_reported'
   | 'report_resolved'
   | 'filter_triggered'
   | 'spam_detected'
   | 'rate_limit_applied'
+  | 'moderation_action_reversed'
 
 /**
  * Settings actions.

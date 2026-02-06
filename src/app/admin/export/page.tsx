@@ -260,7 +260,15 @@ export default function ExportPage() {
                 className={`cursor-pointer rounded-lg border p-4 transition-all hover:border-primary ${
                   config.format === 'json' ? 'bg-primary/5 border-primary' : ''
                 }`}
+                role="button"
+                tabIndex={0}
                 onClick={() => handleFormatChange('json')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleFormatChange('json')
+                  }
+                }}
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -280,7 +288,15 @@ export default function ExportPage() {
                 className={`cursor-pointer rounded-lg border p-4 transition-all hover:border-primary ${
                   config.format === 'csv' ? 'bg-primary/5 border-primary' : ''
                 }`}
+                role="button"
+                tabIndex={0}
                 onClick={() => handleFormatChange('csv')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleFormatChange('csv')
+                  }
+                }}
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -369,7 +385,15 @@ export default function ExportPage() {
                               ? 'bg-primary/5 border-primary'
                               : 'hover:bg-muted'
                           }`}
+                          role="button"
+                          tabIndex={0}
                           onClick={() => toggleChannel(channel.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              toggleChannel(channel.id)
+                            }
+                          }}
                         >
                           <div className="flex items-center gap-3">
                             <div

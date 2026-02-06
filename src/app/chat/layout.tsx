@@ -53,7 +53,19 @@ function MobileSidebarOverlay({
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
+      <div
+        className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+        role="button"
+        tabIndex={0}
+        aria-label="Close sidebar"
+        onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onClose()
+          }
+        }}
+      />
       {/* Sidebar */}
       <div className="fixed inset-y-0 left-0 z-50 w-64 duration-200 animate-in slide-in-from-left lg:hidden">
         {children}

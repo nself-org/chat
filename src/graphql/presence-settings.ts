@@ -5,7 +5,7 @@
  * privacy settings including visibility controls, last seen, and read receipts.
  *
  * @module graphql/presence-settings
- * @version 0.9.0
+ * @version 0.9.1
  */
 
 import { gql } from '@apollo/client'

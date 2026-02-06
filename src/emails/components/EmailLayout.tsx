@@ -49,15 +49,15 @@ export default function EmailLayout({
               {footerText || `© ${currentYear} ${appName}. All rights reserved.`}
             </Text>
             <Text style={footerLinks}>
-              <a href="#" style={link}>
+              <a href="{{unsubscribeUrl}}" style={link}>
                 Unsubscribe
               </a>{' '}
               |{' '}
-              <a href="#" style={link}>
+              <a href="{{preferencesUrl}}" style={link}>
                 Preferences
               </a>{' '}
               |{' '}
-              <a href="#" style={link}>
+              <a href="{{helpUrl}}" style={link}>
                 Help
               </a>
             </Text>

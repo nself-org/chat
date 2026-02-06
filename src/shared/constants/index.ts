@@ -5,7 +5,7 @@
 // App info
 export const APP_NAME = 'nchat'
 export const APP_DISPLAY_NAME = 'nChat'
-export const APP_VERSION = '0.2.0'
+export const APP_VERSION = '0.9.1'
 
 // API endpoints
 export const API_VERSION = 'v1'
