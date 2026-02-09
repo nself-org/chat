@@ -43,31 +43,88 @@ export interface WebhookResponse {
 // ============================================================================
 
 /**
- * Compute HMAC-SHA256 signature
+ * Compute HMAC-SHA256 signature using Node.js crypto.
+ * This is the synchronous version for server-side webhook handling.
  */
 export function computeSignature(payload: string, secret: string): string {
-  // Note: In a real implementation, this would use the Web Crypto API or Node crypto
-  // For this implementation, we'll use a simple hash simulation
-  // In production, use: crypto.createHmac('sha256', secret).update(payload).digest('hex')
-
-  // Simple hash function for demonstration (replace with real crypto in production)
-  let hash = 0
-  const combined = payload + secret
-  for (let i = 0; i < combined.length; i++) {
-    const char = combined.charCodeAt(i)
-    hash = (hash << 5) - hash + char
-    hash = hash & hash // Convert to 32-bit integer
-  }
-  return `sha256=${Math.abs(hash).toString(16).padStart(64, '0')}`
+  // Use Node.js crypto module for HMAC computation
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const nodeCrypto = require('crypto')
+  const hmac = nodeCrypto.createHmac('sha256', secret)
+  hmac.update(payload)
+  return `sha256=${hmac.digest('hex')}`
 }
 
 /**
- * Verify webhook signature
+ * Compute HMAC-SHA256 signature using Web Crypto API.
+ * This is the async version that works in both browser and Node.js 18+.
+ */
+export async function computeSignatureAsync(payload: string, secret: string): Promise<string> {
+  const encoder = new TextEncoder()
+
+  // Import the secret as a crypto key
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+
+  // Sign the payload
+  const signatureBuffer = await crypto.subtle.sign('HMAC', key, encoder.encode(payload))
+
+  // Convert to hex string
+  const signatureHex = Array.from(new Uint8Array(signatureBuffer))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+
+  return `sha256=${signatureHex}`
+}
+
+/**
+ * Verify webhook signature using timing-safe comparison.
+ * Uses Node.js crypto.timingSafeEqual to prevent timing attacks.
  */
 export function verifySignature(payload: string, signature: string, secret: string): boolean {
+  // Validate signature format
+  if (!signature || !signature.startsWith('sha256=')) {
+    return false
+  }
+
   const expectedSignature = computeSignature(payload, secret)
 
-  // Constant-time comparison to prevent timing attacks
+  // Use Node.js crypto for timing-safe comparison
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const nodeCrypto = require('crypto')
+
+  try {
+    return nodeCrypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    )
+  } catch {
+    // timingSafeEqual throws if buffers have different lengths
+    return false
+  }
+}
+
+/**
+ * Verify webhook signature asynchronously (for browser/edge environments).
+ */
+export async function verifySignatureAsync(
+  payload: string,
+  signature: string,
+  secret: string
+): Promise<boolean> {
+  // Validate signature format
+  if (!signature || !signature.startsWith('sha256=')) {
+    return false
+  }
+
+  const expectedSignature = await computeSignatureAsync(payload, secret)
+
+  // Constant-time comparison (for environments without timingSafeEqual)
   if (signature.length !== expectedSignature.length) {
     return false
   }

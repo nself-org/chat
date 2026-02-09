@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Analytics + Privacy + Consent Management
  *
  * Tests the integration between analytics collection, privacy filtering,

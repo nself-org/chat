@@ -176,7 +176,7 @@ export default function DeploymentStatusChecker() {
       environment: process.env.NEXT_PUBLIC_ENV || 'production',
       region: process.env.VERCEL_REGION || 'Unknown',
       deployedAt: process.env.VERCEL_GIT_COMMIT_AUTHORED_DATE || new Date().toISOString(),
-      version: process.env.NEXT_PUBLIC_RELEASE_VERSION || '0.5.0',
+      version: process.env.NEXT_PUBLIC_RELEASE_VERSION || '0.9.1',
       commitSha: process.env.VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'Unknown',
       buildTime: process.env.BUILD_TIME,
     }

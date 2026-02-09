@@ -17,6 +17,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Password is required' }, { status: 400 })
     }
 
+    // Get userId from request headers (set by auth middleware)
+    const userId = request.headers.get('x-user-id')
+    if (!userId) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+
     // Dynamic import to avoid loading native modules during build
     const [{ getApolloClient }, { getE2EEManager }] = await Promise.all([
       import('@/lib/apollo-client'),
@@ -27,7 +33,7 @@ export async function POST(request: NextRequest) {
     const apolloClient = getApolloClient()
 
     // Get E2EE manager
-    const e2eeManager = getE2EEManager(apolloClient)
+    const e2eeManager = getE2EEManager(apolloClient, userId)
 
     // Initialize E2EE
     await e2eeManager.initialize(password, deviceId)
@@ -56,6 +62,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Get userId from request headers (set by auth middleware)
+    const userId = request.headers.get('x-user-id')
+    if (!userId) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+
     // Dynamic import to avoid loading native modules during build
     const [{ getApolloClient }, { getE2EEManager }] = await Promise.all([
       import('@/lib/apollo-client'),
@@ -63,7 +75,7 @@ export async function GET(request: NextRequest) {
     ])
 
     const apolloClient = getApolloClient()
-    const e2eeManager = getE2EEManager(apolloClient)
+    const e2eeManager = getE2EEManager(apolloClient, userId)
 
     const status = e2eeManager.getStatus()
 

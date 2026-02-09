@@ -67,6 +67,20 @@ declare module 'samlify' {
     samlContent?: string
   }
 
+  interface CreateLogoutRequestResult {
+    context: string
+    id: string
+  }
+
+  interface ParseLogoutResponseResult {
+    extract: {
+      issuer?: string
+      statusCode?: string
+      inResponseTo?: string
+    }
+    samlContent?: string
+  }
+
   interface ServiceProvider {
     parseLoginResponse(
       idp: IdentityProvider,
@@ -86,10 +100,30 @@ declare module 'samlify' {
       }
     ): { context: string; id: string }
 
+    createLogoutRequest(
+      idp: IdentityProvider,
+      binding: 'post' | 'redirect',
+      user: {
+        logoutNameID?: string
+        sessionIndex?: string
+      },
+      relayState?: string
+    ): CreateLogoutRequestResult
+
+    parseLogoutResponse(
+      idp: IdentityProvider,
+      binding: 'post' | 'redirect',
+      request: {
+        body?: { SAMLResponse?: string }
+        query?: { SAMLResponse?: string; RelayState?: string }
+      }
+    ): Promise<ParseLogoutResponseResult>
+
     getMetadata(): string
     entityMeta: {
       getEntityID(): string
       getAssertionConsumerService(binding: string): string | undefined
+      getSingleLogoutService?(binding: string): string | undefined
     }
   }
 
@@ -97,6 +131,7 @@ declare module 'samlify' {
     entityMeta: {
       getEntityID(): string
       getSingleSignOnService(binding: string): string | undefined
+      getSingleLogoutService?(binding: string): string | undefined
     }
   }
 

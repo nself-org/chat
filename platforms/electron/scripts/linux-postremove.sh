@@ -1,47 +1,33 @@
 #!/bin/bash
 #
-# Linux Post-Remove Script
-# Runs after uninstalling nchat on Linux systems
+# Post-removal script for Linux packages (deb/rpm)
+# Runs after package uninstallation to clean up
 #
 
 set -e
 
-echo "Running nchat post-remove script..."
-
-APP_NAME="nchat"
+# Remove symlink
+if [ -L /usr/local/bin/nchat ]; then
+    rm -f /usr/local/bin/nchat || true
+fi
 
 # Update desktop database
-if command -v update-desktop-database &> /dev/null; then
-    echo "Updating desktop database..."
+if command -v update-desktop-database > /dev/null 2>&1; then
     update-desktop-database -q /usr/share/applications || true
 fi
 
 # Update MIME database
-if command -v update-mime-database &> /dev/null; then
-    echo "Updating MIME database..."
+if command -v update-mime-database > /dev/null 2>&1; then
     update-mime-database /usr/share/mime || true
 fi
 
 # Update icon cache
-if command -v gtk-update-icon-cache &> /dev/null; then
-    echo "Updating icon cache..."
+if command -v gtk-update-icon-cache > /dev/null 2>&1; then
     gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor || true
 fi
 
-# Remove command-line symlink
-if [ -L "/usr/bin/nchat" ]; then
-    echo "Removing command-line symlink..."
-    rm -f /usr/bin/nchat || true
-fi
+# Optionally remove user data (commented out to preserve user data)
+# rm -rf ~/.config/nchat || true
 
-# Unload AppArmor profile (if AppArmor is installed)
-if command -v apparmor_parser &> /dev/null; then
-    if [ -f "/etc/apparmor.d/${APP_NAME}" ]; then
-        echo "Unloading AppArmor profile..."
-        apparmor_parser -R "/etc/apparmor.d/${APP_NAME}" || true
-    fi
-fi
-
-echo "Post-remove completed successfully!"
-
+echo "nchat uninstallation complete!"
 exit 0

@@ -5,7 +5,7 @@
  * Provides tenant isolation, billing, and resource management.
  *
  * @module @/lib/tenants
- * @version 0.5.0
+ * @version 0.9.1
  */
 
 // Types

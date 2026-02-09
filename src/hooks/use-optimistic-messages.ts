@@ -372,9 +372,10 @@ export function useOptimisticMessages(channelId?: string) {
 
   /**
    * Edit message optimistically
+   * Note: Currently performs API call only. Optimistic UI update can be added
+   * by tracking original content and rolling back on failure.
    */
   const editMessage = useCallback(async (messageId: string, newContent: string) => {
-    // TODO: Implement optimistic edit
     try {
       const response = await fetch(`/api/messages/${messageId}`, {
         method: 'PATCH',
@@ -395,9 +396,10 @@ export function useOptimisticMessages(channelId?: string) {
 
   /**
    * Delete message optimistically
+   * Note: Currently performs API call only. Optimistic UI update can be added
+   * by immediately hiding the message and restoring on failure.
    */
   const deleteMessage = useCallback(async (messageId: string) => {
-    // TODO: Implement optimistic delete
     try {
       const response = await fetch(`/api/messages/${messageId}`, {
         method: 'DELETE',
@@ -416,9 +418,10 @@ export function useOptimisticMessages(channelId?: string) {
 
   /**
    * Add reaction optimistically
+   * Note: Currently performs API call only. Optimistic UI update can be added
+   * by immediately showing the reaction and removing on failure.
    */
   const addReaction = useCallback(async (messageId: string, emoji: string) => {
-    // TODO: Implement optimistic reaction
     try {
       const response = await fetch(`/api/messages/${messageId}/reactions`, {
         method: 'POST',

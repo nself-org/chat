@@ -36,7 +36,9 @@ export function generateBackupCodes(count: number = 10): string[] {
  */
 export async function hashBackupCode(code: string): Promise<string> {
   const saltRounds = 10
-  const hash = await bcrypt.hash(code.toUpperCase(), saltRounds)
+  // Normalize code: remove dashes/spaces and uppercase for consistent hashing
+  const normalizedCode = code.replace(/[-\s]/g, '').toUpperCase()
+  const hash = await bcrypt.hash(normalizedCode, saltRounds)
   return hash
 }
 

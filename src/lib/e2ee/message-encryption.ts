@@ -22,6 +22,7 @@ export interface EncryptedMessagePayload {
 }
 
 export interface MessageEncryptionOptions {
+  userId: string // Sender's user ID
   recipientUserId: string
   recipientDeviceId?: string
   channelId?: string
@@ -41,7 +42,7 @@ export async function encryptMessageForSending(
   options: MessageEncryptionOptions,
   apolloClient: ApolloClient<any>
 ): Promise<EncryptedMessagePayload> {
-  const e2eeManager = getE2EEManager(apolloClient)
+  const e2eeManager = getE2EEManager(apolloClient, options.userId)
 
   // Check if E2EE is initialized
   if (!e2eeManager.isInitialized()) {
@@ -97,11 +98,12 @@ export async function encryptMessageForSending(
 export async function decryptReceivedMessage(
   encryptedPayload: Uint8Array,
   messageType: 'PreKey' | 'Normal',
+  recipientUserId: string,
   senderUserId: string,
   senderDeviceId: string,
   apolloClient: ApolloClient<any>
 ): Promise<string> {
-  const e2eeManager = getE2EEManager(apolloClient)
+  const e2eeManager = getE2EEManager(apolloClient, recipientUserId)
 
   if (!e2eeManager.isInitialized()) {
     throw new Error('E2EE not initialized')
@@ -158,6 +160,7 @@ export async function extractMessageContent(
     encrypted_payload?: number[]
     sender_device_id?: string
     sender_user_id: string
+    recipient_user_id: string
   },
   apolloClient: ApolloClient<any>
 ): Promise<string> {
@@ -171,11 +174,14 @@ export async function extractMessageContent(
 
   try {
     const encryptedPayload = new Uint8Array(message.encrypted_payload)
-    const messageType: 'PreKey' | 'Normal' = 'Normal' // TODO: Store message type in DB
+    // Message type should be stored in nchat_messages.encryption_metadata
+    // For now, default to 'Normal' (PreKey messages are only for initial session setup)
+    const messageType: 'PreKey' | 'Normal' = 'Normal'
 
     return await decryptReceivedMessage(
       encryptedPayload,
       messageType,
+      message.recipient_user_id,
       message.sender_user_id,
       message.sender_device_id,
       apolloClient
@@ -261,6 +267,7 @@ export function getEncryptionBadgeText(isEncrypted: boolean, isVerified: boolean
  */
 export async function encryptMessagesForGroup(
   plaintext: string,
+  senderUserId: string,
   recipientUserIds: string[],
   channelId: string,
   apolloClient: ApolloClient<any>
@@ -274,6 +281,7 @@ export async function encryptMessagesForGroup(
       const payload = await encryptMessageForSending(
         plaintext,
         {
+          userId: senderUserId,
           recipientUserId: userId,
           channelId,
           isDirectMessage: false,
@@ -306,6 +314,7 @@ export async function decryptMessagesBatch(
     encrypted_payload?: number[]
     sender_device_id?: string
     sender_user_id: string
+    recipient_user_id: string
   }>,
   apolloClient: ApolloClient<any>
 ): Promise<Map<string, string>> {

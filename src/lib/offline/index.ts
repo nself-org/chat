@@ -261,6 +261,57 @@ export {
 } from './sync-queue'
 
 // =============================================================================
+// Reconciliation Manager (v0.9.0)
+// =============================================================================
+
+export {
+  ReconciliationManager,
+  getReconciliationManager,
+  resetReconciliationManager,
+  type PendingOperation,
+  type ConflictInfo,
+  type ReconciliationEvent,
+  type ReconciliationEventType,
+  type ReconciliationEventListener,
+  type ReconciliationConfig,
+} from './reconciliation-manager'
+
+// =============================================================================
+// Optimistic Updates (v0.9.0)
+// =============================================================================
+
+export {
+  OptimisticUpdatesManager,
+  MessageOptimisticUpdates,
+  getMessageOptimisticUpdates,
+  resetMessageOptimisticUpdates,
+  type OptimisticUpdate,
+  type OptimisticState,
+  type PendingMessageData,
+  type RollbackCallback,
+  type ConfirmCallback,
+  type UpdateCallbacks,
+  type OptimisticUpdatesOptions,
+} from './optimistic-updates'
+
+// =============================================================================
+// Storage Quota Manager (v0.9.0)
+// =============================================================================
+
+export {
+  StorageQuotaManager,
+  getStorageQuotaManager,
+  resetStorageQuotaManager,
+  type StorageStats,
+  type StorageStatus,
+  type EvictionResult,
+  type StorageEvent,
+  type StorageEventType,
+  type StorageEventListener,
+  type StorageQuotaOptions,
+} from './storage-quota-manager'
+
+// =============================================================================
 // Initialization Helper
 // =============================================================================
 

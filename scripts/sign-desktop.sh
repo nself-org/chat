@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 #
-# Sign desktop applications (Electron/Tauri)
-# Supports Windows, macOS, and Linux
-# Usage: ./scripts/sign-desktop.sh <platform> <app-path>
+# Code Signing Configuration Script
+# Generates signing configuration templates for desktop builds
+#
+# Usage: ./scripts/sign-desktop.sh [OPTIONS]
+#
+# Options:
+#   --platform <macos|windows|linux>  Target platform
+#   --check                           Check signing credentials
+#   --generate                        Generate signing key templates
+#   --help                            Show this help message
 #
 
 set -euo pipefail
@@ -13,267 +20,379 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+
+PLATFORM="all"
+CHECK=false
+GENERATE=false
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --platform)
+      PLATFORM="$2"
+      shift 2
+      ;;
+    --check)
+      CHECK=true
+      shift
+      ;;
+    --generate)
+      GENERATE=true
+      shift
+      ;;
+    --help|-h)
+      cat << 'HELP'
+Code Signing Configuration Script
+Generates signing configuration templates for desktop builds
+
+Usage: ./scripts/sign-desktop.sh [OPTIONS]
+
+Options:
+  --platform <macos|windows|linux>  Target platform
+  --check                           Check signing credentials
+  --generate                        Generate signing key templates
+  --help                            Show this help message
+
+Examples:
+  ./scripts/sign-desktop.sh --check --platform all
+  ./scripts/sign-desktop.sh --generate
+HELP
+      exit 0
+      ;;
+    *)
+      log_error "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Check macOS signing credentials
+check_macos() {
+  log_info "Checking macOS signing credentials..."
+  
+  local missing=0
+  
+  # Code signing
+  if [ -z "${CSC_LINK:-}" ]; then
+    log_warn "  CSC_LINK not set (required for code signing)"
+    missing=$((missing + 1))
+  else
+    log_success "  CSC_LINK: Set"
+  fi
+  
+  if [ -z "${CSC_KEY_PASSWORD:-}" ]; then
+    log_warn "  CSC_KEY_PASSWORD not set (required for code signing)"
+    missing=$((missing + 1))
+  else
+    log_success "  CSC_KEY_PASSWORD: Set"
+  fi
+  
+  # Notarization (optional)
+  if [ -z "${APPLE_ID:-}" ]; then
+    log_warn "  APPLE_ID not set (required for notarization)"
+  else
+    log_success "  APPLE_ID: ${APPLE_ID}"
+  fi
+  
+  if [ -z "${APPLE_PASSWORD:-}" ]; then
+    log_warn "  APPLE_PASSWORD not set (required for notarization)"
+  else
+    log_success "  APPLE_PASSWORD: Set"
+  fi
+  
+  if [ -z "${APPLE_TEAM_ID:-}" ]; then
+    log_warn "  APPLE_TEAM_ID not set (required for notarization)"
+  else
+    log_success "  APPLE_TEAM_ID: ${APPLE_TEAM_ID}"
+  fi
+  
+  # Tauri signing
+  if [ -z "${TAURI_SIGNING_PRIVATE_KEY:-}" ]; then
+    log_warn "  TAURI_SIGNING_PRIVATE_KEY not set (required for Tauri updates)"
+  else
+    log_success "  TAURI_SIGNING_PRIVATE_KEY: Set"
+  fi
+  
+  if [ "$missing" -gt 0 ]; then
+    log_error "Missing $missing required credentials for macOS code signing"
+    return 1
+  else
+    log_success "All macOS signing credentials configured"
+    return 0
+  fi
 }
 
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+# Check Windows signing credentials
+check_windows() {
+  log_info "Checking Windows signing credentials..."
+  
+  local missing=0
+  
+  if [ -z "${WIN_CSC_LINK:-}" ] && [ -z "${CSC_LINK:-}" ]; then
+    log_warn "  WIN_CSC_LINK/CSC_LINK not set (required for code signing)"
+    missing=$((missing + 1))
+  else
+    log_success "  WIN_CSC_LINK: Set"
+  fi
+  
+  if [ -z "${WIN_CSC_KEY_PASSWORD:-}" ] && [ -z "${CSC_KEY_PASSWORD:-}" ]; then
+    log_warn "  WIN_CSC_KEY_PASSWORD/CSC_KEY_PASSWORD not set (required for code signing)"
+    missing=$((missing + 1))
+  else
+    log_success "  WIN_CSC_KEY_PASSWORD: Set"
+  fi
+  
+  if [ -z "${TAURI_SIGNING_PRIVATE_KEY:-}" ]; then
+    log_warn "  TAURI_SIGNING_PRIVATE_KEY not set (required for Tauri updates)"
+  else
+    log_success "  TAURI_SIGNING_PRIVATE_KEY: Set"
+  fi
+  
+  if [ "$missing" -gt 0 ]; then
+    log_error "Missing $missing required credentials for Windows code signing"
+    return 1
+  else
+    log_success "All Windows signing credentials configured"
+    return 0
+  fi
 }
 
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+# Check Linux signing credentials
+check_linux() {
+  log_info "Checking Linux signing credentials..."
+  
+  # Linux packages can be unsigned or signed with GPG
+  if [ -z "${GPG_PRIVATE_KEY:-}" ]; then
+    log_warn "  GPG_PRIVATE_KEY not set (optional for package signing)"
+  else
+    log_success "  GPG_PRIVATE_KEY: Set"
+  fi
+  
+  if [ -z "${TAURI_SIGNING_PRIVATE_KEY:-}" ]; then
+    log_warn "  TAURI_SIGNING_PRIVATE_KEY not set (required for Tauri updates)"
+  else
+    log_success "  TAURI_SIGNING_PRIVATE_KEY: Set"
+  fi
+  
+  log_success "Linux signing credentials configured"
+  return 0
 }
 
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
+# Generate signing templates
+generate_templates() {
+  log_info "Generating signing credential templates..."
+  
+  mkdir -p "$PROJECT_ROOT/platforms/electron/signing"
+  mkdir -p "$PROJECT_ROOT/platforms/tauri/signing"
+  
+  # Create .env.signing template
+  cat > "$PROJECT_ROOT/platforms/electron/signing/.env.signing.example" << 'TEMPLATE'
+# Electron Code Signing Credentials
+# Copy this file to .env.signing and fill in your credentials
+# DO NOT commit .env.signing to version control!
+
+# macOS Code Signing
+CSC_LINK=/path/to/certificate.p12
+CSC_KEY_PASSWORD=your-certificate-password
+
+# macOS Notarization
+APPLE_ID=your-apple-id@example.com
+APPLE_PASSWORD=your-app-specific-password
+APPLE_TEAM_ID=YOUR10CHARTEAMID
+
+# Windows Code Signing
+WIN_CSC_LINK=/path/to/certificate.pfx
+WIN_CSC_KEY_PASSWORD=your-certificate-password
+
+# Tauri Update Signing
+TAURI_SIGNING_PRIVATE_KEY=your-base64-encoded-private-key
+TAURI_SIGNING_PRIVATE_KEY_PASSWORD=your-key-password
+
+# Optional: GPG signing for Linux packages
+GPG_PRIVATE_KEY=your-gpg-private-key
+GPG_PASSPHRASE=your-gpg-passphrase
+TEMPLATE
+  
+  # Create signing documentation
+  cat > "$PROJECT_ROOT/platforms/electron/signing/README.md" << 'DOC'
+# Desktop Application Signing
+
+This directory contains templates and documentation for code signing desktop applications.
+
+## Security Notice
+
+**NEVER commit signing credentials to version control!**
+
+All `.env.signing` files are gitignored. Store credentials securely in:
+- Local `.env.signing` files (for development)
+- GitHub Secrets (for CI/CD)
+- Secure credential management systems
+
+## macOS Signing
+
+### Required:
+1. **Apple Developer Account** ($99/year)
+2. **Developer ID Application Certificate** 
+   - Download from Apple Developer portal
+   - Export as .p12 file with password
+   - Set `CSC_LINK` to .p12 file path
+   - Set `CSC_KEY_PASSWORD` to certificate password
+
+### Notarization (Recommended):
+1. **App-Specific Password**
+   - Generate at appleid.apple.com
+   - Set `APPLE_ID` to your Apple ID email
+   - Set `APPLE_PASSWORD` to app-specific password
+   - Set `APPLE_TEAM_ID` to your 10-character team ID
+
+### Commands:
+```bash
+# Build and sign
+pnpm build:desktop --platform macos --sign
+
+# Build, sign, and notarize
+pnpm build:desktop --platform macos --sign --notarize
+```
+
+## Windows Signing
+
+### Required:
+1. **Code Signing Certificate**
+   - Purchase from DigiCert, Sectigo, etc.
+   - Export as .pfx file with password
+   - Set `WIN_CSC_LINK` to .pfx file path
+   - Set `WIN_CSC_KEY_PASSWORD` to certificate password
+
+### Commands:
+```bash
+# Build and sign
+pnpm build:desktop --platform windows --sign
+```
+
+## Linux Signing
+
+### Optional (GPG):
+Linux packages can be unsigned or signed with GPG.
+
+```bash
+# Generate GPG key
+gpg --full-generate-key
+
+# Export private key
+gpg --export-secret-keys -a "Your Name" > private.key
+
+# Sign packages
+debsign -k YOUR_KEY_ID package.deb
+rpmsign --addsign package.rpm
+```
+
+## Tauri Auto-Update Signing
+
+Tauri requires signing for auto-updates:
+
+```bash
+# Generate signing key pair
+pnpm tauri signer generate
+
+# This outputs:
+# - Private key (store in TAURI_SIGNING_PRIVATE_KEY)
+# - Public key (add to tauri.conf.json updater.pubkey)
+```
+
+## CI/CD Setup
+
+Add these secrets to your CI/CD platform:
+
+### GitHub Actions:
+```yaml
+secrets:
+  CSC_LINK: ${{ secrets.CSC_LINK }}
+  CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+  APPLE_ID: ${{ secrets.APPLE_ID }}
+  APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+  APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+  WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+  WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+  TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+  TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+```
+
+## Testing Signatures
+
+### macOS:
+```bash
+# Verify code signature
+codesign -vvv --deep --strict /path/to/nchat.app
+
+# Verify notarization
+spctl -a -vvv -t install /path/to/nchat.app
+```
+
+### Windows:
+```bash
+# Verify signature
+signtool verify /pa /v nchat-Setup.exe
+```
+
+## Troubleshooting
+
+### macOS: "App is damaged"
+- Notarization failed or not completed
+- Run: `xattr -cr /path/to/nchat.app`
+
+### Windows: "Unknown publisher"
+- Certificate not trusted
+- Use Extended Validation (EV) certificate
+
+### Builds work locally but fail in CI
+- Check that all secrets are properly set
+- Verify certificate formats (base64 encoding may be needed)
+DOC
+  
+  log_success "Templates generated in platforms/*/signing/"
+  log_info "  - .env.signing.example (credential template)"
+  log_info "  - README.md (signing documentation)"
 }
 
-if [ $# -lt 2 ]; then
-    echo "Usage: $0 <platform> <app-path>"
-    echo ""
-    echo "Platforms: macos, windows, linux"
-    echo "Examples:"
-    echo "  $0 macos dist/nchat.app"
-    echo "  $0 windows dist/nchat.exe"
-    echo "  $0 linux dist/nchat.AppImage"
-    exit 1
-fi
-
-PLATFORM="$1"
-APP_PATH="$2"
-
-cd "$PROJECT_ROOT"
-
-# Validate platform
-if [[ ! "$PLATFORM" =~ ^(macos|windows|linux)$ ]]; then
-    log_error "Invalid platform: $PLATFORM (must be macos, windows, or linux)"
-    exit 1
-fi
-
-# Validate app path
-if [ ! -e "$APP_PATH" ]; then
-    log_error "App not found: $APP_PATH"
-    exit 1
-fi
-
-log_info "Signing $PLATFORM application: $APP_PATH"
-
-case "$PLATFORM" in
+# Main execution
+if [ "$CHECK" = true ]; then
+  case "$PLATFORM" in
     macos)
-        # macOS code signing
-        if [ -z "${CSC_LINK:-}" ]; then
-            log_error "CSC_LINK environment variable is required for macOS signing"
-            log_info "Set CSC_LINK to base64-encoded .p12 certificate"
-            exit 1
-        fi
-
-        if [ -z "${CSC_KEY_PASSWORD:-}" ]; then
-            log_error "CSC_KEY_PASSWORD environment variable is required"
-            exit 1
-        fi
-
-        if [ -z "${APPLE_TEAM_ID:-}" ]; then
-            log_warning "APPLE_TEAM_ID not set, using certificate team ID"
-        fi
-
-        # Decode certificate
-        CERT_FILE=$(mktemp -t cert.XXXXXX.p12)
-        trap "rm -f $CERT_FILE" EXIT
-        echo "$CSC_LINK" | base64 --decode > "$CERT_FILE"
-
-        # Import certificate to temporary keychain
-        KEYCHAIN_NAME="signing-$$.keychain-db"
-        KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
-
-        log_info "Creating temporary keychain..."
-        security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
-        security set-keychain-settings -lut 21600 "$KEYCHAIN_NAME"
-        security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
-
-        trap "security delete-keychain $KEYCHAIN_NAME 2>/dev/null || true; rm -f $CERT_FILE" EXIT
-
-        log_info "Importing certificate..."
-        security import "$CERT_FILE" -k "$KEYCHAIN_NAME" -P "$CSC_KEY_PASSWORD" -T /usr/bin/codesign
-        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
-
-        # Get signing identity
-        IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_NAME" | grep -o '"[^"]*"' | head -1 | tr -d '"')
-
-        if [ -z "$IDENTITY" ]; then
-            log_error "No signing identity found in certificate"
-            exit 1
-        fi
-
-        log_info "Signing identity: $IDENTITY"
-
-        # Sign application
-        log_info "Signing application..."
-
-        if [[ "$APP_PATH" == *.app ]]; then
-            # Sign .app bundle
-            codesign --sign "$IDENTITY" \
-                --keychain "$KEYCHAIN_NAME" \
-                --force \
-                --deep \
-                --options runtime \
-                --timestamp \
-                --verbose \
-                "$APP_PATH"
-        elif [[ "$APP_PATH" == *.dmg ]]; then
-            # Sign .dmg
-            codesign --sign "$IDENTITY" \
-                --keychain "$KEYCHAIN_NAME" \
-                --timestamp \
-                --verbose \
-                "$APP_PATH"
-        else
-            log_error "Unsupported macOS app format: $APP_PATH"
-            exit 1
-        fi
-
-        # Verify signature
-        log_info "Verifying signature..."
-        if codesign --verify --deep --strict --verbose=2 "$APP_PATH"; then
-            log_success "macOS application signed successfully"
-        else
-            log_error "Signature verification failed"
-            exit 1
-        fi
-
-        # Display signature info
-        log_info "Signature info:"
-        codesign -dvv "$APP_PATH" 2>&1 | grep -E "Authority|Identifier|Format|TeamIdentifier"
-
-        ;;
-
+      check_macos
+      ;;
     windows)
-        # Windows code signing
-        if [ -z "${WIN_CSC_LINK:-}" ] && [ -z "${CSC_LINK:-}" ]; then
-            log_error "WIN_CSC_LINK or CSC_LINK environment variable is required"
-            log_info "Set to base64-encoded .pfx certificate"
-            exit 1
-        fi
-
-        if [ -z "${WIN_CSC_KEY_PASSWORD:-}" ] && [ -z "${CSC_KEY_PASSWORD:-}" ]; then
-            log_error "WIN_CSC_KEY_PASSWORD or CSC_KEY_PASSWORD is required"
-            exit 1
-        fi
-
-        CERT_LINK="${WIN_CSC_LINK:-$CSC_LINK}"
-        CERT_PASSWORD="${WIN_CSC_KEY_PASSWORD:-$CSC_KEY_PASSWORD}"
-
-        # Decode certificate
-        CERT_FILE=$(mktemp -t cert.XXXXXX.pfx)
-        trap "rm -f $CERT_FILE" EXIT
-        echo "$CERT_LINK" | base64 --decode > "$CERT_FILE"
-
-        # Check for signing tools
-        if command -v osslsigncode &> /dev/null; then
-            # Use osslsigncode (cross-platform)
-            log_info "Signing with osslsigncode..."
-
-            osslsigncode sign \
-                -pkcs12 "$CERT_FILE" \
-                -pass "$CERT_PASSWORD" \
-                -n "nChat" \
-                -i "https://nchat.io" \
-                -t http://timestamp.digicert.com \
-                -in "$APP_PATH" \
-                -out "${APP_PATH}.signed"
-
-            mv "${APP_PATH}.signed" "$APP_PATH"
-
-            # Verify
-            log_info "Verifying signature..."
-            if osslsigncode verify "$APP_PATH"; then
-                log_success "Windows application signed successfully"
-            else
-                log_error "Signature verification failed"
-                exit 1
-            fi
-
-        elif command -v signtool.exe &> /dev/null; then
-            # Use Windows SDK signtool
-            log_info "Signing with signtool.exe..."
-
-            signtool.exe sign \
-                /f "$CERT_FILE" \
-                /p "$CERT_PASSWORD" \
-                /tr http://timestamp.digicert.com \
-                /td sha256 \
-                /fd sha256 \
-                /d "nChat" \
-                /du "https://nchat.io" \
-                "$APP_PATH"
-
-            # Verify
-            log_info "Verifying signature..."
-            if signtool.exe verify /pa "$APP_PATH"; then
-                log_success "Windows application signed successfully"
-            else
-                log_error "Signature verification failed"
-                exit 1
-            fi
-
-        else
-            log_error "No Windows signing tool found (osslsigncode or signtool.exe)"
-            log_info "Install osslsigncode: brew install osslsigncode (macOS/Linux)"
-            exit 1
-        fi
-
-        ;;
-
+      check_windows
+      ;;
     linux)
-        # Linux doesn't have mandatory code signing like macOS/Windows
-        # But we can create GPG signatures for verification
+      check_linux
+      ;;
+    all)
+      echo ""
+      check_macos || true
+      echo ""
+      check_windows || true
+      echo ""
+      check_linux || true
+      ;;
+    *)
+      log_error "Unknown platform: $PLATFORM"
+      exit 1
+      ;;
+  esac
+fi
 
-        log_info "Creating GPG signature for Linux package..."
+if [ "$GENERATE" = true ]; then
+  generate_templates
+fi
 
-        if [ -z "${GPG_PRIVATE_KEY:-}" ]; then
-            log_warning "GPG_PRIVATE_KEY not set, skipping GPG signature"
-            log_info "For production releases, set GPG_PRIVATE_KEY to base64-encoded private key"
-            exit 0
-        fi
-
-        if [ -z "${GPG_PASSPHRASE:-}" ]; then
-            log_error "GPG_PASSPHRASE is required when GPG_PRIVATE_KEY is set"
-            exit 1
-        fi
-
-        # Import GPG key
-        log_info "Importing GPG key..."
-        echo "$GPG_PRIVATE_KEY" | base64 --decode | gpg --batch --import
-
-        # Sign package
-        log_info "Signing package..."
-        echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 \
-            --armor \
-            --detach-sign \
-            --output "${APP_PATH}.sig" \
-            "$APP_PATH"
-
-        if [ -f "${APP_PATH}.sig" ]; then
-            log_success "GPG signature created: ${APP_PATH}.sig"
-
-            # Verify signature
-            log_info "Verifying signature..."
-            if gpg --verify "${APP_PATH}.sig" "$APP_PATH" 2>&1 | grep -q "Good signature"; then
-                log_success "Linux package signed successfully"
-            else
-                log_error "Signature verification failed"
-                exit 1
-            fi
-        else
-            log_error "Failed to create GPG signature"
-            exit 1
-        fi
-
-        ;;
-esac
-
-log_success "Signing complete for $PLATFORM"
+if [ "$CHECK" = false ] && [ "$GENERATE" = false ]; then
+  log_error "No action specified. Use --check or --generate"
+  exit 1
+fi

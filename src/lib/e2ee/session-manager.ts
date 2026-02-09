@@ -422,15 +422,22 @@ class DatabaseSignedPreKeyStore extends SignalClient.SignedPreKeyStore {
 export class SessionManager {
   private apolloClient: ApolloClient<any>
   private keyManager: KeyManager
+  private userId: string
   private deviceId: string
   private sessionStore: DatabaseSessionStore
   private identityKeyStore: DatabaseIdentityKeyStore
   private preKeyStore: DatabasePreKeyStore
   private signedPreKeyStore: DatabaseSignedPreKeyStore
 
-  constructor(apolloClient: ApolloClient<any>, keyManager: KeyManager, deviceId: string) {
+  constructor(
+    apolloClient: ApolloClient<any>,
+    keyManager: KeyManager,
+    userId: string,
+    deviceId: string
+  ) {
     this.apolloClient = apolloClient
     this.keyManager = keyManager
+    this.userId = userId
     this.deviceId = deviceId
 
     this.sessionStore = new DatabaseSessionStore(apolloClient, keyManager, deviceId)
@@ -630,7 +637,7 @@ export class SessionManager {
     const session = data.nchat_signal_sessions[0]
 
     return {
-      userId: '', // TODO: Get from context
+      userId: this.userId,
       deviceId: this.deviceId,
       peerUserId,
       peerDeviceId,

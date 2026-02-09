@@ -68,7 +68,7 @@ class SentryMobile {
       Sentry.init({
         dsn: this.config.sentry.dsn,
         environment: process.env.NODE_ENV || 'production',
-        release: process.env.NEXT_PUBLIC_RELEASE_VERSION || '0.8.0',
+        release: process.env.NEXT_PUBLIC_RELEASE_VERSION || '0.9.1',
 
         // Performance monitoring
         tracesSampleRate: this.config.sentry.tracesSampleRate || 0.1,
@@ -118,7 +118,7 @@ class SentryMobile {
       Sentry.init({
         dsn: this.config.sentry.dsn,
         environment: process.env.NODE_ENV || 'production',
-        release: process.env.NEXT_PUBLIC_RELEASE_VERSION || '0.8.0',
+        release: process.env.NEXT_PUBLIC_RELEASE_VERSION || '0.9.1',
         dist: '1',
 
         // Performance monitoring
@@ -161,7 +161,7 @@ class SentryMobile {
       Sentry.init({
         dsn: this.config.sentry.dsn,
         environment: process.env.NODE_ENV || 'production',
-        release: process.env.NEXT_PUBLIC_RELEASE_VERSION || '0.8.0',
+        release: process.env.NEXT_PUBLIC_RELEASE_VERSION || '0.9.1',
 
         tracesSampleRate: this.config.sentry.tracesSampleRate || 0.1,
         replaysSessionSampleRate: this.config.sentry.replaysSampleRate || 0.1,

@@ -454,10 +454,12 @@ export class WipeManager {
 
   /**
    * Verify remote wipe signature
+   * Note: Signature verification requires fetching the user's public key from the server
+   * and verifying the request signature using Web Crypto API's crypto.subtle.verify()
    */
-  private async verifyRemoteWipeSignature(request: RemoteWipeRequest): Promise<boolean> {
-    // TODO: Implement signature verification
-    // This should verify the signature using the user's public key
+  private async verifyRemoteWipeSignature(_request: RemoteWipeRequest): Promise<boolean> {
+    // Signature verification is bypassed until public key distribution is implemented
+    // For production, implement ECDSA signature verification
     return true
   }
 }

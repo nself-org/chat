@@ -144,7 +144,7 @@ class APIEventBroadcaster {
     return {
       eventId: uuidv4(),
       timestamp: new Date().toISOString(),
-      serverVersion: '0.9.0',
+      serverVersion: '0.9.1',
     }
   }
 

@@ -18,6 +18,14 @@ import type {
 import { isInQuietHours } from './quiet-hours'
 import { matchKeywords } from './keyword-matcher'
 import { playNotificationSound } from './notification-sounds'
+import {
+  deliverPushNotification,
+  sendEmailNotification,
+  isPushAvailable,
+  type DeliveryPayload,
+  type EmailPayload,
+} from './notification-channels'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -49,6 +57,17 @@ export interface DeliveryResult {
   timestamp: string
 }
 
+export interface RetryConfig {
+  /** Maximum number of retry attempts */
+  maxAttempts: number
+  /** Initial delay in milliseconds before first retry */
+  initialDelayMs: number
+  /** Maximum delay in milliseconds between retries */
+  maxDelayMs: number
+  /** Backoff multiplier for exponential backoff */
+  backoffMultiplier: number
+}
+
 export interface NotificationManagerOptions {
   /** Maximum notifications to keep in history */
   maxHistorySize?: number
@@ -56,16 +75,29 @@ export interface NotificationManagerOptions {
   debug?: boolean
   /** Custom sound player */
   soundPlayer?: (soundId: string, volume: number) => Promise<void>
+  /** Retry configuration for failed deliveries */
+  retryConfig?: Partial<RetryConfig>
+  /** Email API endpoint */
+  emailApiEndpoint?: string
 }
 
 // ============================================================================
 // Notification Manager Class
 // ============================================================================
 
+const DEFAULT_RETRY_CONFIG: RetryConfig = {
+  maxAttempts: 3,
+  initialDelayMs: 1000,
+  maxDelayMs: 30000,
+  backoffMultiplier: 2,
+}
+
 export class NotificationManager {
   private preferences: NotificationPreferences
   private history: NotificationHistoryEntry[] = []
-  private options: Required<NotificationManagerOptions>
+  private options: Required<Omit<NotificationManagerOptions, 'retryConfig'>> & {
+    retryConfig: RetryConfig
+  }
   private pendingNotifications: NotificationPayload[] = []
   private batchTimeout: ReturnType<typeof setTimeout> | null = null
 
@@ -75,6 +107,11 @@ export class NotificationManager {
       maxHistorySize: options.maxHistorySize ?? 100,
       debug: options.debug ?? false,
       soundPlayer: options.soundPlayer ?? playNotificationSound,
+      emailApiEndpoint: options.emailApiEndpoint ?? '/api/notifications/email',
+      retryConfig: {
+        ...DEFAULT_RETRY_CONFIG,
+        ...options.retryConfig,
+      },
     }
   }
 
@@ -465,15 +502,249 @@ export class NotificationManager {
     }
   }
 
-  private async deliverPush(_payload: NotificationPayload): Promise<void> {
-    // Push notification delivery would typically go through a service worker
-    // or a push notification service like Firebase
-    this.log('Push notification delivery not implemented')
+  /**
+   * Deliver push notification with retry logic
+   */
+  private async deliverPush(payload: NotificationPayload): Promise<void> {
+    if (!isPushAvailable()) {
+      throw new Error('Push notifications not available')
+    }
+
+    const deliveryPayload: DeliveryPayload = {
+      id: payload.id,
+      title: payload.title,
+      body: payload.body,
+      icon: payload.actor?.avatarUrl,
+      tag: payload.id,
+      actionUrl: payload.actionUrl,
+      requireInteraction: payload.priority === 'urgent',
+      data: {
+        type: payload.type,
+        channelId: payload.channelId,
+        messageId: payload.messageId,
+        threadId: payload.threadId,
+        ...payload.metadata,
+      },
+    }
+
+    const result = await this.executeWithRetry(
+      async () => {
+        const response = await deliverPushNotification(deliveryPayload, this.preferences.push)
+        if (!response.success) {
+          throw new Error(response.error || 'Push delivery failed')
+        }
+        return response
+      },
+      'push',
+      payload.id
+    )
+
+    if (!result.success) {
+      throw new Error(result.error || 'Push delivery failed after retries')
+    }
+
+    this.log(`Push notification delivered: ${payload.id}`)
   }
 
-  private async deliverEmail(_payload: NotificationPayload): Promise<void> {
-    // Email delivery would typically go through a backend API
-    this.log('Email notification delivery not implemented')
+  /**
+   * Deliver email notification with retry logic
+   */
+  private async deliverEmail(payload: NotificationPayload): Promise<void> {
+    if (!this.preferences.email.enabled) {
+      throw new Error('Email notifications disabled')
+    }
+
+    const recipientEmail = this.preferences.email.email
+    if (!recipientEmail) {
+      throw new Error('No email address configured')
+    }
+
+    const emailPayload: EmailPayload = {
+      to: recipientEmail,
+      subject: payload.title,
+      text: payload.body,
+      html: this.generateEmailHtml(payload),
+      template: this.getEmailTemplate(payload.type),
+      templateData: {
+        title: payload.title,
+        body: payload.body,
+        actorName: payload.actor?.name,
+        actorAvatar: payload.actor?.avatarUrl,
+        channelName: payload.channelName,
+        actionUrl: payload.actionUrl,
+        priority: payload.priority,
+        type: payload.type,
+        ...payload.metadata,
+      },
+    }
+
+    const result = await this.executeWithRetry(
+      async () => {
+        const response = await sendEmailNotification(
+          emailPayload,
+          this.preferences.email,
+          this.options.emailApiEndpoint
+        )
+        if (!response.success) {
+          throw new Error(response.error || 'Email delivery failed')
+        }
+        return response
+      },
+      'email',
+      payload.id
+    )
+
+    if (!result.success) {
+      throw new Error(result.error || 'Email delivery failed after retries')
+    }
+
+    this.log(`Email notification delivered: ${payload.id}`)
+  }
+
+  /**
+   * Execute a delivery function with exponential backoff retry
+   */
+  private async executeWithRetry<T>(
+    fn: () => Promise<T>,
+    deliveryMethod: string,
+    notificationId: string
+  ): Promise<T> {
+    const { maxAttempts, initialDelayMs, maxDelayMs, backoffMultiplier } = this.options.retryConfig
+    let lastError: Error | null = null
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        return await fn()
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error))
+
+        // Don't retry on certain errors
+        if (this.isNonRetryableError(lastError)) {
+          this.log(
+            `Non-retryable error for ${deliveryMethod} notification ${notificationId}: ${lastError.message}`
+          )
+          throw lastError
+        }
+
+        if (attempt < maxAttempts) {
+          const delay = Math.min(
+            initialDelayMs * Math.pow(backoffMultiplier, attempt - 1),
+            maxDelayMs
+          )
+
+          this.log(
+            `Retry ${attempt}/${maxAttempts} for ${deliveryMethod} notification ${notificationId} in ${delay}ms`
+          )
+
+          await this.sleep(delay)
+        }
+      }
+    }
+
+    logger.error(`All ${maxAttempts} attempts failed for ${deliveryMethod} notification`, {
+      notificationId,
+      error: lastError?.message,
+    })
+
+    throw lastError
+  }
+
+  /**
+   * Check if an error should not be retried
+   */
+  private isNonRetryableError(error: Error): boolean {
+    const nonRetryablePatterns = [
+      'not available',
+      'disabled',
+      'not configured',
+      'permission denied',
+      'invalid',
+      '400',
+      '401',
+      '403',
+      '404',
+    ]
+
+    const message = error.message.toLowerCase()
+    return nonRetryablePatterns.some((pattern) => message.includes(pattern))
+  }
+
+  /**
+   * Sleep for a specified duration
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
+  /**
+   * Generate HTML content for email notification
+   */
+  private generateEmailHtml(payload: NotificationPayload): string {
+    const actorSection = payload.actor
+      ? `
+        <div style="display: flex; align-items: center; margin-bottom: 16px;">
+          ${payload.actor.avatarUrl ? `<img src="${payload.actor.avatarUrl}" alt="${payload.actor.name}" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 12px;">` : ''}
+          <strong>${payload.actor.name}</strong>
+        </div>
+      `
+      : ''
+
+    const channelSection = payload.channelName
+      ? `<p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">in #${payload.channelName}</p>`
+      : ''
+
+    const actionSection = payload.actionUrl
+      ? `
+        <a href="${payload.actionUrl}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-top: 16px;">
+          View in nChat
+        </a>
+      `
+      : ''
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${payload.title}</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #334155; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+    <h1 style="color: white; margin: 0; font-size: 20px;">${payload.title}</h1>
+  </div>
+
+  <div style="background: white; padding: 24px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px;">
+    ${actorSection}
+    ${channelSection}
+    <p style="font-size: 16px; margin: 0;">${payload.body}</p>
+    ${actionSection}
+  </div>
+
+  <div style="text-align: center; padding: 16px; color: #64748b; font-size: 12px;">
+    <p>You received this email because you have notifications enabled in nChat.</p>
+  </div>
+</body>
+</html>
+    `.trim()
+  }
+
+  /**
+   * Get email template name based on notification type
+   */
+  private getEmailTemplate(type: NotificationType): string {
+    const templateMap: Record<NotificationType, string> = {
+      mention: 'nchat_mention',
+      direct_message: 'nchat_direct_message',
+      thread_reply: 'nchat_thread_reply',
+      reaction: 'nchat_reaction',
+      channel_invite: 'nchat_channel_invite',
+      channel_update: 'nchat_channel_update',
+      system: 'nchat_system',
+      announcement: 'nchat_announcement',
+      keyword: 'nchat_keyword',
+    }
+    return templateMap[type] || 'nchat_notification'
   }
 
   private async playSound(type: NotificationType): Promise<void> {

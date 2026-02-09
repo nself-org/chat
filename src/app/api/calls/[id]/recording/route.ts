@@ -7,16 +7,25 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { nhost } from '@/lib/nhost.server'
+import { getLiveKitService } from '@/services/webrtc/livekit.service'
+import { getRecordingStorageService } from '@/services/webrtc/recording-storage.service'
+import { logger } from '@/lib/logger'
 
 // Schema validation
 const startRecordingSchema = z.object({
-  format: z.enum(['mp4', 'webm', 'mp3']).default('mp4'),
-  quality: z.enum(['low', 'medium', 'high', 'hd']).default('high'),
-  includeAudio: z.boolean().default(true),
-  includeVideo: z.boolean().default(true),
-  includeScreenShare: z.boolean().default(true),
-  layout: z.enum(['grid', 'spotlight', 'presentation']).default('grid'),
+  format: z.enum(['mp4', 'webm']).default('mp4'),
+  quality: z.enum(['720p', '1080p', '4k']).default('1080p'),
+  audioOnly: z.boolean().default(false),
+  layout: z.enum(['grid', 'speaker', 'single']).default('grid'),
 })
+
+// Map quality to resolution
+const qualityToResolution: Record<string, string> = {
+  '720p': '720p',
+  '1080p': '1080p',
+  '4k': '4k',
+}
 
 /**
  * POST /api/calls/[id]/recording
@@ -32,6 +41,16 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: 'Invalid call ID' }, { status: 400 })
     }
 
+    // Get user from session
+    const session = await nhost.auth.getSession()
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const userId = session.user?.id
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID not found' }, { status: 401 })
+    }
+
     // Parse request body
     const body = await request.json()
     const validation = startRecordingSchema.safeParse(body)
@@ -45,67 +64,152 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     const config = validation.data
 
-    // TODO: Get user from session
-    const userId = request.headers.get('x-user-id') || 'dev-user-id'
+    // Verify call exists and is active
+    const { data: callData, error: callError } = await nhost.graphql.request(
+      `
+        query GetCallForRecording($id: uuid!) {
+          nchat_calls_by_pk(id: $id) {
+            id
+            status
+            livekit_room_name
+            initiator_id
+            channel_id
+          }
+        }
+      `,
+      { id: callId }
+    )
 
-    // TODO: Verify call exists and is active
-    // const call = await getCallById(callId)
-    // if (!call) {
-    //   return NextResponse.json({ error: 'Call not found' }, { status: 404 })
-    // }
-    // if (call.status !== 'active') {
-    //   return NextResponse.json({ error: 'Call is not active' }, { status: 400 })
-    // }
-
-    // TODO: Verify user has permission to record
-    // const canRecord = await checkCallPermission(userId, callId, 'RECORD')
-    // if (!canRecord) {
-    //   return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
-    // }
-
-    // TODO: Check if recording is already in progress
-    // const existingRecording = await getActiveRecording(callId)
-    // if (existingRecording) {
-    //   return NextResponse.json({ error: 'Recording already in progress' }, { status: 409 })
-    // }
-
-    // TODO: Start LiveKit recording via API
-    // const livekitRecording = await startLiveKitRecording(callId, config)
-
-    // Mock recording data
-    const recording = {
-      id: `recording-${Date.now()}`,
-      callId,
-      startedBy: userId,
-      startedAt: new Date().toISOString(),
-      status: 'recording',
-      format: config.format,
-      quality: config.quality,
-      includeAudio: config.includeAudio,
-      includeVideo: config.includeVideo,
-      includeScreenShare: config.includeScreenShare,
-      layout: config.layout,
-      duration: 0,
-      fileSize: 0,
-      url: null,
+    if (callError || !callData?.nchat_calls_by_pk) {
+      return NextResponse.json({ error: 'Call not found' }, { status: 404 })
     }
 
-    // TODO: Save recording metadata to database
-    // await createRecording(recording)
+    const call = callData.nchat_calls_by_pk
 
-    // TODO: Notify all participants that recording has started
-    // await broadcastRecordingStarted(callId, recording)
+    if (call.status !== 'active') {
+      return NextResponse.json({ error: 'Call is not active' }, { status: 400 })
+    }
+
+    // Verify user is a participant or initiator
+    const { data: participantData } = await nhost.graphql.request(
+      `
+        query CheckRecordingPermission($callId: uuid!, $userId: uuid!) {
+          nchat_call_participants(where: {call_id: {_eq: $callId}, user_id: {_eq: $userId}}) {
+            id
+            status
+          }
+        }
+      `,
+      { callId, userId }
+    )
+
+    const isParticipant = participantData?.nchat_call_participants?.length > 0
+    const isInitiator = call.initiator_id === userId
+
+    if (!isParticipant && !isInitiator) {
+      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
+    }
+
+    // Check if recording is already in progress
+    const { data: existingRecording } = await nhost.graphql.request(
+      `
+        query GetActiveRecording($callId: uuid!) {
+          nchat_call_recordings(where: {call_id: {_eq: $callId}, status: {_in: ["starting", "recording"]}}) {
+            id
+            status
+          }
+        }
+      `,
+      { callId }
+    )
+
+    if (existingRecording?.nchat_call_recordings?.length > 0) {
+      return NextResponse.json({ error: 'Recording already in progress' }, { status: 409 })
+    }
+
+    // Start LiveKit recording
+    const livekit = getLiveKitService()
+    let egressId: string
+
+    try {
+      egressId = await livekit.startRecording({
+        roomName: call.livekit_room_name,
+        layout: config.layout,
+        audioOnly: config.audioOnly,
+        resolution: qualityToResolution[config.quality] as '720p' | '1080p' | '4k',
+        outputFormat: config.format,
+      })
+    } catch (livekitError) {
+      logger.error('LiveKit recording start failed:', livekitError)
+      return NextResponse.json({ error: 'Failed to start recording service' }, { status: 500 })
+    }
+
+    // Save recording metadata to database
+    const { data: recordingData, error: recordingError } = await nhost.graphql.request(
+      `
+        mutation CreateCallRecording($object: nchat_call_recordings_insert_input!) {
+          insert_nchat_call_recordings_one(object: $object) {
+            id
+            call_id
+            recorded_by
+            livekit_egress_id
+            status
+            resolution
+            layout_type
+            audio_only
+            started_at
+            created_at
+          }
+        }
+      `,
+      {
+        object: {
+          call_id: callId,
+          channel_id: call.channel_id,
+          recorded_by: userId,
+          livekit_egress_id: egressId,
+          status: 'recording',
+          resolution: config.quality,
+          layout_type: config.layout,
+          audio_only: config.audioOnly,
+        },
+      }
+    )
+
+    if (recordingError || !recordingData?.insert_nchat_call_recordings_one) {
+      // Try to stop the LiveKit recording since DB insert failed
+      try {
+        await livekit.stopRecording(egressId)
+      } catch {
+        logger.error('Failed to cleanup LiveKit recording after DB error')
+      }
+      logger.error('Failed to save recording to database:', recordingError)
+      return NextResponse.json({ error: 'Failed to save recording metadata' }, { status: 500 })
+    }
+
+    const recording = recordingData.insert_nchat_call_recordings_one
+
+    logger.info('Call recording started', { callId, recordingId: recording.id, egressId })
 
     return NextResponse.json(
       {
         success: true,
-        recording,
+        recording: {
+          id: recording.id,
+          callId: recording.call_id,
+          startedBy: recording.recorded_by,
+          startedAt: recording.started_at,
+          status: recording.status,
+          resolution: recording.resolution,
+          layout: recording.layout_type,
+          audioOnly: recording.audio_only,
+        },
         message: 'Recording started successfully',
       },
       { status: 201 }
     )
   } catch (error) {
-    console.error('Error starting call recording:', error)
+    logger.error('Error starting call recording:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -124,40 +228,136 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Invalid call ID' }, { status: 400 })
     }
 
-    // TODO: Get user from session
-    const userId = request.headers.get('x-user-id') || 'dev-user-id'
+    // Get user from session
+    const session = await nhost.auth.getSession()
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const userId = session.user?.id
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID not found' }, { status: 401 })
+    }
 
-    // TODO: Verify user has access to this call
-    // const canAccess = await checkCallAccess(userId, callId)
-    // if (!canAccess) {
-    //   return NextResponse.json({ error: 'Access denied' }, { status: 403 })
-    // }
+    // Verify user has access to this call
+    const { data: accessData } = await nhost.graphql.request(
+      `
+        query CheckRecordingAccess($callId: uuid!, $userId: uuid!) {
+          nchat_calls_by_pk(id: $callId) {
+            id
+            initiator_id
+          }
+          nchat_call_participants(where: {call_id: {_eq: $callId}, user_id: {_eq: $userId}}) {
+            id
+          }
+        }
+      `,
+      { callId, userId }
+    )
 
-    // TODO: Fetch recording status from database or LiveKit
-    // const recording = await getActiveRecording(callId)
-    // if (!recording) {
-    //   return NextResponse.json({ error: 'No active recording found' }, { status: 404 })
-    // }
+    const call = accessData?.nchat_calls_by_pk
+    const isParticipant = accessData?.nchat_call_participants?.length > 0
+    const isInitiator = call?.initiator_id === userId
 
-    // Mock recording status
-    const recording = {
-      id: 'recording-123',
-      callId,
-      startedBy: userId,
-      startedAt: new Date(Date.now() - 300000).toISOString(), // Started 5 mins ago
-      status: 'recording',
-      format: 'mp4',
-      quality: 'high',
-      duration: 300, // 5 minutes
-      fileSize: 52428800, // 50 MB
-      url: null,
+    if (!call || (!isParticipant && !isInitiator)) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 })
+    }
+
+    // Fetch active or most recent recording
+    const { data: recordingData, error: recordingError } = await nhost.graphql.request(
+      `
+        query GetCallRecording($callId: uuid!) {
+          nchat_call_recordings(
+            where: {call_id: {_eq: $callId}}
+            order_by: {created_at: desc}
+            limit: 1
+          ) {
+            id
+            call_id
+            recorded_by
+            livekit_egress_id
+            status
+            file_url
+            file_size_bytes
+            duration_seconds
+            resolution
+            layout_type
+            audio_only
+            thumbnail_url
+            started_at
+            ended_at
+            created_at
+            user: recorded_by_user {
+              id
+              display_name
+            }
+          }
+        }
+      `,
+      { callId }
+    )
+
+    if (recordingError) {
+      logger.error('Failed to fetch recording:', recordingError)
+      return NextResponse.json({ error: 'Failed to fetch recording' }, { status: 500 })
+    }
+
+    const recordings = recordingData?.nchat_call_recordings
+    if (!recordings || recordings.length === 0) {
+      return NextResponse.json({ error: 'No recording found' }, { status: 404 })
+    }
+
+    const recording = recordings[0]
+
+    // If recording is active, get live status from LiveKit
+    if (recording.status === 'recording' && recording.livekit_egress_id) {
+      try {
+        const livekit = getLiveKitService()
+        const egressInfo = await livekit.getEgressInfo(recording.livekit_egress_id)
+
+        // Calculate duration if still recording
+        const startTime = new Date(recording.started_at).getTime()
+        const currentDuration = Math.floor((Date.now() - startTime) / 1000)
+
+        return NextResponse.json({
+          recording: {
+            id: recording.id,
+            callId: recording.call_id,
+            startedBy: recording.recorded_by,
+            startedAt: recording.started_at,
+            status: recording.status,
+            resolution: recording.resolution,
+            layout: recording.layout_type,
+            audioOnly: recording.audio_only,
+            duration: currentDuration,
+            fileSize: null,
+            url: null,
+            egressStatus: egressInfo?.status,
+          },
+        })
+      } catch (livekitError) {
+        logger.warn('Could not fetch LiveKit egress info:', { error: String(livekitError) })
+      }
     }
 
     return NextResponse.json({
-      recording,
+      recording: {
+        id: recording.id,
+        callId: recording.call_id,
+        startedBy: recording.recorded_by,
+        startedAt: recording.started_at,
+        endedAt: recording.ended_at,
+        status: recording.status,
+        resolution: recording.resolution,
+        layout: recording.layout_type,
+        audioOnly: recording.audio_only,
+        duration: recording.duration_seconds,
+        fileSize: recording.file_size_bytes,
+        url: recording.file_url,
+        thumbnailUrl: recording.thumbnail_url,
+      },
     })
   } catch (error) {
-    console.error('Error fetching recording status:', error)
+    logger.error('Error fetching recording status:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -179,53 +379,126 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid call ID' }, { status: 400 })
     }
 
-    // TODO: Get user from session
-    const userId = request.headers.get('x-user-id') || 'dev-user-id'
-
-    // TODO: Verify user has permission to stop recording
-    // const canRecord = await checkCallPermission(userId, callId, 'RECORD')
-    // if (!canRecord) {
-    //   return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
-    // }
-
-    // TODO: Get active recording
-    // const recording = await getActiveRecording(callId)
-    // if (!recording) {
-    //   return NextResponse.json({ error: 'No active recording found' }, { status: 404 })
-    // }
-
-    // TODO: Stop LiveKit recording
-    // await stopLiveKitRecording(recording.id)
-
-    // TODO: Update recording status and final stats
-    const stoppedRecording = {
-      id: 'recording-123',
-      callId,
-      stoppedBy: userId,
-      stoppedAt: new Date().toISOString(),
-      status: 'processing',
-      duration: 300,
-      fileSize: 52428800,
-      url: null, // Will be available after processing
+    // Get user from session
+    const session = await nhost.auth.getSession()
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const userId = session.user?.id
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID not found' }, { status: 401 })
     }
 
-    // TODO: Update database
-    // await updateRecording(recording.id, {
-    //   status: 'processing',
-    //   stoppedAt: new Date(),
-    //   stoppedBy: userId,
-    // })
+    // Verify user has permission and get active recording
+    const { data: recordingData, error: recordingError } = await nhost.graphql.request(
+      `
+        query GetActiveRecordingToStop($callId: uuid!) {
+          nchat_call_recordings(
+            where: {
+              call_id: {_eq: $callId}
+              status: {_in: ["starting", "recording"]}
+            }
+            limit: 1
+          ) {
+            id
+            livekit_egress_id
+            recorded_by
+            started_at
+            call {
+              id
+              initiator_id
+            }
+          }
+        }
+      `,
+      { callId }
+    )
 
-    // TODO: Notify participants that recording has stopped
-    // await broadcastRecordingStopped(callId, stoppedRecording)
+    if (recordingError) {
+      logger.error('Failed to fetch recording:', recordingError)
+      return NextResponse.json({ error: 'Failed to fetch recording' }, { status: 500 })
+    }
+
+    const recordings = recordingData?.nchat_call_recordings
+    if (!recordings || recordings.length === 0) {
+      return NextResponse.json({ error: 'No active recording found' }, { status: 404 })
+    }
+
+    const recording = recordings[0]
+
+    // Only the person who started recording or call initiator can stop it
+    const isRecorder = recording.recorded_by === userId
+    const isInitiator = recording.call?.initiator_id === userId
+
+    if (!isRecorder && !isInitiator) {
+      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
+    }
+
+    // Stop LiveKit recording
+    if (recording.livekit_egress_id) {
+      try {
+        const livekit = getLiveKitService()
+        await livekit.stopRecording(recording.livekit_egress_id)
+      } catch (livekitError) {
+        logger.error('Failed to stop LiveKit recording:', livekitError)
+        // Continue anyway to update database status
+      }
+    }
+
+    // Calculate duration
+    const startTime = new Date(recording.started_at).getTime()
+    const durationSeconds = Math.floor((Date.now() - startTime) / 1000)
+
+    // Update recording status
+    const { data: updateData, error: updateError } = await nhost.graphql.request(
+      `
+        mutation StopCallRecording($id: uuid!, $duration: Int!) {
+          update_nchat_call_recordings_by_pk(
+            pk_columns: {id: $id}
+            _set: {
+              status: "processing"
+              ended_at: "now()"
+              duration_seconds: $duration
+            }
+          ) {
+            id
+            call_id
+            status
+            started_at
+            ended_at
+            duration_seconds
+          }
+        }
+      `,
+      { id: recording.id, duration: durationSeconds }
+    )
+
+    if (updateError || !updateData?.update_nchat_call_recordings_by_pk) {
+      logger.error('Failed to update recording status:', updateError)
+      return NextResponse.json({ error: 'Failed to update recording status' }, { status: 500 })
+    }
+
+    const stoppedRecording = updateData.update_nchat_call_recordings_by_pk
+
+    logger.info('Call recording stopped', {
+      callId,
+      recordingId: recording.id,
+      duration: durationSeconds,
+    })
 
     return NextResponse.json({
       success: true,
-      recording: stoppedRecording,
-      message: 'Recording stopped. Processing will complete shortly.',
+      recording: {
+        id: stoppedRecording.id,
+        callId: stoppedRecording.call_id,
+        stoppedAt: stoppedRecording.ended_at,
+        status: stoppedRecording.status,
+        duration: stoppedRecording.duration_seconds,
+      },
+      message: 'Recording stopped and processing. File will be available after LiveKit completes encoding.',
     })
   } catch (error) {
-    console.error('Error stopping call recording:', error)
+    logger.error('Error stopping call recording:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -202,7 +202,7 @@ export const authConfig: AuthConfig = {
   // Security configuration
   security: {
     requireEmailVerification: isProduction,
-    allowedDomains: process.env.NEXT_PUBLIC_ALLOWED_DOMAINS?.split(',') || [],
+    allowedDomains: process.env.NEXT_PUBLIC_ALLOWED_DOMAINS?.split(',').filter(Boolean) || [],
     blockedDomains: [],
     passwordMinLength: 8,
     passwordRequireUppercase: true,

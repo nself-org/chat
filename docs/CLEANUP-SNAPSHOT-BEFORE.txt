@@ -1,0 +1,58 @@
+# Artifact Cleanup - Before Snapshot
+# Task 148 - February 9, 2026
+
+## File Counts
+
+Total markdown files: 756
+Total report/summary/completion files: 189
+
+## Directory Breakdown
+
+### Root
+- TASK-139-EVIDENCE.md
+- TASK-140-COMPLETION-SUMMARY.md
+- TASK-141-EVIDENCE.md
+
+### docs/ (root level)
+- 48 TASK-*-VERIFICATION.md files
+- Multiple *-REPORT*.md files
+- Multiple *-SUMMARY*.md files
+- Multiple *-COMPLETION*.md files
+
+### docs/QA/
+- 11 QA session reports and summaries
+
+### docs/releases/v0.9.1/
+- Multiple completion reports
+- Phase reports
+- Implementation summaries
+
+### Other directories with reports:
+- docs/features/
+- docs/security/
+- docs/plugins/
+- docs/ops/
+- docs/guides/
+- docs/observability/
+- docs/archive/
+- docs/about/
+- platforms/
+
+### .backend/
+- MEDIA-SERVER-SETUP-SUMMARY.md
+- migrations/MIGRATION_SUMMARY.md
+- migrations/VALIDATION_REPORT.md
+
+## Rationale for Cleanup
+
+These files are temporary artifacts from development and QA sessions. 
+They represent session notes, task completions, and verification reports 
+that are no longer needed for production. The essential documentation 
+remains in:
+- docs/README.md
+- docs/Features-Complete.md
+- docs/Roadmap.md
+- docs/PARITY-MATRIX-v091.md
+- docs/releases/v0.9.1/reports/IMPLEMENTATION-REPORT-V0.9.1.md
+- docs/releases/v0.9.1/reports/V0.9.1-QUALITY-REPORT.md
+- All API references, guides, security docs (non-report files)

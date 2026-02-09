@@ -50,19 +50,21 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: 'Stream is already live' }, { status: 400 })
     }
 
-    // Generate HLS manifest URL
+    // Generate HLS and DASH manifest URLs
     const hlsManifestUrl = `${process.env.NEXT_PUBLIC_HLS_BASE_URL}/${streamId}/index.m3u8`
+    const dashManifestUrl = `${process.env.NEXT_PUBLIC_DASH_BASE_URL || process.env.NEXT_PUBLIC_HLS_BASE_URL}/${streamId}/manifest.mpd`
 
-    // Update stream status to live
+    // Update stream status to live with both HLS and DASH manifests
     const { data, error } = await nhost.graphql.request(
       `
-        mutation StartStream($id: uuid!, $hlsUrl: String!) {
+        mutation StartStream($id: uuid!, $hlsUrl: String!, $dashUrl: String!) {
           update_nchat_streams_by_pk(
             pk_columns: { id: $id }
             _set: {
               status: "live"
               started_at: "now()"
               hls_manifest_url: $hlsUrl
+              dash_manifest_url: $dashUrl
             }
           ) {
             id
@@ -73,6 +75,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             status
             started_at
             hls_manifest_url
+            dash_manifest_url
             max_resolution
             enable_chat
             enable_reactions
@@ -80,7 +83,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           }
         }
       `,
-      { id: streamId, hlsUrl: hlsManifestUrl }
+      { id: streamId, hlsUrl: hlsManifestUrl, dashUrl: dashManifestUrl }
     )
 
     if (error || !data?.update_nchat_streams_by_pk) {

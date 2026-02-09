@@ -4,10 +4,11 @@
   "version": "1.0.0",
   "identifier": "org.nself.nchat",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "cd ../.. && pnpm dev",
     "devUrl": "http://localhost:3000",
-    "beforeBuildCommand": "npm run build",
-    "frontendDist": "../../out"
+    "beforeBuildCommand": "cd ../.. && pnpm build",
+    "frontendDist": "../../out",
+    "withGlobalTauri": true
   },
   "app": {
     "withGlobalTauri": true,
@@ -27,17 +28,20 @@
         "visible": true,
         "focus": true,
         "titleBarStyle": "Transparent",
-        "hiddenTitle": true
+        "hiddenTitle": true,
+        "url": "index.html"
       }
     ],
     "trayIcon": {
       "iconPath": "icons/tray.png",
       "iconAsTemplate": true,
-      "menuOnLeftClick": false
+      "menuOnLeftClick": false,
+      "tooltip": "nchat"
     },
     "security": {
-      "csp": null
-    }
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: wss: ws:; media-src 'self' https:; worker-src 'self' blob:;"
+    },
+    "macOSPrivateApi": false
   },
   "bundle": {
     "active": true,
@@ -51,54 +55,143 @@
     ],
     "resources": [],
     "externalBin": [],
-    "copyright": "Copyright 2024 nself",
+    "copyright": "Copyright © 2024-2026 nself",
     "category": "Productivity",
     "shortDescription": "Team communication platform",
-    "longDescription": "nchat is a white-label team communication platform with Slack-like features and Telegram capabilities.",
+    "longDescription": "nchat is a white-label team communication platform with Slack-like features and Telegram capabilities. Built with Tauri for native performance and security.",
+    "licenseFile": "../../LICENSE",
     "macOS": {
-      "entitlements": null,
+      "entitlements": "entitlements.plist",
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,
       "signingIdentity": null,
-      "minimumSystemVersion": "10.15"
+      "minimumSystemVersion": "10.15",
+      "dmg": {
+        "appPosition": {
+          "x": 180,
+          "y": 170
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 170
+        },
+        "windowSize": {
+          "width": 660,
+          "height": 400
+        },
+        "background": "dmg-background.png",
+        "imageSize": {
+          "width": 660,
+          "height": 400
+        }
+      },
+      "files": {}
+    },
+    "iOS": {
+      "minimumSystemVersion": "13.0"
+    },
+    "android": {
+      "minSdkVersion": 24
     },
     "linux": {
       "deb": {
-        "depends": []
+        "depends": [
+          "libwebkit2gtk-4.1-0",
+          "libappindicator3-1",
+          "libgtk-3-0",
+          "libssl3"
+        ],
+        "desktopTemplate": "nchat.desktop",
+        "files": {},
+        "nsis": null
       },
       "appimage": {
-        "bundleMediaFramework": true
+        "bundleMediaFramework": true,
+        "files": {}
+      },
+      "rpm": {
+        "epoch": 0,
+        "files": {},
+        "release": "1",
+        "desktopTemplate": "nchat.desktop"
       }
     },
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
-      "timestampUrl": ""
-    }
+      "timestampUrl": "http://timestamp.digicert.com",
+      "tsp": false,
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
+      "allowDowngrades": false,
+      "wix": {
+        "language": "en-US",
+        "template": "installer.wxs",
+        "fragmentPaths": [],
+        "componentGroupRefs": [],
+        "componentRefs": [],
+        "featureGroupRefs": [],
+        "featureRefs": [],
+        "mergeRefs": [],
+        "skipWebviewInstall": false,
+        "license": "../../LICENSE",
+        "enableElevatedUpdateTask": false,
+        "bannerPath": "wix-banner.bmp",
+        "dialogImagePath": "wix-dialog.bmp"
+      },
+      "nsis": {
+        "template": "installer.nsi",
+        "license": "../../LICENSE",
+        "headerImage": "nsis-header.bmp",
+        "sidebarImage": "nsis-sidebar.bmp",
+        "installerIcon": "icons/icon.ico",
+        "installMode": "currentUser",
+        "languages": ["en-US"],
+        "displayLanguageSelector": false,
+        "compression": "lzma"
+      },
+      "icon": "icons/icon.ico",
+      "webviewFixedRuntimePath": null
+    },
+    "publisher": "nself"
   },
   "plugins": {
     "shell": {
-      "open": true
+      "open": true,
+      "scope": [
+        {
+          "name": "open-browser",
+          "cmd": "open",
+          "args": true,
+          "sidecar": false
+        }
+      ]
     },
     "notification": {
       "all": true
     },
     "fs": {
-      "all": true
+      "scope": ["$APPDATA/*", "$DOWNLOAD/*", "$DOCUMENT/*", "$PICTURE/*"]
     },
     "dialog": {
-      "all": true
+      "all": true,
+      "save": true,
+      "open": true
     },
     "http": {
-      "all": true,
-      "request": true
+      "scope": ["https://*", "http://localhost:*", "wss://*", "ws://localhost:*"]
     },
     "window-state": {
       "all": true
     },
     "deep-link": {
       "desktop": {
+        "schemes": ["nchat"]
+      },
+      "mobile": {
         "schemes": ["nchat"]
       }
     },
@@ -108,7 +201,13 @@
     "updater": {
       "active": true,
       "pubkey": "",
-      "endpoints": ["https://releases.nself.org/nchat/{{target}}/{{arch}}/{{current_version}}"]
+      "endpoints": [
+        "https://releases.nself.org/nchat/{{target}}/{{arch}}/{{current_version}}"
+      ],
+      "dialog": true,
+      "windows": {
+        "installMode": "passive"
+      }
     },
     "global-shortcut": {
       "all": true
@@ -117,6 +216,33 @@
       "all": true
     },
     "log": {
+      "all": true,
+      "targets": ["stdout", "webview"]
+    },
+    "cli": {
+      "description": "nchat Desktop",
+      "args": [
+        {
+          "name": "url",
+          "index": 1,
+          "takesValue": true
+        },
+        {
+          "short": "d",
+          "name": "debug",
+          "description": "Enable debug mode"
+        },
+        {
+          "short": "h",
+          "name": "hidden",
+          "description": "Start minimized to tray"
+        }
+      ]
+    },
+    "process": {
+      "all": false
+    },
+    "clipboard-manager": {
       "all": true
     }
   }

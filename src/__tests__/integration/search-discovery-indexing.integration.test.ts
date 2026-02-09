@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Search + Discovery + Indexing
  *
  * Tests the integration between search functionality, content discovery,

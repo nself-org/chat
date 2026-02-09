@@ -3,7 +3,8 @@
  *
  * Manages screen sharing functionality with advanced features.
  * Supports screen/window/tab capture, system audio, quality controls,
- * and integration with the new ScreenCaptureManager.
+ * pause/resume, source switching, multi-share management, and
+ * integration with the new ScreenCaptureManager.
  */
 
 'use client'
@@ -20,6 +21,10 @@ import {
   createScreenCaptureManager,
   type ScreenCaptureOptions,
   type ScreenShare,
+  type ScreenCaptureQuality,
+  type SharePermissionStatus,
+  type MultiShareConfig,
+  type PerformanceMetrics,
   supportsSystemAudio,
   getOptimalQuality,
 } from '@/lib/webrtc/screen-capture'
@@ -34,8 +39,15 @@ export interface UseScreenShareOptions {
   userName?: string
   onScreenShareStarted?: (stream: MediaStream) => void
   onScreenShareStopped?: () => void
+  onScreenSharePaused?: () => void
+  onScreenShareResumed?: () => void
+  onSourceSwitched?: () => void
   onError?: (error: Error) => void
+  onPermissionDenied?: () => void
+  onQualityChanged?: (quality: ScreenCaptureQuality) => void
   useAdvancedCapture?: boolean // Use new ScreenCaptureManager
+  enablePerformanceMonitoring?: boolean
+  multiShareConfig?: Partial<MultiShareConfig>
 }
 
 export interface UseScreenShareReturn {
@@ -43,18 +55,33 @@ export interface UseScreenShareReturn {
   isScreenSharing: boolean
   screenStream: MediaStream | null
   error: string | null
+  isPaused: boolean
+  permissionStatus: SharePermissionStatus | null
 
   // Actions
   startScreenShare: (
     options?: ScreenShareOptions | ScreenCaptureOptions
   ) => Promise<MediaStream | null>
   stopScreenShare: () => void
+  pauseScreenShare: () => boolean
+  resumeScreenShare: () => boolean
+  togglePause: () => boolean
+  switchSource: (options?: ScreenCaptureOptions) => Promise<MediaStream | null>
+
+  // Permission
+  checkPermission: () => Promise<SharePermissionStatus>
+  requestPermission: () => Promise<SharePermissionStatus>
 
   // Advanced features (when useAdvancedCapture is true)
   activeShares: ScreenShare[]
-  updateQuality: (quality: 'auto' | '720p' | '1080p' | '4k') => Promise<void>
+  updateQuality: (quality: ScreenCaptureQuality) => Promise<void>
   updateFrameRate: (frameRate: number) => Promise<void>
   getVideoSettings: () => MediaTrackSettings | null
+  getPerformanceMetrics: () => Promise<PerformanceMetrics | null>
+
+  // Multi-share (group calls)
+  canShare: () => { allowed: boolean; reason?: string }
+  configureMultiShare: (config: Partial<MultiShareConfig>) => void
 
   // Helper
   isSupported: boolean
@@ -71,8 +98,15 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
     userName = 'User',
     onScreenShareStarted,
     onScreenShareStopped,
+    onScreenSharePaused,
+    onScreenShareResumed,
+    onSourceSwitched,
     onError,
+    onPermissionDenied,
+    onQualityChanged,
     useAdvancedCapture = true, // Default to new advanced capture
+    enablePerformanceMonitoring = false,
+    multiShareConfig,
   } = options
 
   // Store
@@ -84,6 +118,8 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
   const [screenStream, setScreenStream] = useState<MediaStream | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [activeShares, setActiveShares] = useState<ScreenShare[]>([])
+  const [isPaused, setIsPaused] = useState(false)
+  const [permissionStatus, setPermissionStatus] = useState<SharePermissionStatus | null>(null)
 
   // Refs
   const mediaManagerRef = useRef<MediaManager | null>(null)
@@ -112,6 +148,23 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
             stopScreenShare()
           }
         },
+        onStreamPaused: (streamId) => {
+          if (currentShareRef.current?.id === streamId) {
+            setIsPaused(true)
+            onScreenSharePaused?.()
+          }
+        },
+        onStreamResumed: (streamId) => {
+          if (currentShareRef.current?.id === streamId) {
+            setIsPaused(false)
+            onScreenShareResumed?.()
+          }
+        },
+        onSourceSwitched: (streamId, newType) => {
+          if (currentShareRef.current?.id === streamId) {
+            onSourceSwitched?.()
+          }
+        },
         onError: (err) => {
           setError(err.message)
           onError?.(err)
@@ -121,14 +174,31 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
             stopScreenShare()
           }
         },
+        onPermissionDenied: () => {
+          setPermissionStatus('denied')
+          onPermissionDenied?.()
+        },
+        onQualityChanged: (streamId, quality) => {
+          onQualityChanged?.(quality)
+        },
       })
+
+      // Configure multi-share if provided
+      if (multiShareConfig) {
+        captureManagerRef.current.configureMultiShare(multiShareConfig)
+      }
+
+      // Start performance monitoring if enabled
+      if (enablePerformanceMonitoring) {
+        captureManagerRef.current.startPerformanceMonitoring()
+      }
 
       return () => {
         captureManagerRef.current?.cleanup()
         captureManagerRef.current = null
       }
     }
-  }, [useAdvancedCapture, onError]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [useAdvancedCapture, onError, enablePerformanceMonitoring]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ==========================================================================
   // Start Screen Share
@@ -275,6 +345,112 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
   }, [useAdvancedCapture])
 
   // ==========================================================================
+  // Pause/Resume (Advanced Mode Only)
+  // ==========================================================================
+
+  const pauseScreenShare = useCallback((): boolean => {
+    if (!useAdvancedCapture || !captureManagerRef.current || !currentShareRef.current) {
+      return false
+    }
+
+    return captureManagerRef.current.pauseCapture(currentShareRef.current.id)
+  }, [useAdvancedCapture])
+
+  const resumeScreenShare = useCallback((): boolean => {
+    if (!useAdvancedCapture || !captureManagerRef.current || !currentShareRef.current) {
+      return false
+    }
+
+    return captureManagerRef.current.resumeCapture(currentShareRef.current.id)
+  }, [useAdvancedCapture])
+
+  const togglePause = useCallback((): boolean => {
+    if (!useAdvancedCapture || !captureManagerRef.current || !currentShareRef.current) {
+      return false
+    }
+
+    return captureManagerRef.current.togglePause(currentShareRef.current.id)
+  }, [useAdvancedCapture])
+
+  // ==========================================================================
+  // Switch Source (Advanced Mode Only)
+  // ==========================================================================
+
+  const switchSource = useCallback(
+    async (switchOptions?: ScreenCaptureOptions): Promise<MediaStream | null> => {
+      if (!useAdvancedCapture || !captureManagerRef.current || !currentShareRef.current) {
+        return null
+      }
+
+      const newShare = await captureManagerRef.current.switchSource(
+        currentShareRef.current.id,
+        switchOptions
+      )
+
+      if (newShare) {
+        currentShareRef.current = newShare
+        setScreenStream(newShare.stream)
+        setActiveShares((prev) =>
+          prev.map((s) => (s.id === newShare.id ? newShare : s))
+        )
+        return newShare.stream
+      }
+
+      return null
+    },
+    [useAdvancedCapture]
+  )
+
+  // ==========================================================================
+  // Permission Handling
+  // ==========================================================================
+
+  const checkPermission = useCallback(async (): Promise<SharePermissionStatus> => {
+    const status = await ScreenCaptureManager.checkPermission()
+    setPermissionStatus(status)
+    return status
+  }, [])
+
+  const requestPermission = useCallback(async (): Promise<SharePermissionStatus> => {
+    const status = await ScreenCaptureManager.requestPermission()
+    setPermissionStatus(status)
+    return status
+  }, [])
+
+  // ==========================================================================
+  // Multi-Share Management
+  // ==========================================================================
+
+  const canShare = useCallback((): { allowed: boolean; reason?: string } => {
+    if (!useAdvancedCapture || !captureManagerRef.current) {
+      return { allowed: isSupported }
+    }
+
+    return captureManagerRef.current.canUserShare(userId)
+  }, [useAdvancedCapture, isSupported, userId])
+
+  const configureMultiShare = useCallback(
+    (config: Partial<MultiShareConfig>): void => {
+      if (useAdvancedCapture && captureManagerRef.current) {
+        captureManagerRef.current.configureMultiShare(config)
+      }
+    },
+    [useAdvancedCapture]
+  )
+
+  // ==========================================================================
+  // Performance Metrics
+  // ==========================================================================
+
+  const getPerformanceMetrics = useCallback(async (): Promise<PerformanceMetrics | null> => {
+    if (!useAdvancedCapture || !captureManagerRef.current) {
+      return null
+    }
+
+    return captureManagerRef.current.getPerformanceMetrics()
+  }, [useAdvancedCapture])
+
+  // ==========================================================================
   // Cleanup on unmount
   // ==========================================================================
 
@@ -302,16 +478,31 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
     isScreenSharing,
     screenStream,
     error,
+    isPaused,
+    permissionStatus,
 
     // Actions
     startScreenShare,
     stopScreenShare,
+    pauseScreenShare,
+    resumeScreenShare,
+    togglePause,
+    switchSource,
+
+    // Permission
+    checkPermission,
+    requestPermission,
 
     // Advanced features
     activeShares,
     updateQuality,
     updateFrameRate,
     getVideoSettings,
+    getPerformanceMetrics,
+
+    // Multi-share (group calls)
+    canShare,
+    configureMultiShare,
 
     // Helper
     isSupported,

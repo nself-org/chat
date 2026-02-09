@@ -461,6 +461,13 @@ export const crypto = {
   // Recovery
   generateRecoveryCode,
   deriveRecoveryKey,
+
+  // Hex encoding (re-exported from @noble/hashes/utils)
+  bytesToHex,
+  hexToBytes,
 }
+
+// Named exports for direct import
+export { bytesToHex, hexToBytes }
 
 export default crypto

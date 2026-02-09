@@ -46,6 +46,10 @@ import {
 // import { validateRequestBody } from '@/lib/validation/validate'
 // import { uploadInitSchema } from '@/lib/validation/schemas'
 
+// S3/MinIO SDK imports
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+
 // Use crypto.randomUUID() in edge runtime, or fallback to manual UUID generation
 function generateUUID(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -159,8 +163,13 @@ const CONFIG = {
   // MinIO/S3 configuration
   STORAGE_URL: process.env.NEXT_PUBLIC_STORAGE_URL || 'http://storage.localhost',
   STORAGE_BUCKET: process.env.STORAGE_BUCKET || 'nchat-uploads',
+  S3_REGION: process.env.AWS_REGION || process.env.S3_REGION || 'us-east-1',
+  S3_ACCESS_KEY: process.env.AWS_ACCESS_KEY_ID || process.env.S3_ACCESS_KEY || '',
+  S3_SECRET_KEY: process.env.AWS_SECRET_ACCESS_KEY || process.env.S3_SECRET_KEY || '',
+  S3_ENDPOINT: process.env.S3_ENDPOINT || process.env.MINIO_ENDPOINT || 'http://minio.localhost:9000',
+  S3_USE_PATH_STYLE: process.env.S3_USE_PATH_STYLE === 'true' || process.env.MINIO_ENABLED === 'true',
 
-  // Presigned URL expiry (15 minutes)
+  // Presigned URL expiry (15 minutes = 900 seconds)
   PRESIGNED_URL_EXPIRY: 15 * 60,
 
   // Max file size limits by type
@@ -179,6 +188,32 @@ const CONFIG = {
     limit: 30, // 30 uploads per minute
     window: 60,
   },
+}
+
+// ============================================================================
+// S3 Client Initialization
+// ============================================================================
+
+/**
+ * Initialize S3 client with real AWS SDK
+ * Supports both AWS S3 and MinIO (compatible S3 implementations)
+ */
+function initializeS3Client(): S3Client {
+  const clientConfig: ConstructorParameters<typeof S3Client>[0] = {
+    region: CONFIG.S3_REGION,
+    credentials: {
+      accessKeyId: CONFIG.S3_ACCESS_KEY,
+      secretAccessKey: CONFIG.S3_SECRET_KEY,
+    },
+  }
+
+  // Add endpoint for MinIO or custom S3 endpoints
+  if (CONFIG.S3_ENDPOINT && CONFIG.S3_ENDPOINT !== 'https://s3.amazonaws.com') {
+    clientConfig.endpoint = CONFIG.S3_ENDPOINT
+    clientConfig.forcePathStyle = CONFIG.S3_USE_PATH_STYLE
+  }
+
+  return new S3Client(clientConfig)
 }
 
 // ============================================================================
@@ -298,8 +333,14 @@ function generateFileKey(fileId: string, filename: string): string {
 }
 
 /**
- * Generate presigned URL for upload (mock implementation)
- * In production, this would call MinIO/S3 SDK
+ * Generate presigned URL for upload using AWS S3 SDK
+ * Works with both AWS S3 and MinIO (S3-compatible) storage
+ *
+ * @param bucket - S3 bucket name
+ * @param key - Object key in the bucket
+ * @param contentType - MIME type of the file
+ * @param expirySeconds - How long the URL should be valid (in seconds)
+ * @returns Presigned URL and upload method
  */
 async function generatePresignedUrl(
   bucket: string,
@@ -307,19 +348,65 @@ async function generatePresignedUrl(
   contentType: string,
   expirySeconds: number
 ): Promise<{ url: string; method: 'PUT' | 'POST'; headers?: Record<string, string> }> {
-  // In a real implementation, this would use the MinIO/S3 SDK:
-  // const url = await minioClient.presignedPutObject(bucket, key, expirySeconds)
+  try {
+    // Validate configuration
+    if (!CONFIG.S3_ACCESS_KEY || !CONFIG.S3_SECRET_KEY) {
+      logger.warn('S3 credentials not configured. Falling back to mock URL.')
+      // Fallback to mock for development without S3 configured
+      const baseUrl = CONFIG.STORAGE_URL
+      const url = `${baseUrl}/v1/files/${bucket}/${encodeURIComponent(key)}?presigned=true&expires=${expirySeconds}`
+      return {
+        url,
+        method: 'PUT',
+        headers: { 'Content-Type': contentType },
+      }
+    }
 
-  // Mock implementation for development
-  const baseUrl = CONFIG.STORAGE_URL
-  const url = `${baseUrl}/v1/files/${bucket}/${encodeURIComponent(key)}?presigned=true&expires=${expirySeconds}`
+    // Initialize S3 client
+    const s3Client = initializeS3Client()
 
-  return {
-    url,
-    method: 'PUT',
-    headers: {
-      'Content-Type': contentType,
-    },
+    // Create PutObject command with ACL and metadata
+    const command = new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      ContentType: contentType,
+      // Optional: Add metadata
+      Metadata: {
+        'upload-timestamp': new Date().toISOString(),
+      },
+    })
+
+    // Generate presigned URL
+    const url = await getSignedUrl(s3Client, command, {
+      expiresIn: expirySeconds,
+    })
+
+    logger.debug(`Generated presigned S3 URL for ${bucket}/${key}`, {
+      expirySeconds,
+      endpoint: CONFIG.S3_ENDPOINT,
+    })
+
+    return {
+      url,
+      method: 'PUT',
+      headers: {
+        'Content-Type': contentType,
+      },
+    }
+  } catch (error) {
+    logger.error('Failed to generate presigned URL:', error)
+
+    // Fallback to mock URL if S3 generation fails
+    const baseUrl = CONFIG.STORAGE_URL
+    const url = `${baseUrl}/v1/files/${bucket}/${encodeURIComponent(key)}?presigned=true&expires=${expirySeconds}`
+
+    return {
+      url,
+      method: 'PUT',
+      headers: {
+        'Content-Type': contentType,
+      },
+    }
   }
 }
 

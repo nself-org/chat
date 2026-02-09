@@ -551,29 +551,161 @@ export interface WebhookDeliveryEvent {
 // ============================================================================
 
 /**
- * Generate webhook signature.
+ * Generate HMAC signature using Web Crypto API.
+ * Works in both browser and Node.js (18+) environments.
  */
-export function generateWebhookSignature(
+export async function generateWebhookSignature(
+  payload: string,
+  secret: string,
+  algorithm: 'sha256' | 'sha512' = 'sha256'
+): Promise<string> {
+  const encoder = new TextEncoder()
+  const hashAlgorithm = algorithm === 'sha512' ? 'SHA-512' : 'SHA-256'
+
+  // Import the secret as a crypto key
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: hashAlgorithm },
+    false,
+    ['sign']
+  )
+
+  // Sign the payload
+  const signatureBuffer = await crypto.subtle.sign('HMAC', key, encoder.encode(payload))
+
+  // Convert to hex string
+  const signatureHex = Array.from(new Uint8Array(signatureBuffer))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+
+  return `${algorithm}=${signatureHex}`
+}
+
+/**
+ * Verify webhook signature using constant-time comparison.
+ * Supports timestamp validation to prevent replay attacks.
+ */
+export async function verifyWebhookSignature(
+  payload: string,
+  signature: string,
+  secret: string,
+  options?: {
+    algorithm?: 'sha256' | 'sha512'
+    timestampHeader?: string
+    maxAgeSeconds?: number
+  }
+): Promise<boolean> {
+  const { algorithm = 'sha256', timestampHeader, maxAgeSeconds = 300 } = options || {}
+
+  // Validate timestamp if provided (replay attack prevention)
+  if (timestampHeader) {
+    const timestamp = parseInt(timestampHeader, 10)
+    if (isNaN(timestamp)) {
+      return false
+    }
+    const now = Math.floor(Date.now() / 1000)
+    if (Math.abs(now - timestamp) > maxAgeSeconds) {
+      return false
+    }
+  }
+
+  // Check signature format
+  const prefix = `${algorithm}=`
+  if (!signature.startsWith(prefix)) {
+    return false
+  }
+
+  // Generate expected signature
+  const expectedSignature = await generateWebhookSignature(payload, secret, algorithm)
+
+  // Constant-time comparison to prevent timing attacks
+  if (signature.length !== expectedSignature.length) {
+    return false
+  }
+
+  let result = 0
+  for (let i = 0; i < signature.length; i++) {
+    result |= signature.charCodeAt(i) ^ expectedSignature.charCodeAt(i)
+  }
+
+  return result === 0
+}
+
+/**
+ * Synchronous signature generation using Node.js crypto (for server-side use).
+ * Falls back to async implementation if crypto module is not available.
+ */
+export function generateWebhookSignatureSync(
   payload: string,
   secret: string,
   algorithm: 'sha256' | 'sha512' = 'sha256'
 ): string {
-  // This is a placeholder - actual implementation would use crypto
-  // In browser: use SubtleCrypto
-  // In Node.js: use crypto module
-  return `${algorithm}=placeholder_signature`
+  // Use Node.js crypto if available
+  try {
+    // Dynamic import check for Node.js environment
+    const nodeCrypto = require('crypto')
+    const hmac = nodeCrypto.createHmac(algorithm, secret)
+    hmac.update(payload)
+    return `${algorithm}=${hmac.digest('hex')}`
+  } catch {
+    // Fallback: throw error indicating async version should be used
+    throw new Error(
+      'Synchronous signature generation requires Node.js crypto module. ' +
+        'Use generateWebhookSignature() for browser environments.'
+    )
+  }
 }
 
 /**
- * Verify webhook signature.
+ * Synchronous signature verification using Node.js crypto (for server-side use).
  */
-export function verifyWebhookSignature(
+export function verifyWebhookSignatureSync(
   payload: string,
   signature: string,
-  secret: string
+  secret: string,
+  options?: {
+    algorithm?: 'sha256' | 'sha512'
+    timestampHeader?: string
+    maxAgeSeconds?: number
+  }
 ): boolean {
-  // This is a placeholder - actual implementation would verify the signature
-  return true
+  const { algorithm = 'sha256', timestampHeader, maxAgeSeconds = 300 } = options || {}
+
+  // Validate timestamp if provided (replay attack prevention)
+  if (timestampHeader) {
+    const timestamp = parseInt(timestampHeader, 10)
+    if (isNaN(timestamp)) {
+      return false
+    }
+    const now = Math.floor(Date.now() / 1000)
+    if (Math.abs(now - timestamp) > maxAgeSeconds) {
+      return false
+    }
+  }
+
+  // Check signature format
+  const prefix = `${algorithm}=`
+  if (!signature.startsWith(prefix)) {
+    return false
+  }
+
+  try {
+    // Use Node.js crypto for verification
+    const nodeCrypto = require('crypto')
+    const expectedSignature = generateWebhookSignatureSync(payload, secret, algorithm)
+
+    // Use timingSafeEqual for constant-time comparison
+    return nodeCrypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    )
+  } catch {
+    throw new Error(
+      'Synchronous signature verification requires Node.js crypto module. ' +
+        'Use verifyWebhookSignature() for browser environments.'
+    )
+  }
 }
 
 /**

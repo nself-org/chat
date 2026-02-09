@@ -1148,6 +1148,326 @@ export class SAMLService {
       .replace(/^_|_$/g, '') // Remove leading/trailing underscores
       .substring(0, 50) // Limit length
   }
+
+  // ============================================================================
+  // SAML Single Logout (SLO)
+  // ============================================================================
+
+  /**
+   * Build a SAML LogoutRequest URL for Single Logout
+   *
+   * This method constructs a SAML 2.0 LogoutRequest and returns the URL
+   * to redirect the user to the Identity Provider for logout.
+   *
+   * @param connection - The SSO connection configuration
+   * @param nameId - The NameID from the original SAML assertion
+   * @param sessionIndex - The SessionIndex from the original SAML assertion
+   * @param returnUrl - Optional URL to redirect to after logout
+   * @returns The SLO redirect URL with encoded LogoutRequest
+   */
+  async buildLogoutRequest(
+    connection: SSOConnection,
+    nameId?: string,
+    sessionIndex?: string,
+    returnUrl?: string
+  ): Promise<string> {
+    const { config } = connection
+
+    if (!config.idpSloUrl) {
+      throw new Error('IdP Single Logout URL is not configured')
+    }
+
+    // Check if samlify is available for advanced SLO support
+    let samlify: typeof import('samlify') | null = null
+    try {
+      samlify = await import('samlify')
+    } catch {
+      // samlify not installed, use basic implementation
+    }
+
+    if (samlify && nameId) {
+      // Use samlify for proper SAML SLO with signature support
+      return this.buildLogoutRequestWithSamlify(samlify, connection, nameId, sessionIndex, returnUrl)
+    }
+
+    // Fallback: Build a basic LogoutRequest without samlify
+    return this.buildBasicLogoutRequest(config, nameId, sessionIndex, returnUrl)
+  }
+
+  /**
+   * Build LogoutRequest using samlify library for proper SAML compliance
+   */
+  private async buildLogoutRequestWithSamlify(
+    samlify: typeof import('samlify'),
+    connection: SSOConnection,
+    nameId: string,
+    sessionIndex?: string,
+    returnUrl?: string
+  ): Promise<string> {
+    const { config } = connection
+
+    // Configure the Identity Provider
+    const idp = samlify.IdentityProvider({
+      entityID: config.idpEntityId,
+      signingCert: config.idpCertificate,
+      singleSignOnService: [
+        {
+          Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+          Location: config.idpSsoUrl,
+        },
+      ],
+      singleLogoutService: [
+        {
+          Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+          Location: config.idpSloUrl!,
+        },
+      ],
+    })
+
+    // Configure the Service Provider
+    const sp = samlify.ServiceProvider({
+      entityID: config.spEntityId,
+      assertionConsumerService: [
+        {
+          Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+          Location: config.spAssertionConsumerUrl,
+        },
+      ],
+      ...(config.spSingleLogoutUrl && {
+        singleLogoutService: [
+          {
+            Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+            Location: config.spSingleLogoutUrl,
+          },
+        ],
+      }),
+    })
+
+    // Build the LogoutRequest using samlify's createLogoutRequest
+    // Note: samlify may have different API versions, this handles both
+    const logoutRequest = await this.createSamlifyLogoutRequest(
+      sp,
+      idp,
+      nameId,
+      sessionIndex,
+      config,
+      returnUrl
+    )
+
+    return logoutRequest
+  }
+
+  /**
+   * Create logout request using samlify SP methods
+   */
+  private async createSamlifyLogoutRequest(
+    sp: ReturnType<typeof import('samlify').ServiceProvider>,
+    idp: ReturnType<typeof import('samlify').IdentityProvider>,
+    nameId: string,
+    sessionIndex: string | undefined,
+    config: SAMLConfiguration,
+    returnUrl?: string
+  ): Promise<string> {
+    // Build the LogoutRequest XML manually since samlify's API may vary
+    const requestId = `_${crypto.randomUUID()}`
+    const issueInstant = new Date().toISOString()
+
+    const logoutRequestXml = `
+      <samlp:LogoutRequest
+        xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+        xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+        ID="${requestId}"
+        Version="2.0"
+        IssueInstant="${issueInstant}"
+        Destination="${config.idpSloUrl}">
+        <saml:Issuer>${config.spEntityId}</saml:Issuer>
+        <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:${config.nameIdFormat ?? 'email'}">${this.escapeXml(nameId)}</saml:NameID>
+        ${sessionIndex ? `<samlp:SessionIndex>${this.escapeXml(sessionIndex)}</samlp:SessionIndex>` : ''}
+      </samlp:LogoutRequest>
+    `.trim()
+
+    // Deflate and Base64 encode for HTTP-Redirect binding
+    const deflatedRequest = await this.deflateRequest(logoutRequestXml)
+    const encodedRequest = Buffer.from(deflatedRequest).toString('base64')
+    const urlEncodedRequest = encodeURIComponent(encodedRequest)
+
+    // Build the redirect URL
+    let sloUrl = `${config.idpSloUrl}?SAMLRequest=${urlEncodedRequest}`
+
+    // Add RelayState if returnUrl is provided
+    if (returnUrl) {
+      const relayState = Buffer.from(
+        JSON.stringify({
+          returnUrl,
+          timestamp: Date.now(),
+        })
+      ).toString('base64')
+      sloUrl += `&RelayState=${encodeURIComponent(relayState)}`
+    }
+
+    await logAuditEvent({
+      action: 'sso_logout_request_created',
+      actor: { type: 'system', id: 'system' },
+      category: 'security',
+      severity: 'info',
+      description: `SAML LogoutRequest created for ${config.spEntityId}`,
+      metadata: {
+        requestId,
+        idpSloUrl: config.idpSloUrl,
+        hasSessionIndex: !!sessionIndex,
+      },
+    })
+
+    return sloUrl
+  }
+
+  /**
+   * Build a basic LogoutRequest without external SAML libraries
+   * Used as fallback when samlify is not available
+   */
+  private buildBasicLogoutRequest(
+    config: SAMLConfiguration,
+    nameId?: string,
+    sessionIndex?: string,
+    returnUrl?: string
+  ): string {
+    const requestId = `_${crypto.randomUUID()}`
+    const issueInstant = new Date().toISOString()
+
+    // Build the LogoutRequest XML
+    const logoutRequestXml = `
+      <samlp:LogoutRequest
+        xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+        xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+        ID="${requestId}"
+        Version="2.0"
+        IssueInstant="${issueInstant}"
+        Destination="${config.idpSloUrl}">
+        <saml:Issuer>${config.spEntityId}</saml:Issuer>
+        ${nameId ? `<saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:${config.nameIdFormat ?? 'email'}">${this.escapeXml(nameId)}</saml:NameID>` : ''}
+        ${sessionIndex ? `<samlp:SessionIndex>${this.escapeXml(sessionIndex)}</samlp:SessionIndex>` : ''}
+      </samlp:LogoutRequest>
+    `.trim()
+
+    // Base64 encode the request (note: proper implementation should use DEFLATE)
+    const encodedRequest = Buffer.from(logoutRequestXml).toString('base64')
+    const urlEncodedRequest = encodeURIComponent(encodedRequest)
+
+    // Build the redirect URL
+    let sloUrl = `${config.idpSloUrl}?SAMLRequest=${urlEncodedRequest}`
+
+    // Add RelayState if returnUrl is provided
+    if (returnUrl) {
+      const relayState = Buffer.from(
+        JSON.stringify({
+          returnUrl,
+          timestamp: Date.now(),
+        })
+      ).toString('base64')
+      sloUrl += `&RelayState=${encodeURIComponent(relayState)}`
+    }
+
+    return sloUrl
+  }
+
+  /**
+   * Deflate the request for HTTP-Redirect binding
+   * SAML 2.0 requires DEFLATE compression for redirect binding
+   */
+  private async deflateRequest(xml: string): Promise<Uint8Array> {
+    // Use Node.js zlib for compression
+    const { promisify } = await import('util')
+    const zlib = await import('zlib')
+    const deflateRaw = promisify(zlib.deflateRaw)
+
+    const compressed = await deflateRaw(Buffer.from(xml, 'utf-8'))
+    return new Uint8Array(compressed)
+  }
+
+  /**
+   * Escape XML special characters
+   */
+  private escapeXml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;')
+  }
+
+  /**
+   * Process SAML LogoutResponse from IdP (SLO callback)
+   *
+   * This validates the logout response from the Identity Provider
+   * and confirms the logout was successful.
+   *
+   * @param samlResponse - The SAML LogoutResponse from the IdP
+   * @param connectionId - The SSO connection ID
+   * @returns Success status and any error information
+   */
+  async processLogoutResponse(
+    samlResponse: string,
+    connectionId: string
+  ): Promise<{
+    success: boolean
+    relayState?: string
+    error?: string
+    errorCode?: string
+  }> {
+    try {
+      const connection = await this.getConnection(connectionId)
+      if (!connection) {
+        return {
+          success: false,
+          error: 'SSO connection not found',
+          errorCode: 'CONFIGURATION_ERROR',
+        }
+      }
+
+      // Decode the SAML response
+      const decodedResponse = Buffer.from(samlResponse, 'base64').toString('utf-8')
+
+      // Basic validation: check for StatusCode Success
+      // A full implementation would use samlify to validate signatures
+      const successPattern = /<samlp:StatusCode[^>]*Value="urn:oasis:names:tc:SAML:2.0:status:Success"/
+      const isSuccess = successPattern.test(decodedResponse)
+
+      if (!isSuccess) {
+        // Try to extract error information
+        const statusCodeMatch = decodedResponse.match(/<samlp:StatusCode[^>]*Value="([^"]+)"/)
+        const statusMessageMatch = decodedResponse.match(/<samlp:StatusMessage>([^<]+)<\/samlp:StatusMessage>/)
+
+        return {
+          success: false,
+          error: statusMessageMatch?.[1] || 'Logout failed at Identity Provider',
+          errorCode: statusCodeMatch?.[1] || 'LOGOUT_FAILED',
+        }
+      }
+
+      await logAuditEvent({
+        action: 'sso_logout_response_processed',
+        actor: { type: 'system', id: 'system' },
+        category: 'security',
+        severity: 'info',
+        description: `SAML LogoutResponse processed successfully`,
+        metadata: { connectionId },
+      })
+
+      return { success: true }
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { context: 'sso-process-logout-response' },
+        extra: { connectionId },
+      })
+
+      return {
+        success: false,
+        error: (error as Error).message,
+        errorCode: 'PROCESSING_ERROR',
+      }
+    }
+  }
 }
 
 // ============================================================================

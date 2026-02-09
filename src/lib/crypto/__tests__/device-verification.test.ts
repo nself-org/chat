@@ -1108,7 +1108,12 @@ describe('DeviceVerification Class', () => {
   let verification: DeviceVerification
 
   beforeEach(() => {
+    jest.useFakeTimers()
     verification = new DeviceVerification()
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
   })
 
   describe('initialize', () => {

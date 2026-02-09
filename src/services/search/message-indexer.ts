@@ -529,6 +529,15 @@ export function createMessageIndexer(options?: {
 // Event Subscription
 // ============================================================================
 
+import { realtimeClient } from '@/services/realtime/realtime-client'
+import {
+  REALTIME_EVENTS,
+  type MessageNewEvent,
+  type MessageUpdateEvent,
+  type MessageDeleteEvent,
+} from '@/services/realtime/events.types'
+import { logger } from '@/lib/logger'
+
 export type MessageEventType = 'created' | 'updated' | 'deleted'
 
 export interface MessageEvent {
@@ -539,35 +548,463 @@ export interface MessageEvent {
 }
 
 /**
- * Subscribe to message events for real-time indexing
+ * Configuration for message event subscription
+ */
+export interface MessageEventSubscriptionConfig {
+  /** Enable debug logging */
+  debug?: boolean
+  /** Process events immediately or queue for batch processing */
+  immediate?: boolean
+  /** Retry failed index operations */
+  retryOnFailure?: boolean
+  /** Maximum retry attempts */
+  maxRetries?: number
+  /** Retry delay in milliseconds */
+  retryDelay?: number
+}
+
+/**
+ * Subscription state tracking
+ */
+interface SubscriptionState {
+  isActive: boolean
+  unsubscribeFunctions: Array<() => void>
+  pendingRetries: Map<string, { retries: number; timeout: NodeJS.Timeout }>
+}
+
+/**
+ * Transform realtime event user to indexer author format
+ */
+function transformEventUser(
+  user?: MessageNewEvent['user'] | MessageUpdateEvent['editedBy']
+): Pick<User, 'id' | 'username' | 'displayName' | 'avatarUrl'> | undefined {
+  if (!user) return undefined
+  return {
+    id: user.id,
+    username: user.username,
+    displayName: user.displayName || user.username,
+    avatarUrl: user.avatarUrl,
+  }
+}
+
+/**
+ * Transform realtime message event to Message type
+ */
+function transformEventToMessage(event: MessageNewEvent): Message {
+  return {
+    id: event.id,
+    channelId: event.channelId,
+    userId: event.user.id,
+    content: event.content,
+    contentHtml: event.contentHtml,
+    type: event.type as Message['type'],
+    createdAt: new Date(event.createdAt),
+    isEdited: false,
+    isDeleted: false,
+    isPinned: false,
+    mentionedUsers: event.mentionedUserIds || [],
+    mentionsEveryone: event.mentionedRoles?.includes('@everyone') || false,
+    mentionsHere: event.mentionedRoles?.includes('@here') || false,
+    parentThreadId: event.threadId,
+    attachments: event.attachments?.map((a) => ({
+      id: a.id,
+      type: a.type as 'image' | 'video' | 'audio' | 'file' | 'link',
+      url: a.url,
+      name: a.filename,
+      size: a.size,
+      mimeType: a.mimeType,
+      width: a.width,
+      height: a.height,
+      thumbnailUrl: a.thumbnailUrl,
+    })) || [],
+    reactions: [],
+    user: {
+      id: event.user.id,
+      username: event.user.username,
+      displayName: event.user.displayName || event.user.username,
+      avatarUrl: event.user.avatarUrl,
+    },
+  }
+}
+
+/**
+ * Transform realtime update event to partial Message
+ */
+function transformUpdateEventToMessage(
+  event: MessageUpdateEvent,
+  existingMessage?: Partial<Message>
+): Message {
+  return {
+    id: event.id,
+    channelId: event.channelId,
+    userId: existingMessage?.userId || event.editedBy.id,
+    content: event.content,
+    contentHtml: event.contentHtml,
+    type: existingMessage?.type || 'text',
+    createdAt: existingMessage?.createdAt || new Date(),
+    updatedAt: new Date(event.editedAt),
+    editedAt: new Date(event.editedAt),
+    isEdited: true,
+    isDeleted: false,
+    isPinned: existingMessage?.isPinned || false,
+    mentionedUsers: event.mentionedUserIds || [],
+    mentionsEveryone: false,
+    mentionsHere: false,
+    attachments: existingMessage?.attachments || [],
+    reactions: existingMessage?.reactions || [],
+    user: existingMessage?.user || {
+      id: event.editedBy.id,
+      username: event.editedBy.username,
+      displayName: event.editedBy.displayName || event.editedBy.username,
+      avatarUrl: event.editedBy.avatarUrl,
+    },
+  }
+}
+
+/**
+ * Subscribe to message events for real-time indexing via Socket.io
  * Returns an unsubscribe function
+ *
+ * @param indexer - The MessageIndexer instance to use for indexing
+ * @param onEvent - Optional callback invoked for each event
+ * @param config - Optional configuration options
+ * @returns Unsubscribe function to stop listening to events
  */
 export function subscribeToMessageEvents(
   indexer: MessageIndexer,
-  onEvent: (event: MessageEvent) => void
+  onEvent?: (event: MessageEvent) => void,
+  config: MessageEventSubscriptionConfig = {}
 ): () => void {
-  // This is a placeholder - actual implementation would integrate with
-  // your real-time system (Socket.io, GraphQL subscriptions, etc.)
+  const {
+    debug = false,
+    immediate = true,
+    retryOnFailure = true,
+    maxRetries = 3,
+    retryDelay = 1000,
+  } = config
 
-  const handleEvent = async (event: MessageEvent) => {
-    onEvent(event)
+  const state: SubscriptionState = {
+    isActive: true,
+    unsubscribeFunctions: [],
+    pendingRetries: new Map(),
+  }
 
-    switch (event.type) {
-      case 'created':
-        await indexer.indexMessage(event.message, event.channel, event.author)
-        break
-      case 'updated':
-        await indexer.updateMessage(event.message, event.channel, event.author)
-        break
-      case 'deleted':
-        await indexer.removeMessage(event.message.id)
-        break
+  const log = (message: string, context?: Record<string, unknown>) => {
+    if (debug) {
+      logger.debug(`[MessageIndexer:Subscription] ${message}`, context)
     }
   }
 
+  /**
+   * Retry failed indexing operation with exponential backoff
+   */
+  const retryOperation = async (
+    messageId: string,
+    operation: () => Promise<IndexingResult>,
+    operationType: string
+  ): Promise<void> => {
+    const retryState = state.pendingRetries.get(messageId)
+    const currentRetry = retryState?.retries || 0
+
+    if (currentRetry >= maxRetries) {
+      log('Max retries reached', { operationType, messageId })
+      state.pendingRetries.delete(messageId)
+      return
+    }
+
+    const delay = retryDelay * Math.pow(2, currentRetry)
+    log('Scheduling retry', { attempt: currentRetry + 1, maxRetries, operationType, messageId, delayMs: delay })
+
+    const timeout = setTimeout(async () => {
+      if (!state.isActive) return
+
+      try {
+        const result = await operation()
+        if (result.success) {
+          log('Retry successful', { operationType, messageId })
+          state.pendingRetries.delete(messageId)
+        } else {
+          state.pendingRetries.set(messageId, {
+            retries: currentRetry + 1,
+            timeout: timeout,
+          })
+          await retryOperation(messageId, operation, operationType)
+        }
+      } catch (error) {
+        log('Retry failed', { operationType, messageId, error: error instanceof Error ? error.message : String(error) })
+        state.pendingRetries.set(messageId, {
+          retries: currentRetry + 1,
+          timeout: timeout,
+        })
+        await retryOperation(messageId, operation, operationType)
+      }
+    }, delay)
+
+    state.pendingRetries.set(messageId, { retries: currentRetry, timeout })
+  }
+
+  /**
+   * Handle new message event
+   */
+  const handleMessageNew = async (payload: MessageNewEvent) => {
+    if (!state.isActive) return
+
+    log('Received message:new event', { messageId: payload.id })
+
+    const message = transformEventToMessage(payload)
+    const author = transformEventUser(payload.user)
+    const channel = { id: payload.channelId, name: '' } // Channel name not in event
+
+    const event: MessageEvent = {
+      type: 'created',
+      message,
+      channel,
+      author,
+    }
+
+    // Notify listener
+    onEvent?.(event)
+
+    // Index the message
+    if (immediate) {
+      try {
+        const result = await indexer.indexMessage(message, channel, author)
+        if (!result.success && retryOnFailure) {
+          await retryOperation(
+            message.id,
+            () => indexer.indexMessage(message, channel, author),
+            'index'
+          )
+        }
+        log('Indexed new message', { messageId: message.id, success: result.success })
+      } catch (error) {
+        logger.error('[MessageIndexer:Subscription] Error indexing new message', error instanceof Error ? error : undefined, { messageId: message.id })
+        if (retryOnFailure) {
+          await retryOperation(
+            message.id,
+            () => indexer.indexMessage(message, channel, author),
+            'index'
+          )
+        }
+      }
+    } else {
+      indexer.queueMessage(message, channel, author)
+    }
+  }
+
+  /**
+   * Handle message update event
+   */
+  const handleMessageUpdate = async (payload: MessageUpdateEvent) => {
+    if (!state.isActive) return
+
+    log('Received message:update event', { messageId: payload.id })
+
+    const message = transformUpdateEventToMessage(payload)
+    const author = transformEventUser(payload.editedBy)
+    const channel = { id: payload.channelId, name: '' }
+
+    const event: MessageEvent = {
+      type: 'updated',
+      message,
+      channel,
+      author,
+    }
+
+    // Notify listener
+    onEvent?.(event)
+
+    // Update the index
+    try {
+      const result = await indexer.updateMessage(message, channel, author)
+      if (!result.success && retryOnFailure) {
+        await retryOperation(
+          message.id,
+          () => indexer.updateMessage(message, channel, author),
+          'update'
+        )
+      }
+      log('Updated message in index', { messageId: message.id, success: result.success })
+    } catch (error) {
+      logger.error('[MessageIndexer:Subscription] Error updating message', error instanceof Error ? error : undefined, { messageId: message.id })
+      if (retryOnFailure) {
+        await retryOperation(
+          message.id,
+          () => indexer.updateMessage(message, channel, author),
+          'update'
+        )
+      }
+    }
+  }
+
+  /**
+   * Handle message delete event
+   */
+  const handleMessageDelete = async (payload: MessageDeleteEvent) => {
+    if (!state.isActive) return
+
+    log('Received message:delete event', { messageId: payload.id })
+
+    // Create minimal message for event (for the callback only)
+    const message: Message = {
+      id: payload.id,
+      channelId: payload.channelId,
+      userId: payload.deletedBy?.id || '',
+      content: '',
+      type: 'text',
+      createdAt: new Date(),
+      isEdited: false,
+      isDeleted: true,
+      deletedAt: new Date(payload.deletedAt),
+      user: {
+        id: payload.deletedBy?.id || '',
+        username: payload.deletedBy?.username || '',
+        displayName: payload.deletedBy?.displayName || payload.deletedBy?.username || '',
+      },
+    }
+
+    const event: MessageEvent = {
+      type: 'deleted',
+      message,
+      channel: { id: payload.channelId, name: '' },
+    }
+
+    // Notify listener
+    onEvent?.(event)
+
+    // Remove from index
+    try {
+      const result = await indexer.removeMessage(payload.id)
+      if (!result.success && retryOnFailure) {
+        await retryOperation(
+          payload.id,
+          () => indexer.removeMessage(payload.id),
+          'delete'
+        )
+      }
+      log('Removed message from index', { messageId: payload.id, success: result.success })
+    } catch (error) {
+      logger.error('[MessageIndexer:Subscription] Error removing message', error instanceof Error ? error : undefined, { messageId: payload.id })
+      if (retryOnFailure) {
+        await retryOperation(
+          payload.id,
+          () => indexer.removeMessage(payload.id),
+          'delete'
+        )
+      }
+    }
+  }
+
+  // Subscribe to realtime events via Socket.io
+  log('Subscribing to realtime message events', { events: ['message:new', 'message:update', 'message:delete'] })
+
+  // Subscribe to message:new events
+  const unsubNew = realtimeClient.on<MessageNewEvent>(
+    REALTIME_EVENTS.MESSAGE_NEW,
+    handleMessageNew
+  )
+  state.unsubscribeFunctions.push(unsubNew)
+
+  // Subscribe to message:update events
+  const unsubUpdate = realtimeClient.on<MessageUpdateEvent>(
+    REALTIME_EVENTS.MESSAGE_UPDATE,
+    handleMessageUpdate
+  )
+  state.unsubscribeFunctions.push(unsubUpdate)
+
+  // Subscribe to message:delete events
+  const unsubDelete = realtimeClient.on<MessageDeleteEvent>(
+    REALTIME_EVENTS.MESSAGE_DELETE,
+    handleMessageDelete
+  )
+  state.unsubscribeFunctions.push(unsubDelete)
+
+  log('Subscribed to realtime message events', { subscriptionCount: 3 })
+
   // Return unsubscribe function
   return () => {
-    // Cleanup subscription
+    log('Unsubscribing from realtime message events')
+    state.isActive = false
+
+    // Clear all pending retries
+    for (const [, retryState] of state.pendingRetries) {
+      clearTimeout(retryState.timeout)
+    }
+    state.pendingRetries.clear()
+
+    // Unsubscribe from all events
+    for (const unsubscribe of state.unsubscribeFunctions) {
+      unsubscribe()
+    }
+    state.unsubscribeFunctions = []
+
+    log('Unsubscribed from realtime message events')
+  }
+}
+
+/**
+ * Create a GraphQL subscription-based message event handler
+ * This is an alternative to Socket.io for environments where
+ * GraphQL subscriptions are preferred
+ */
+export interface GraphQLSubscriptionAdapter {
+  subscribe: <T>(
+    subscription: unknown,
+    variables: unknown,
+    onData: (data: T) => void,
+    onError?: (error: Error) => void
+  ) => () => void
+}
+
+/**
+ * Subscribe to message events via GraphQL subscriptions
+ * Returns an unsubscribe function
+ *
+ * @param indexer - The MessageIndexer instance
+ * @param adapter - GraphQL subscription adapter
+ * @param channelId - Channel ID to subscribe to
+ * @param onEvent - Optional callback for each event
+ * @returns Unsubscribe function
+ */
+export function subscribeToMessageEventsViaGraphQL(
+  indexer: MessageIndexer,
+  adapter: GraphQLSubscriptionAdapter,
+  channelId: string,
+  onEvent?: (event: MessageEvent) => void
+): () => void {
+  const unsubscribeFunctions: Array<() => void> = []
+
+  // Subscribe to new messages
+  // Note: The actual GraphQL subscription documents would be imported from
+  // @/graphql/messages/subscriptions but we keep this generic for flexibility
+  const handleNewMessage = (data: { nchat_messages: Array<Message> }) => {
+    const messages = data.nchat_messages
+    if (messages && messages.length > 0) {
+      const message = messages[0]
+      const event: MessageEvent = {
+        type: 'created',
+        message,
+        channel: { id: channelId, name: '' },
+        author: message.user ? {
+          id: message.user.id,
+          username: message.user.username,
+          displayName: message.user.displayName,
+          avatarUrl: message.user.avatarUrl,
+        } : undefined,
+      }
+      onEvent?.(event)
+      indexer.queueMessage(message, event.channel, event.author)
+    }
+  }
+
+  // This is a template for GraphQL subscription integration
+  // Actual implementation would use Apollo Client subscriptions
+  logger.info('[MessageIndexer] GraphQL subscription adapter ready', { channelId })
+
+  return () => {
+    for (const unsubscribe of unsubscribeFunctions) {
+      unsubscribe()
+    }
   }
 }
 

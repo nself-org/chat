@@ -215,3 +215,6 @@ platforms/capacitor/android/sentry.properties
 platforms/capacitor/ios/sentry.properties
 platforms/capacitor/android/app/google-services.json
 platforms/capacitor/ios/App/App/GoogleService-Info.plist
+
+# Private planning
+/PLAN.md

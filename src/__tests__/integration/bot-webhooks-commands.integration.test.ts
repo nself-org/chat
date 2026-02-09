@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Bot SDK + Webhooks + Commands
  *
  * Tests the integration between bot SDK, webhook handling, and command execution.
@@ -35,11 +37,14 @@ describe('Bot SDK + Webhooks + Commands Integration', () => {
   const mockUserId = 'user-1'
 
   beforeEach(() => {
+    jest.useFakeTimers()
     localStorage.clear()
     jest.clearAllMocks()
   })
 
   afterEach(() => {
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
     localStorage.clear()
   })
 
@@ -568,7 +573,12 @@ describe('Bot SDK + Webhooks + Commands Integration', () => {
         setTimeout(() => resolve({ success: false, timeout: true }), TIMEOUT_MS)
       })
 
-      const result = await Promise.race([webhookPromise, timeoutPromise])
+      const resultPromise = Promise.race([webhookPromise, timeoutPromise])
+
+      // Advance timers by timeout duration
+      jest.advanceTimersByTime(TIMEOUT_MS)
+
+      const result = await resultPromise
 
       expect((result as { timeout: boolean }).timeout).toBe(true)
     }, 10000)

@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Notifications + Push + Badges
  *
  * Tests the integration between notification system, push notifications,

@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AlertTriangle, CheckCircle, XCircle, Eye, EyeOff, Flag, Shield } from 'lucide-react'
 import type { QueueItem } from '@/lib/moderation/moderation-queue'
-
+import { useAuth } from '@/contexts/auth-context'
 import { logger } from '@/lib/logger'
 
 interface ModerationQueueProps {
@@ -20,6 +20,7 @@ interface ModerationQueueProps {
 }
 
 export function ModerationQueue({ onAction }: ModerationQueueProps) {
+  const { user } = useAuth()
   const [items, setItems] = useState<QueueItem[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'pending' | 'high-priority'>('pending')
@@ -56,7 +57,7 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
         body: JSON.stringify({
           itemId,
           action,
-          moderatorId: 'current-user-id', // TODO: Get from auth context
+          moderatorId: user?.id || 'unknown',
           reason: `Action: ${action}`,
         }),
       })

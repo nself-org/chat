@@ -19,3 +19,6 @@ export * from './channel-suggestions'
 
 // Statistics
 export * from './channel-stats'
+
+// Policies (naming, validation, governance utilities)
+export * from './channel-policies'

@@ -315,7 +315,7 @@ pnpm tauri build --target x86_64-unknown-linux-gnu # Linux x64
 // platforms/tauri/tauri.conf.json
 {
   "productName": "nchat",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "identifier": "org.nself.nchat",
   "build": {
     "beforeBuildCommand": "pnpm build",

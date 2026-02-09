@@ -26,11 +26,13 @@ describe('RateLimiter', () => {
   let rateLimiter: RateLimiter
 
   beforeEach(() => {
+    jest.useFakeTimers()
     rateLimiter = new RateLimiter()
   })
 
   afterEach(async () => {
     await rateLimiter.destroy()
+    jest.useRealTimers()
   })
 
   describe('Sliding Window Algorithm', () => {
@@ -81,8 +83,8 @@ describe('RateLimiter', () => {
       await rateLimiter.check('user:789', config)
       await rateLimiter.check('user:789', config)
 
-      // Wait for window to expire
-      await new Promise((resolve) => setTimeout(resolve, 1100))
+      // Wait for window to expire using fake timers
+      jest.advanceTimersByTime(1100)
 
       // Should be allowed again
       const result = await rateLimiter.check('user:789', config)

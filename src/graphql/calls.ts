@@ -401,3 +401,159 @@ export interface InitiateCallInput {
   channelId?: string
   metadata?: Record<string, unknown>
 }
+
+// =============================================================================
+// Additional Queries for Participants API
+// =============================================================================
+
+export const GET_CALL_BY_ID = gql`
+  ${CALL_FRAGMENT}
+  query GetCallById($callId: uuid!) {
+    nchat_calls_by_pk(id: $callId) {
+      ...CallFields
+    }
+  }
+`
+
+export const GET_CALL_PARTICIPANTS = gql`
+  ${CALL_PARTICIPANT_FRAGMENT}
+  query GetCallParticipants($callId: uuid!) {
+    nchat_call_participants(
+      where: { call_id: { _eq: $callId } }
+      order_by: { joined_at: asc }
+    ) {
+      ...CallParticipantFields
+      invited_by
+      removed_by
+      remove_reason
+      connection_quality
+      is_speaking
+    }
+  }
+`
+
+export const GET_CALL_PARTICIPANT = gql`
+  query GetCallParticipant($callId: uuid!, $userId: uuid!) {
+    nchat_call_participants(
+      where: { call_id: { _eq: $callId }, user_id: { _eq: $userId } }
+      limit: 1
+    ) {
+      id
+      call_id
+      user_id
+      joined_at
+      left_at
+      is_muted
+      is_video_enabled
+      is_screen_sharing
+      invited_by
+      removed_by
+      remove_reason
+    }
+  }
+`
+
+export const CHECK_CALL_ACCESS = gql`
+  query CheckCallAccess($callId: uuid!, $userId: uuid!) {
+    nchat_calls_by_pk(id: $callId) {
+      id
+      caller_id
+      status
+      channel_id
+      channel {
+        id
+        members(where: { user_id: { _eq: $userId } }) {
+          user_id
+          role
+        }
+      }
+    }
+    nchat_call_participants(
+      where: { call_id: { _eq: $callId }, user_id: { _eq: $userId }, left_at: { _is_null: true } }
+    ) {
+      id
+      user_id
+    }
+  }
+`
+
+export const GET_USERS_BY_IDS = gql`
+  query GetUsersByIds($userIds: [uuid!]!) {
+    nchat_users(where: { id: { _in: $userIds } }) {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+`
+
+// =============================================================================
+// Additional Mutations for Participants API
+// =============================================================================
+
+export const ADD_CALL_PARTICIPANTS = gql`
+  mutation AddCallParticipants($participants: [nchat_call_participants_insert_input!]!) {
+    insert_nchat_call_participants(
+      objects: $participants
+      on_conflict: {
+        constraint: call_participants_call_user_unique
+        update_columns: [joined_at, left_at, invited_by]
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+        call_id
+        user_id
+        joined_at
+        left_at
+        is_muted
+        is_video_enabled
+        is_screen_sharing
+        invited_by
+        user {
+          id
+          username
+          display_name
+          avatar_url
+        }
+      }
+    }
+  }
+`
+
+export const REMOVE_CALL_PARTICIPANT = gql`
+  mutation RemoveCallParticipant(
+    $callId: uuid!
+    $userId: uuid!
+    $leftAt: timestamptz!
+    $removedBy: uuid
+    $removeReason: String
+  ) {
+    update_nchat_call_participants(
+      where: { call_id: { _eq: $callId }, user_id: { _eq: $userId } }
+      _set: { left_at: $leftAt, removed_by: $removedBy, remove_reason: $removeReason }
+    ) {
+      affected_rows
+      returning {
+        id
+        call_id
+        user_id
+        left_at
+        removed_by
+        remove_reason
+      }
+    }
+  }
+`
+
+export const GET_EXISTING_PARTICIPANTS = gql`
+  query GetExistingParticipants($callId: uuid!, $userIds: [uuid!]!) {
+    nchat_call_participants(
+      where: { call_id: { _eq: $callId }, user_id: { _in: $userIds }, left_at: { _is_null: true } }
+    ) {
+      user_id
+    }
+  }
+`

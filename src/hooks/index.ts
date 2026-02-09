@@ -196,3 +196,29 @@ export { useChannelReadStatus, useMarkRead } from './use-read-receipts'
 
 // Reactions (uses Hasura subscriptions)
 export { useMessageReactions } from './use-reactions'
+
+// Platform-aware Reaction Mode
+export {
+  useReactionMode,
+  useReactionPicker,
+  useReactionCooldown,
+  type UseReactionModeOptions,
+  type UseReactionModeReturn,
+  type UseReactionPickerOptions,
+  type UseReactionPickerReturn,
+} from './use-reaction-mode'
+
+// ============================================================================
+// Gesture Hooks
+// ============================================================================
+
+// Gesture Detection (pinch-to-zoom, pan, swipe)
+export {
+  useGestures,
+  type Point,
+  type GestureState,
+  type SwipeDirection,
+  type GestureCallbacks,
+  type UseGesturesOptions,
+  type UseGesturesReturn,
+} from './use-gestures'

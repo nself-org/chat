@@ -1,16 +1,26 @@
 /**
+ * @jest-environment jsdom
+ */
+
+/**
  * Complete Auth System Integration Tests
  *
  * Comprehensive test suite for all authentication features.
+ * These tests require a running server and are intended for E2E integration testing.
  */
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from '@jest/globals'
+
+// Skip these tests when running in unit test mode (no server available)
+// These are intended for full integration testing with a running backend
+const INTEGRATION_ENABLED = process.env.INTEGRATION_TESTS === 'true'
+const describeIntegration = INTEGRATION_ENABLED ? describe : describe.skip
 
 // Mock environment for testing
 process.env.NEXT_PUBLIC_USE_DEV_AUTH = 'true'
 process.env.NODE_ENV = 'test'
 
-describe('Complete Auth System', () => {
+describeIntegration('Complete Auth System', () => {
   describe('Email/Password Authentication', () => {
     it('should register new user with email/password', async () => {
       const response = await fetch('http://localhost:3000/api/auth/signup', {

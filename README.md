@@ -2,13 +2,13 @@
 
 **Production-Ready Multi-Tenant Team Communication Platform**
 
-Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `0.9.0`
+Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `0.9.1`
 
 [![CI](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml)
 [![CD](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Status](https://img.shields.io/badge/status-beta-yellow)](docs/KNOWN-LIMITATIONS.md)
-[![Version](https://img.shields.io/badge/version-0.9.0-blue)](https://github.com/acamarata/nself-chat/releases)
+[![Version](https://img.shields.io/badge/version-0.9.1-blue)](https://github.com/acamarata/nself-chat/releases)
 [![Build](https://img.shields.io/badge/build-passing-green)](/)
 [![TypeScript](https://img.shields.io/badge/typescript-0%20errors-green)](/)
 [![Tests](https://img.shields.io/badge/tests-98%25%20passing-green)](/)
@@ -18,7 +18,7 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 [![Accessibility](https://img.shields.io/badge/A11y-WCAG%20AA-blue.svg)](https://www.w3.org/WAI/WCAG2AA-Conformance)
 [![Multi-Tenant](https://img.shields.io/badge/Multi--Tenant-SaaS%20Ready-ff69b4.svg)](https://github.com/acamarata/nself-chat)
 
-> **v0.9.0 Release**: Feature-complete release with production-ready core features. Zero TypeScript errors, zero lint errors, and working builds. See [Known Limitations](docs/KNOWN-LIMITATIONS.md) for honest assessment. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
+> **v0.9.1 Release**: Feature-complete release with production-ready core features. Zero TypeScript errors, zero lint errors, and working builds. See [Known Limitations](docs/KNOWN-LIMITATIONS.md) for honest assessment. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
 
 ---
 
@@ -390,23 +390,23 @@ _Dev mode auto-logs in as `owner@nself.org` for faster iteration._
 
 ## Documentation
 
-**Full documentation is organized as a GitHub Wiki-compatible structure** in the [docs/](docs/) folder.
+**📖 Complete documentation is available in the [docs/](docs/) folder** - 581+ markdown files covering all aspects of nself-chat.
 
-**📖 [Read the Documentation](docs/Home.md)** - Start here for comprehensive guides and references.
+**[📚 Documentation Home](docs/Home.md)** · **[📑 Documentation Index](docs/DOCUMENTATION-INDEX.md)** · **[🚀 Quick Start](docs/getting-started/QUICK-START.md)**
 
-### Quick Links
+### Quick Links by Category
 
-| Category            | Key Docs                                                                                                                                                                             |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Getting Started** | [Quick Start](docs/getting-started/Getting-Started.md) · [Installation](docs/getting-started/Installation.md)                                                                        |
-| **Features**        | [Features Overview](docs/features/Features.md) · [Messaging](docs/features/Features-Messaging.md) · [White-Label Guide](docs/features/White-Label-Guide.md)                          |
-| **Multi-Tenancy**   | [Multi-Tenant Deployment](docs/deployment/Multi-Tenant-Deployment.md) · [Multi-Tenant README](docs/deployment/Multi-Tenant-README.md)                                                |
-| **Configuration**   | [Configuration](docs/configuration/Configuration.md) · [Authentication](docs/configuration/Authentication.md) · [Environment Variables](docs/configuration/Environment-Variables.md) |
-| **API**             | [API Overview](docs/api/API.md) · [API Documentation](docs/api/API-DOCUMENTATION.md)                                                                                                 |
-| **Deployment**      | [Deployment Guide](docs/deployment/DEPLOYMENT.md) · [Docker](docs/deployment/Deployment-Docker.md) · [Kubernetes](docs/deployment/Deployment-Kubernetes.md)                          |
-| **Guides**          | [User Guide](docs/guides/USER-GUIDE.md) · [Sentry Setup](docs/guides/README-SENTRY.md) · [Testing](docs/guides/testing-guide.md)                                                     |
-| **Reference**       | [Architecture](docs/reference/Architecture.md) · [Database Schema](docs/reference/Database-Schema.md) · [Project Structure](docs/reference/Project-Structure.md)                     |
-| **About**           | [Changelog](docs/about/Changelog.md) · [Contributing](docs/about/Contributing.md) · [Roadmap](docs/about/Roadmap.md)                                                                 |
+| Category            | Key Documents                                                                                                                                                        |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Getting Started** | [Quick Start](docs/getting-started/QUICK-START.md) · [Installation](docs/getting-started/Installation.md) · [Tutorial](docs/getting-started/Getting-Started.md)    |
+| **Features**        | [Features Overview](docs/features/Features.md) · [Messaging](docs/features/Features-Messaging.md) · [White-Label](docs/features/White-Label-Guide.md)              |
+| **Configuration**   | [Configuration](docs/configuration/Configuration.md) · [Auth](docs/configuration/Authentication.md) · [Environment](docs/configuration/Environment-Variables.md)    |
+| **API**             | [API Overview](docs/api/API.md) · [API Documentation](docs/api/API-DOCUMENTATION.md) · [Examples](docs/api/API-EXAMPLES.md)                                        |
+| **Deployment**      | [Deployment Guide](docs/deployment/DEPLOYMENT.md) · [Docker](docs/deployment/Deployment-Docker.md) · [Kubernetes](docs/deployment/Deployment-Kubernetes.md)        |
+| **Guides**          | [User Guide](docs/guides/USER-GUIDE.md) · [E2EE Implementation](docs/guides/E2EE-Implementation.md) · [Testing](docs/guides/testing-guide.md)                      |
+| **Security**        | [Security Overview](docs/security/SECURITY.md) · [2FA Setup](docs/security/2FA-Implementation-Summary.md) · [PIN Lock](docs/security/PIN-LOCK-SYSTEM.md)          |
+| **Reference**       | [Architecture](docs/reference/Architecture.md) · [Database Schema](docs/reference/Database-Schema.md) · [Structure](docs/reference/Project-Structure.md)           |
+| **About**           | [Changelog](docs/about/Changelog.md) · [Contributing](docs/about/Contributing.md) · [Roadmap](docs/about/Roadmap.md)                                               |
 
 ---
 

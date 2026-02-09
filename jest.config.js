@@ -19,6 +19,7 @@ const customJestConfig = {
     '^marked$': '<rootDir>/src/__tests__/mocks/marked.ts',
     '^livekit-server-sdk$': '<rootDir>/src/__tests__/mocks/livekit-server-sdk.ts',
     '^bullmq$': '<rootDir>/src/__tests__/mocks/bullmq.ts',
+    '^nanoid$': '<rootDir>/src/__tests__/mocks/nanoid.ts',
   },
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',

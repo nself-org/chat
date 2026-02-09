@@ -456,6 +456,8 @@ export {
   DefaultWebhookRetryConfig,
   generateWebhookSignature,
   verifyWebhookSignature,
+  generateWebhookSignatureSync,
+  verifyWebhookSignatureSync,
   getEventCategory,
   formatWebhookUrl,
 } from './webhook'

@@ -6,21 +6,26 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getStripeBillingService } from '@/lib/billing/stripe-service'
-import { getPlanEnforcementService } from '@/lib/billing/plan-enforcement.service'
+import { getTenantService } from '@/lib/tenants/tenant-service'
+import { getTenantId } from '@/lib/tenants/tenant-middleware'
 import { z } from 'zod'
 
 import { logger } from '@/lib/logger'
 
 const subscribeSchema = z.object({
-  workspaceId: z.string(),
-  planTier: z.enum(['starter', 'professional', 'enterprise']),
+  planTier: z.enum(['free', 'pro', 'enterprise', 'custom']),
   interval: z.enum(['monthly', 'yearly']),
-  paymentMethodId: z.string().optional(),
   returnUrl: z.string().url(),
 })
 
 export async function POST(request: NextRequest) {
   try {
+    const tenantId = getTenantId(request)
+
+    if (!tenantId) {
+      return NextResponse.json({ error: 'Tenant not found' }, { status: 400 })
+    }
+
     const body = await request.json()
     const validationResult = subscribeSchema.safeParse(body)
 
@@ -34,18 +39,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { workspaceId, planTier, interval, returnUrl } = validationResult.data
+    const { planTier, interval, returnUrl } = validationResult.data
 
-    const workspace = null // await getWorkspace(workspaceId)
+    // Get tenant
+    const tenantService = getTenantService()
+    const tenant = await tenantService.getTenantById(tenantId)
 
-    if (!workspace) {
-      return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
+    if (!tenant) {
+      return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
     }
 
-    // Create or update subscription via Stripe
+    // Create checkout session via Stripe
     const billingService = getStripeBillingService()
     const session = await billingService.createCheckoutSession(
-      workspace as any,
+      tenant,
       planTier as any,
       interval,
       `${returnUrl}?success=true`,

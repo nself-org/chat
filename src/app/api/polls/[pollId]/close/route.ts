@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { Poll } from '@/types/poll'
 import { closePoll, canManagePoll } from '@/lib/polls/poll-manager'
-
+import { nhost } from '@/lib/nhost.server'
 import { logger } from '@/lib/logger'
 
 // ============================================================================
@@ -25,8 +25,10 @@ export async function POST(
       return NextResponse.json({ error: 'Poll ID is required' }, { status: 400 })
     }
 
-    const userId = 'user_mock_id'
-    const userRole = 'member' // TODO: Get from session
+    // Get authenticated user from session
+    const session = await nhost.auth.getSession()
+    const userId = session?.user?.id || 'anonymous'
+    const userRole = (session?.user?.metadata?.role as string) || 'member'
 
     const poll = null as Poll | null
 

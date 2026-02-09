@@ -509,3 +509,77 @@ export type {
   TelegramIntegrationConfig,
   TelegramUnfurlResult,
 } from './telegram'
+
+// ============================================================================
+// Integration Catalog (External Service Connectors)
+// ============================================================================
+
+export {
+  // Base classes
+  BaseConnector,
+  ConnectorError,
+  // Connectors
+  CalendarConnector,
+  TicketingConnector,
+  CICDConnector,
+  DocsConnector,
+  CRMConnector,
+  // Registry & Infrastructure
+  IntegrationRegistry,
+  CredentialVault,
+  HealthMonitor,
+  // Sync Engine
+  SyncEngine,
+} from './catalog'
+
+// Catalog Types
+export type {
+  IntegrationCatalogCategory,
+  ConnectorCapability,
+  SyncDirection,
+  ConnectorStatus,
+  ConnectorErrorCategory,
+  ConnectorConfig,
+  ConnectorCredentials,
+  ConnectorRateLimit,
+  RetryConfig,
+  IntegrationEvent,
+  IntegrationAction,
+  ActionParameter,
+  CatalogEntry,
+  HealthCheckResult,
+  IntegrationMetrics,
+  ConnectorRequestLog,
+  CalendarEvent,
+  CalendarAttendee,
+  CalendarRecurrence,
+  CalendarReminder,
+  CalendarAvailability,
+  Ticket,
+  TicketComment,
+  TicketCreateParams,
+  TicketUpdateParams,
+  Pipeline,
+  PipelineStatus,
+  PipelineStage,
+  DeployApproval,
+  PipelineTrigger,
+  Document as IntegrationDocument,
+  DocumentPermission,
+  DocumentCreateParams,
+  DocumentSearchResult,
+  CRMContact,
+  CRMDeal,
+  CRMActivity,
+  CRMContactSearchParams,
+  CRMLeadCreateParams,
+  ConflictResolutionStrategy,
+  SyncItemStatus,
+  SyncQueueItem,
+  SyncState,
+  SyncConflict,
+  SyncResult,
+  InstalledIntegration,
+  ConnectorEventType,
+  ConnectorEventListener,
+} from './catalog'

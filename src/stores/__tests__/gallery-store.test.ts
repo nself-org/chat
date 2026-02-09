@@ -122,7 +122,11 @@ describe('Gallery Store', () => {
       it('should append items to existing channel', () => {
         const { result } = renderHook(() => useGalleryStore())
         const items1 = createMockItems(2, 'channel-1')
-        const items2 = createMockItems(2, 'channel-1')
+        // Create items with different IDs
+        const items2 = [
+          createMockItem({ id: 'item-channel-1-2', channelId: 'channel-1' }),
+          createMockItem({ id: 'item-channel-1-3', channelId: 'channel-1' }),
+        ]
 
         act(() => {
           result.current.setItemsForChannel('channel-1', items1)

@@ -150,7 +150,7 @@ class EventDispatcherService {
   constructor(config: EventDispatcherConfig = {}) {
     this.config = {
       debug: config.debug ?? false,
-      serverVersion: config.serverVersion ?? '0.9.0',
+      serverVersion: config.serverVersion ?? '0.9.1',
       isClientSide: config.isClientSide ?? true,
     }
   }

@@ -19,9 +19,11 @@ export interface GetMessageEditHistoryVariables {
 export interface MessageEditHistoryRecord {
   id: string
   message_id: string
-  content: string
+  editor_id: string
+  previous_content: string
+  new_content: string
+  change_summary: string | null
   edited_at: string
-  edited_by: string
   editor: {
     id: string
     username: string
@@ -65,9 +67,11 @@ export const MESSAGE_EDIT_HISTORY_FRAGMENT = gql`
   fragment MessageEditHistory on nchat_message_edits {
     id
     message_id
-    content
+    editor_id
+    previous_content
+    new_content
+    change_summary
     edited_at
-    edited_by
     editor {
       ...UserBasic
     }
@@ -198,13 +202,20 @@ export const GET_MESSAGES_READ_BY = gql`
  * (This is typically handled by a database trigger, but available for manual use)
  */
 export const SAVE_MESSAGE_EDIT = gql`
-  mutation SaveMessageEdit($messageId: uuid!, $content: String!, $editedBy: uuid!) {
+  mutation SaveMessageEdit(
+    $messageId: uuid!
+    $editorId: uuid!
+    $previousContent: String!
+    $newContent: String!
+    $changeSummary: String
+  ) {
     insert_nchat_message_edits_one(
       object: {
         message_id: $messageId
-        content: $content
-        edited_by: $editedBy
-        edited_at: "now()"
+        editor_id: $editorId
+        previous_content: $previousContent
+        new_content: $newContent
+        change_summary: $changeSummary
       }
     ) {
       ...MessageEditHistory
@@ -374,14 +385,18 @@ export const MESSAGE_STATUS_STREAM_SUBSCRIPTION = gql`
  * Transform GraphQL edit history to app format
  */
 export function transformEditHistory(data: MessageEditHistoryRecord[]): Array<{
-  content: string
+  previousContent: string
+  newContent: string
+  changeSummary: string | null
   editedAt: Date
-  editedBy: string
+  editorId: string
 }> {
   return data.map((record) => ({
-    content: record.content,
+    previousContent: record.previous_content,
+    newContent: record.new_content,
+    changeSummary: record.change_summary,
     editedAt: new Date(record.edited_at),
-    editedBy: record.edited_by,
+    editorId: record.editor_id,
   }))
 }
 

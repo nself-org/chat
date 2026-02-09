@@ -4,7 +4,7 @@
  */
 
 export interface SearchResult {
-  type: 'message' | 'channel' | 'user'
+  type: 'message' | 'channel' | 'user' | 'file'
   id: string
   content: string
   channelId?: string
@@ -13,6 +13,7 @@ export interface SearchResult {
   userName?: string
   timestamp?: string
   highlights?: string[]
+  relevanceScore?: number
 }
 
 export interface SearchResponse {
@@ -21,10 +22,18 @@ export interface SearchResponse {
   query: string
   limit: number
   offset: number
+  facets?: SearchFacets
+}
+
+export interface SearchFacets {
+  users: Array<{ id: string; name: string; count: number }>
+  channels: Array<{ id: string; name: string; count: number }>
+  types: Array<{ type: string; count: number }>
+  dates: Array<{ date: string; count: number }>
 }
 
 export interface SearchSuggestion {
-  type: 'user' | 'channel' | 'query'
+  type: 'user' | 'channel' | 'query' | 'saved'
   value: string
   label: string
   metadata?: Record<string, any>
@@ -41,6 +50,71 @@ export interface SearchFilters {
   after?: string
   before?: string
   has?: string
+  type?: string
+}
+
+// Semantic Search Types
+export interface SemanticSearchRequest {
+  query: string
+  limit?: number
+  threshold?: number
+  filters?: {
+    channelIds?: string[]
+    userIds?: string[]
+    dateRange?: {
+      start: string
+      end: string
+    }
+    types?: Array<'message' | 'file' | 'channel' | 'user'>
+  }
+}
+
+export interface SemanticSearchResponse {
+  results: SearchResult[]
+  total: number
+  query: string
+  semanticQuery?: string
+  processingTimeMs: number
+}
+
+// Search History Types
+export interface SearchHistoryItem {
+  id: string
+  userId: string
+  query: string
+  resultCount: number
+  filters?: SearchFilters
+  searchedAt: string
+}
+
+export interface SearchHistoryResponse {
+  history: SearchHistoryItem[]
+  total: number
+}
+
+// Saved Search Types
+export interface SavedSearch {
+  id: string
+  userId: string
+  name: string
+  query: string
+  filters?: SearchFilters
+  createdAt: string
+  updatedAt: string
+  lastUsedAt?: string
+  useCount: number
+}
+
+export interface CreateSavedSearchRequest {
+  userId: string
+  name: string
+  query: string
+  filters?: SearchFilters
+}
+
+export interface SavedSearchesResponse {
+  savedSearches: SavedSearch[]
+  total: number
 }
 
 class SearchService {

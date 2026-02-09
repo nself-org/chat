@@ -46,6 +46,71 @@ jest.mock('next/navigation', () => ({
 }))
 
 // ============================================================================
+// Mock Next.js Server Components
+// ============================================================================
+
+jest.mock('next/server', () => {
+  const createMockHeaders = (init) => {
+    const headers = new Map()
+    if (init && typeof init === 'object') {
+      if (init instanceof Map) {
+        init.forEach((value, key) => headers.set(key.toLowerCase(), value))
+      } else if (init.entries) {
+        for (const [key, value] of init.entries()) {
+          headers.set(key.toLowerCase(), value)
+        }
+      } else {
+        Object.entries(init).forEach(([key, value]) => headers.set(key.toLowerCase(), value))
+      }
+    }
+    return {
+      get: (key) => headers.get(key.toLowerCase()) || null,
+      set: (key, value) => headers.set(key.toLowerCase(), value),
+      has: (key) => headers.has(key.toLowerCase()),
+      delete: (key) => headers.delete(key.toLowerCase()),
+      forEach: (cb) => headers.forEach(cb),
+      entries: () => headers.entries(),
+      keys: () => headers.keys(),
+      values: () => headers.values(),
+    }
+  }
+
+  return {
+    NextRequest: jest.fn().mockImplementation((url, init = {}) => {
+      const parsedUrl = typeof url === 'string' ? new URL(url) : url
+      // Parse body if it's a JSON string
+      let parsedBody = init.body || {}
+      if (typeof parsedBody === 'string') {
+        try {
+          parsedBody = JSON.parse(parsedBody)
+        } catch (e) {
+          // If parsing fails, keep as string
+        }
+      }
+      return {
+        nextUrl: parsedUrl,
+        url: parsedUrl.toString(),
+        method: init.method || 'GET',
+        headers: createMockHeaders(init.headers),
+        json: jest.fn().mockResolvedValue(parsedBody),
+      }
+    }),
+    NextResponse: {
+      json: jest.fn((body, init = {}) => ({
+        status: init.status || 200,
+        json: jest.fn().mockResolvedValue(body),
+        body,
+      })),
+      redirect: jest.fn((url) => ({
+        status: 302,
+        headers: { Location: url.toString() },
+      })),
+      next: jest.fn(() => ({})),
+    },
+  }
+})
+
+// ============================================================================
 // Mock Environment Variables
 // ============================================================================
 
@@ -89,16 +154,20 @@ if (typeof Element !== 'undefined') {
 }
 
 if (typeof navigator !== 'undefined') {
-  // Mock clipboard API
-  Object.defineProperty(navigator, 'clipboard', {
-    writable: true,
-    value: {
-      writeText: jest.fn().mockResolvedValue(undefined),
-      readText: jest.fn().mockResolvedValue(''),
-      write: jest.fn().mockResolvedValue(undefined),
-      read: jest.fn().mockResolvedValue([]),
-    },
-  })
+  // Mock clipboard API - use configurable to allow user-event to redefine it
+  // This is needed because @testing-library/user-event needs to attach its own clipboard stub
+  if (!navigator.clipboard) {
+    Object.defineProperty(navigator, 'clipboard', {
+      writable: true,
+      configurable: true,
+      value: {
+        writeText: jest.fn().mockResolvedValue(undefined),
+        readText: jest.fn().mockResolvedValue(''),
+        write: jest.fn().mockResolvedValue(undefined),
+        read: jest.fn().mockResolvedValue([]),
+      },
+    })
+  }
 
   // Mock serviceWorker API for push notifications
   Object.defineProperty(navigator, 'serviceWorker', {
@@ -207,27 +276,17 @@ if (typeof Blob !== 'undefined' && typeof Blob.prototype.arrayBuffer === 'undefi
 }
 
 // ============================================================================
-// Mock Crypto API
+// Real Crypto API (Node.js webcrypto for E2EE tests)
 // ============================================================================
 
+// Use Node.js webcrypto for real cryptographic operations
+// This is needed for E2EE tests that use Web Crypto API
+const { webcrypto } = require('crypto')
+
 Object.defineProperty(global, 'crypto', {
-  value: {
-    getRandomValues: (arr) => {
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = Math.floor(Math.random() * 256)
-      }
-      return arr
-    },
-    randomUUID: () => 'test-uuid-' + Math.random().toString(36).substring(2, 9),
-    subtle: {
-      digest: jest.fn(),
-      encrypt: jest.fn(),
-      decrypt: jest.fn(),
-      generateKey: jest.fn(),
-      exportKey: jest.fn(),
-      importKey: jest.fn(),
-    },
-  },
+  value: webcrypto,
+  writable: true,
+  configurable: true,
 })
 
 // ============================================================================

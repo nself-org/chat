@@ -298,4 +298,141 @@ export const FILE_SERVICE_CONSTANTS = {
 
   /** Maximum file size for admins (500MB) */
   ADMIN_MAX_SIZE: 500 * 1024 * 1024,
+
+  /** Virus scanner defaults */
+  VIRUS_SCANNER: {
+    /** Default timeout for scans in milliseconds */
+    DEFAULT_TIMEOUT: 60000,
+    /** Maximum file size to scan (100MB) */
+    MAX_SCAN_SIZE: 100 * 1024 * 1024,
+    /** ClamAV default port */
+    CLAMAV_DEFAULT_PORT: 3310,
+    /** VirusTotal API URL */
+    VIRUSTOTAL_API_URL: 'https://www.virustotal.com/api/v3',
+    /** Health check interval in milliseconds */
+    HEALTH_CHECK_INTERVAL: 60000,
+  },
 } as const
+
+// ============================================================================
+// Virus Scanner Configuration
+// ============================================================================
+
+export interface VirusScannerConfig {
+  /** Enable virus scanning */
+  enabled: boolean
+  /** Primary scanner backend: 'clamav' | 'virustotal' | 'plugin' | 'none' */
+  backend: 'clamav' | 'virustotal' | 'plugin' | 'none'
+  /** Fallback backend if primary fails */
+  fallbackBackend?: 'clamav' | 'virustotal' | 'plugin' | 'none'
+  /** Block uploads when scanner is unavailable */
+  blockOnScannerUnavailable: boolean
+  /** Quarantine infected files instead of deleting */
+  quarantineInfected: boolean
+  /** Maximum file size to scan in bytes */
+  maxScanSize: number
+  /** Scan timeout in milliseconds */
+  timeout: number
+  /** ClamAV configuration */
+  clamav?: {
+    host: string
+    port: number
+    timeout?: number
+  }
+  /** VirusTotal configuration */
+  virustotal?: {
+    apiKey: string
+    apiUrl?: string
+    waitForResult?: boolean
+    maxWaitTime?: number
+  }
+  /** Plugin scanner configuration */
+  plugin?: {
+    baseUrl: string
+    timeout?: number
+  }
+}
+
+/**
+ * Get virus scanner configuration from environment variables
+ *
+ * Environment variables:
+ * - FILE_ENABLE_VIRUS_SCAN: Enable/disable scanning (default: false)
+ * - VIRUS_SCANNER_BACKEND: Explicit backend override
+ * - VIRUS_SCANNER_FALLBACK: Fallback backend
+ * - VIRUS_SCANNER_BLOCK_ON_UNAVAILABLE: Block if scanner unavailable
+ * - VIRUS_SCANNER_QUARANTINE: Quarantine infected files
+ * - VIRUS_SCANNER_MAX_SIZE: Max file size to scan
+ * - VIRUS_SCANNER_TIMEOUT: Scan timeout
+ * - CLAMAV_HOST, CLAMAV_PORT, CLAMAV_TIMEOUT: ClamAV config
+ * - VIRUSTOTAL_API_KEY, VIRUSTOTAL_API_URL: VirusTotal config
+ * - FILE_PROCESSING_URL: Plugin scanner URL
+ */
+export function getVirusScannerConfig(): VirusScannerConfig {
+  const enabled = getEnvBool('FILE_ENABLE_VIRUS_SCAN', false)
+
+  // Determine backend based on available configuration
+  let backend: VirusScannerConfig['backend'] = 'none'
+
+  const clamavHost = getEnv('CLAMAV_HOST')
+  const virustotalKey = getEnv('VIRUSTOTAL_API_KEY')
+  const pluginUrl = getEnv('FILE_PROCESSING_URL')
+
+  // Priority: ClamAV > VirusTotal > Plugin > None
+  if (clamavHost) {
+    backend = 'clamav'
+  } else if (virustotalKey) {
+    backend = 'virustotal'
+  } else if (pluginUrl && enabled) {
+    backend = 'plugin'
+  }
+
+  // Allow explicit backend override
+  const explicitBackend = getEnv('VIRUS_SCANNER_BACKEND')
+  if (explicitBackend && ['clamav', 'virustotal', 'plugin', 'none'].includes(explicitBackend)) {
+    backend = explicitBackend as VirusScannerConfig['backend']
+  }
+
+  return {
+    enabled,
+    backend,
+    fallbackBackend: getEnv('VIRUS_SCANNER_FALLBACK') as VirusScannerConfig['fallbackBackend'],
+    blockOnScannerUnavailable: getEnvBool('VIRUS_SCANNER_BLOCK_ON_UNAVAILABLE', false),
+    quarantineInfected: getEnvBool('VIRUS_SCANNER_QUARANTINE', true),
+    maxScanSize: getEnvNumber(
+      'VIRUS_SCANNER_MAX_SIZE',
+      FILE_SERVICE_CONSTANTS.VIRUS_SCANNER.MAX_SCAN_SIZE
+    ),
+    timeout: getEnvNumber(
+      'VIRUS_SCANNER_TIMEOUT',
+      FILE_SERVICE_CONSTANTS.VIRUS_SCANNER.DEFAULT_TIMEOUT
+    ),
+
+    clamav: clamavHost
+      ? {
+          host: clamavHost,
+          port: getEnvNumber('CLAMAV_PORT', FILE_SERVICE_CONSTANTS.VIRUS_SCANNER.CLAMAV_DEFAULT_PORT),
+          timeout: getEnvNumber('CLAMAV_TIMEOUT', 30000),
+        }
+      : undefined,
+
+    virustotal: virustotalKey
+      ? {
+          apiKey: virustotalKey,
+          apiUrl: getEnv(
+            'VIRUSTOTAL_API_URL',
+            FILE_SERVICE_CONSTANTS.VIRUS_SCANNER.VIRUSTOTAL_API_URL
+          ),
+          waitForResult: getEnvBool('VIRUSTOTAL_WAIT_FOR_RESULT', true),
+          maxWaitTime: getEnvNumber('VIRUSTOTAL_MAX_WAIT_TIME', 120000),
+        }
+      : undefined,
+
+    plugin: pluginUrl
+      ? {
+          baseUrl: pluginUrl,
+          timeout: getEnvNumber('FILE_PROCESSING_TIMEOUT', 30000),
+        }
+      : undefined,
+  }
+}

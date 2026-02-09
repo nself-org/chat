@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * OAuth Providers Integration Tests
  *
  * Comprehensive tests for all 11 OAuth providers.

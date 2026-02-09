@@ -15,7 +15,7 @@ import { io, Socket } from 'socket.io-client'
 // Configuration
 const REALTIME_URL = process.env.NEXT_PUBLIC_REALTIME_URL || 'http://realtime.localhost:3101'
 const REALTIME_WS_URL = process.env.NEXT_PUBLIC_REALTIME_WS_URL || 'ws://realtime.localhost:3101'
-const PLUGINS_ENABLED = process.env.PLUGINS_ENABLED !== 'false'
+const PLUGINS_ENABLED = process.env.PLUGINS_ENABLED === 'true'
 const TEST_TIMEOUT = 30000
 
 // Test data

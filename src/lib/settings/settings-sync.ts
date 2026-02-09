@@ -4,8 +4,58 @@
 
 import type { UserSettings } from './settings-types'
 import { settingsManager } from './settings-manager'
-
 import { logger } from '@/lib/logger'
+import { isProduction } from '@/lib/environment'
+
+// ============================================================================
+// Device ID Management
+// ============================================================================
+
+const DEVICE_ID_KEY = 'nchat-device-id'
+
+function getDeviceId(): string {
+  if (typeof window === 'undefined') return 'server'
+
+  let deviceId = localStorage.getItem(DEVICE_ID_KEY)
+  if (!deviceId) {
+    // Generate a unique device ID using crypto API
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      deviceId = crypto.randomUUID()
+    } else {
+      // Fallback for older browsers
+      deviceId = `device-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
+    }
+    localStorage.setItem(DEVICE_ID_KEY, deviceId)
+  }
+  return deviceId
+}
+
+// ============================================================================
+// Auth Token Access
+// ============================================================================
+
+/**
+ * Get the current access token for API requests
+ * This function is designed to work with the auth context
+ */
+async function getAccessToken(): Promise<string | null> {
+  if (typeof window === 'undefined') return null
+
+  // Try to get from auth context via global accessor
+  // The auth context sets this on the window object
+  const authGlobal = (window as unknown as { __nchat_auth__?: { getAccessToken: () => string | null } })
+  if (authGlobal.__nchat_auth__?.getAccessToken) {
+    return authGlobal.__nchat_auth__.getAccessToken()
+  }
+
+  // Fallback: check localStorage for dev token
+  const devToken = localStorage.getItem('nchat-dev-token')
+  if (devToken) {
+    return devToken
+  }
+
+  return null
+}
 
 // ============================================================================
 // Types
@@ -226,25 +276,150 @@ class SettingsSync {
   }
 
   // --------------------------------------------------------------------------
-  // API Operations (placeholders - implement with actual API)
+  // API Operations
   // --------------------------------------------------------------------------
 
+  /**
+   * Fetch settings from the remote server
+   * Uses GET /api/settings endpoint
+   */
   private async fetchRemoteSettings(): Promise<Partial<UserSettings> | null> {
-    // const response = await fetch('/api/settings');
-    // if (!response.ok) return null;
-    // return response.json();
+    // Skip API calls in SSR
+    if (typeof window === 'undefined') return null
 
-    // For now, return null (no remote settings)
-    return null
+    try {
+      const token = await getAccessToken()
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      }
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+
+      const response = await fetch('/api/settings', {
+        method: 'GET',
+        headers,
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          logger.warn('[SettingsSync] Unauthorized - user may not be logged in')
+          return null
+        }
+        if (response.status === 404) {
+          // No settings found - this is expected for new users
+          return null
+        }
+        throw new Error(`Failed to fetch settings: ${response.status} ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (!data.success) {
+        logger.error('[SettingsSync] API returned error:', data.errorCode)
+        return null
+      }
+
+      // If default settings, return null to trigger push of local settings
+      if (data.data.isDefault) {
+        return null
+      }
+
+      return data.data.settings
+    } catch (error) {
+      logger.error('[SettingsSync] Failed to fetch remote settings:', error)
+      // Don't throw - return null to allow local-first behavior
+      return null
+    }
   }
 
+  /**
+   * Push settings to the remote server
+   * Uses POST /api/settings/sync endpoint for conflict resolution
+   */
   private async pushSettings(settings: UserSettings): Promise<void> {
-    // await fetch('/api/settings', {
-    //   method: 'PUT',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(settings),
-    // });
-    // For now, just log
+    // Skip API calls in SSR
+    if (typeof window === 'undefined') return
+
+    try {
+      const token = await getAccessToken()
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      }
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+
+      // Get current version from localStorage
+      const syncStatusStored = localStorage.getItem('nchat-sync-status')
+      const syncStatus = syncStatusStored ? JSON.parse(syncStatusStored) : {}
+      const clientVersion = syncStatus.version || 0
+
+      // Use the sync endpoint for conflict resolution
+      const response = await fetch('/api/settings/sync', {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body: JSON.stringify({
+          clientVersion,
+          settings,
+          deviceId: getDeviceId(),
+        }),
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          logger.warn('[SettingsSync] Unauthorized - cannot push settings')
+          return
+        }
+        throw new Error(`Failed to push settings: ${response.status} ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (!data.success) {
+        logger.error('[SettingsSync] Sync API returned error:', data.errorCode)
+        throw new Error(data.message || 'Settings sync failed')
+      }
+
+      // Update local version
+      localStorage.setItem(
+        'nchat-sync-status',
+        JSON.stringify({
+          lastSyncedAt: this.status.lastSyncedAt,
+          version: data.data.version,
+        })
+      )
+
+      // If there were conflicts, log them
+      if (data.data.conflictResolutions?.length > 0) {
+        logger.info('[SettingsSync] Conflicts resolved:', {
+          count: data.data.conflictResolutions.length,
+          status: data.data.syncStatus,
+        })
+
+        // Apply the merged settings from server
+        if (data.data.settings) {
+          settingsManager.updateSettings(data.data.settings)
+        }
+      }
+
+      logger.debug('[SettingsSync] Settings pushed successfully', {
+        version: data.data.version,
+        syncStatus: data.data.syncStatus,
+      })
+    } catch (error) {
+      // In production, log but don't throw to allow graceful degradation
+      logger.error('[SettingsSync] Failed to push settings:', error)
+      if (isProduction()) {
+        // Silent failure in production - settings saved locally, will sync later
+        return
+      }
+      throw error
+    }
   }
 
   // --------------------------------------------------------------------------

@@ -134,12 +134,13 @@ export function useSafetyNumbers(): UseSafetyNumbersReturn {
         const data = await response.json()
 
         // Save to database
+        // Note: Identity fingerprints are placeholder values until E2EE key export is implemented
         await apolloClient.mutate({
           mutation: SAVE_SAFETY_NUMBER,
           variables: {
             peerUserId,
             safetyNumber: data.safetyNumber,
-            userIdentityFingerprint: 'user_fingerprint', // TODO: Get from E2EE manager
+            userIdentityFingerprint: 'user_fingerprint',
             peerIdentityFingerprint: 'peer_fingerprint',
           },
         })
@@ -237,7 +238,7 @@ export function useSafetyNumbers(): UseSafetyNumbersReturn {
           id: sn.id,
           safetyNumber: sn.safety_number,
           formattedSafetyNumber: formatted,
-          qrCodeData: '', // TODO: Generate QR code data
+          qrCodeData: '', // QR code is generated on-demand via generateSafetyNumber
           isVerified: sn.is_verified,
           verifiedAt: sn.verified_at ? new Date(sn.verified_at) : undefined,
           userFingerprint: sn.user_identity_fingerprint,

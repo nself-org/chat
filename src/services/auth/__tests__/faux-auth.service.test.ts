@@ -320,4 +320,119 @@ describe('FauxAuthService', () => {
       expect(service.isUserAuthenticated()).toBe(false)
     })
   })
+
+  describe('updateProfile', () => {
+    it('should throw error when not authenticated', async () => {
+      await expect(service.updateProfile({ displayName: 'New Name' })).rejects.toThrow(
+        'Not authenticated'
+      )
+    })
+
+    it('should update user profile when authenticated', async () => {
+      await service.signIn('owner@nself.org', 'password123')
+
+      const response = await service.updateProfile({
+        displayName: 'Updated Name',
+        username: 'updated-username',
+      })
+
+      expect(response.user.displayName).toBe('Updated Name')
+      expect(response.user.username).toBe('updated-username')
+      expect(response.user.email).toBe('owner@nself.org') // Original email preserved
+      expect(response.accessToken).toContain('dev-token-')
+      expect(response.refreshToken).toContain('dev-refresh-')
+    })
+
+    it('should persist updated profile to localStorage', async () => {
+      await service.signIn('owner@nself.org', 'password123')
+      await service.updateProfile({ displayName: 'New Display Name' })
+
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'nchat-dev-session',
+        expect.stringContaining('"displayName":"New Display Name"')
+      )
+    })
+
+    it('should allow partial profile updates', async () => {
+      await service.signIn('owner@nself.org', 'password123')
+      const originalUser = await service.getCurrentUser()
+
+      const response = await service.updateProfile({ avatarUrl: 'https://example.com/new-avatar.png' })
+
+      expect(response.user.avatarUrl).toBe('https://example.com/new-avatar.png')
+      expect(response.user.email).toBe(originalUser.email)
+      expect(response.user.username).toBe(originalUser.username)
+    })
+
+    it('should return updated user after profile change', async () => {
+      await service.signIn('member@nself.org', 'password123')
+      await service.updateProfile({ displayName: 'Updated Member' })
+
+      const currentUser = await service.getCurrentUser()
+      expect(currentUser.displayName).toBe('Updated Member')
+    })
+  })
+})
+
+// Test auto-login feature with separate mock
+describe('FauxAuthService - Auto-Login', () => {
+  let mockLocalStorage: Record<string, string>
+
+  beforeEach(() => {
+    // Reset modules to allow different mock configuration
+    jest.resetModules()
+
+    mockLocalStorage = {}
+
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: jest.fn((key: string) => mockLocalStorage[key] || null),
+        setItem: jest.fn((key: string, value: string) => {
+          mockLocalStorage[key] = value
+        }),
+        removeItem: jest.fn((key: string) => {
+          delete mockLocalStorage[key]
+        }),
+        clear: jest.fn(() => {
+          mockLocalStorage = {}
+        }),
+      },
+      writable: true,
+      configurable: true,
+    })
+  })
+
+  it('should auto-login with default user when autoLogin is enabled', () => {
+    // Mock auth config with autoLogin enabled
+    jest.doMock('@/config/auth.config', () => ({
+      authConfig: {
+        devAuth: {
+          autoLogin: true,
+          defaultUser: {
+            id: 'auto-login-user',
+            email: 'autologin@nself.org',
+            username: 'autologin',
+            displayName: 'Auto Login User',
+            role: 'owner',
+            avatarUrl: 'https://example.com/auto.png',
+          },
+          availableUsers: [],
+        },
+        session: {
+          maxAge: 30 * 24 * 60 * 60,
+        },
+      },
+    }))
+
+    // Re-require the service with the new mock
+    const { FauxAuthService: AutoLoginService } = require('../faux-auth.service')
+    const service = new AutoLoginService()
+
+    // Should be automatically authenticated
+    expect(service.isUserAuthenticated()).toBe(true)
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'nchat-dev-session',
+      expect.stringContaining('"email":"autologin@nself.org"')
+    )
+  })
 })

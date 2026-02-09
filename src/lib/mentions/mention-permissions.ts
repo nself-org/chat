@@ -427,3 +427,562 @@ export function getMentionPermissionTooltip(
   const allowed = canUseMention(mentionType, context)
   return getPermissionMessage(mentionType, allowed, context)
 }
+
+// ============================================================================
+// Platform-Specific Permission Rules
+// ============================================================================
+
+/**
+ * Platform type for mention permission rules
+ */
+export type PlatformType = 'default' | 'whatsapp' | 'telegram' | 'slack' | 'discord'
+
+/**
+ * Platform-specific mention rules configuration
+ */
+export interface PlatformMentionRules {
+  /** Who can use @everyone in this platform */
+  everyoneAllowedRoles: UserRole[]
+  /** Who can use @here in this platform */
+  hereAllowedRoles: UserRole[]
+  /** Who can use @channel in this platform */
+  channelAllowedRoles: UserRole[]
+  /** Who can use @role mentions */
+  roleAllowedRoles: UserRole[]
+  /** Maximum mentions per message */
+  maxMentionsPerMessage: number
+  /** Cooldown between group mentions (ms) */
+  groupMentionCooldownMs: number
+  /** Whether @everyone/@here is even supported */
+  supportsGroupMentions: boolean
+  /** Whether role mentions are supported */
+  supportsRoleMentions: boolean
+  /** Description for the platform rules */
+  description: string
+}
+
+/**
+ * Platform-specific mention rules
+ * Based on real-world platform behaviors:
+ * - WhatsApp: Anyone in group can mention
+ * - Telegram: Admins for @everyone
+ * - Slack: Channel-level controls
+ * - Discord: Role-based permissions
+ */
+export const PLATFORM_MENTION_RULES: Record<PlatformType, PlatformMentionRules> = {
+  default: {
+    everyoneAllowedRoles: ['admin', 'owner'],
+    hereAllowedRoles: ['moderator', 'admin', 'owner'],
+    channelAllowedRoles: ['moderator', 'admin', 'owner'],
+    roleAllowedRoles: ['moderator', 'admin', 'owner'],
+    maxMentionsPerMessage: 25,
+    groupMentionCooldownMs: 60 * 1000, // 1 minute
+    supportsGroupMentions: true,
+    supportsRoleMentions: true,
+    description: 'Default platform rules with configurable per-channel controls',
+  },
+  whatsapp: {
+    everyoneAllowedRoles: ['member', 'moderator', 'admin', 'owner'], // Anyone in group
+    hereAllowedRoles: ['member', 'moderator', 'admin', 'owner'],
+    channelAllowedRoles: ['member', 'moderator', 'admin', 'owner'],
+    roleAllowedRoles: [], // WhatsApp doesn't have roles
+    maxMentionsPerMessage: 256, // WhatsApp broadcast limit
+    groupMentionCooldownMs: 0, // No cooldown
+    supportsGroupMentions: true,
+    supportsRoleMentions: false,
+    description: 'WhatsApp-style: Any group member can mention anyone',
+  },
+  telegram: {
+    everyoneAllowedRoles: ['admin', 'owner'], // Only admins can ping everyone
+    hereAllowedRoles: ['admin', 'owner'],
+    channelAllowedRoles: ['admin', 'owner'],
+    roleAllowedRoles: [], // Telegram doesn't have role mentions
+    maxMentionsPerMessage: 50,
+    groupMentionCooldownMs: 30 * 1000, // 30 seconds
+    supportsGroupMentions: true,
+    supportsRoleMentions: false,
+    description: 'Telegram-style: Admins only for group mentions, users can mention individuals',
+  },
+  slack: {
+    everyoneAllowedRoles: ['admin', 'owner'], // Workspace admins by default
+    hereAllowedRoles: ['member', 'moderator', 'admin', 'owner'], // Channel members
+    channelAllowedRoles: ['member', 'moderator', 'admin', 'owner'],
+    roleAllowedRoles: ['member', 'moderator', 'admin', 'owner'], // User groups
+    maxMentionsPerMessage: 100,
+    groupMentionCooldownMs: 60 * 1000, // 1 minute
+    supportsGroupMentions: true,
+    supportsRoleMentions: true,
+    description: 'Slack-style: Channel-level controls, @here allowed for members',
+  },
+  discord: {
+    everyoneAllowedRoles: ['admin', 'owner'], // MENTION_EVERYONE permission
+    hereAllowedRoles: ['admin', 'owner'],
+    channelAllowedRoles: ['moderator', 'admin', 'owner'],
+    roleAllowedRoles: ['member', 'moderator', 'admin', 'owner'], // Based on role mentionable setting
+    maxMentionsPerMessage: 100,
+    groupMentionCooldownMs: 5 * 60 * 1000, // 5 minutes for anti-spam
+    supportsGroupMentions: true,
+    supportsRoleMentions: true,
+    description: 'Discord-style: Role-based permissions, @everyone requires specific permission',
+  },
+}
+
+/**
+ * Get platform-specific mention rules
+ */
+export function getPlatformMentionRules(platform: PlatformType): PlatformMentionRules {
+  return PLATFORM_MENTION_RULES[platform] || PLATFORM_MENTION_RULES.default
+}
+
+/**
+ * Check if a user can use a mention type based on platform rules
+ */
+export function canUseMentionOnPlatform(
+  mentionType: MentionType,
+  userRole: UserRole,
+  platform: PlatformType
+): boolean {
+  const rules = getPlatformMentionRules(platform)
+
+  switch (mentionType) {
+    case 'user':
+      return true // Always allowed for user mentions
+
+    case 'channel':
+      return true // Channel links always allowed
+
+    case 'everyone':
+      if (!rules.supportsGroupMentions) return false
+      return rules.everyoneAllowedRoles.includes(userRole)
+
+    case 'here':
+      if (!rules.supportsGroupMentions) return false
+      return rules.hereAllowedRoles.includes(userRole)
+
+    case 'role':
+      if (!rules.supportsRoleMentions) return false
+      return rules.roleAllowedRoles.includes(userRole)
+
+    default:
+      return false
+  }
+}
+
+/**
+ * Get all mention permissions for a user on a specific platform
+ */
+export function getPlatformMentionPermissions(
+  userRole: UserRole,
+  platform: PlatformType
+): MentionPermissions {
+  return {
+    canMentionUsers: canUseMentionOnPlatform('user', userRole, platform),
+    canMentionChannels: canUseMentionOnPlatform('channel', userRole, platform),
+    canMentionEveryone: canUseMentionOnPlatform('everyone', userRole, platform),
+    canMentionHere: canUseMentionOnPlatform('here', userRole, platform),
+    canMentionChannel: canUseMentionOnPlatform('channel', userRole, platform),
+    canMentionRoles: canUseMentionOnPlatform('role', userRole, platform),
+  }
+}
+
+/**
+ * Validate mentions count against platform limits
+ */
+export function validateMentionCount(
+  mentionCount: number,
+  platform: PlatformType
+): { valid: boolean; maxAllowed: number; message?: string } {
+  const rules = getPlatformMentionRules(platform)
+
+  if (mentionCount > rules.maxMentionsPerMessage) {
+    return {
+      valid: false,
+      maxAllowed: rules.maxMentionsPerMessage,
+      message: `Maximum ${rules.maxMentionsPerMessage} mentions allowed per message`,
+    }
+  }
+
+  return { valid: true, maxAllowed: rules.maxMentionsPerMessage }
+}
+
+// ============================================================================
+// Notification Fanout Controls
+// ============================================================================
+
+/**
+ * User notification preferences for fanout control
+ */
+export interface UserNotificationStatus {
+  userId: string
+  isDND: boolean // Do Not Disturb
+  isMuted: boolean
+  mutedUntil?: Date
+  isOnline: boolean
+  lastSeenAt?: Date
+  allowMentionNotifications: boolean
+  allowGroupMentionNotifications: boolean
+}
+
+/**
+ * Fanout result for a mention
+ */
+export interface MentionFanoutResult {
+  /** Users who should receive notifications */
+  notifyUsers: string[]
+  /** Users skipped due to DND */
+  skippedDND: string[]
+  /** Users skipped due to mute */
+  skippedMuted: string[]
+  /** Users skipped due to preferences */
+  skippedPreferences: string[]
+  /** Total potential recipients */
+  totalRecipients: number
+  /** Was rate limited? */
+  rateLimited: boolean
+  /** Rate limit message if applicable */
+  rateLimitMessage?: string
+}
+
+/**
+ * Fanout options
+ */
+export interface FanoutOptions {
+  /** Respect DND status */
+  respectDND: boolean
+  /** Respect mute settings */
+  respectMute: boolean
+  /** Respect user preferences */
+  respectPreferences: boolean
+  /** Maximum notifications to send (for @everyone/@here) */
+  maxNotifications?: number
+  /** Whether this is a high-priority mention (override DND) */
+  highPriority: boolean
+}
+
+/**
+ * Default fanout options
+ */
+export const DEFAULT_FANOUT_OPTIONS: FanoutOptions = {
+  respectDND: true,
+  respectMute: true,
+  respectPreferences: true,
+  maxNotifications: 1000,
+  highPriority: false,
+}
+
+/**
+ * Calculate notification fanout for a mention
+ */
+export function calculateMentionFanout(
+  mentionType: MentionType,
+  potentialRecipients: UserNotificationStatus[],
+  senderId: string,
+  options: FanoutOptions = DEFAULT_FANOUT_OPTIONS
+): MentionFanoutResult {
+  const notifyUsers: string[] = []
+  const skippedDND: string[] = []
+  const skippedMuted: string[] = []
+  const skippedPreferences: string[] = []
+
+  // Don't notify the sender
+  const recipients = potentialRecipients.filter((r) => r.userId !== senderId)
+
+  for (const recipient of recipients) {
+    // Check max notifications limit
+    if (options.maxNotifications && notifyUsers.length >= options.maxNotifications) {
+      break
+    }
+
+    // Check DND (unless high priority)
+    if (options.respectDND && recipient.isDND && !options.highPriority) {
+      skippedDND.push(recipient.userId)
+      continue
+    }
+
+    // Check mute status
+    if (options.respectMute && recipient.isMuted) {
+      if (recipient.mutedUntil && new Date() < recipient.mutedUntil) {
+        skippedMuted.push(recipient.userId)
+        continue
+      }
+    }
+
+    // Check user preferences
+    if (options.respectPreferences) {
+      if (!recipient.allowMentionNotifications) {
+        skippedPreferences.push(recipient.userId)
+        continue
+      }
+
+      // For group mentions, check group mention preferences
+      if (
+        (mentionType === 'everyone' || mentionType === 'here' || mentionType === 'channel') &&
+        !recipient.allowGroupMentionNotifications
+      ) {
+        skippedPreferences.push(recipient.userId)
+        continue
+      }
+    }
+
+    // For @here, only notify online users
+    if (mentionType === 'here' && !recipient.isOnline) {
+      continue
+    }
+
+    notifyUsers.push(recipient.userId)
+  }
+
+  return {
+    notifyUsers,
+    skippedDND,
+    skippedMuted,
+    skippedPreferences,
+    totalRecipients: recipients.length,
+    rateLimited: false,
+  }
+}
+
+// ============================================================================
+// Anti-Abuse Measures
+// ============================================================================
+
+/**
+ * Anti-abuse configuration
+ */
+export interface AntiAbuseConfig {
+  /** Maximum @everyone/@here per hour per user */
+  maxGroupMentionsPerHour: number
+  /** Maximum individual mentions per message */
+  maxMentionsPerMessage: number
+  /** Cooldown between @everyone uses (ms) */
+  everyoneCooldownMs: number
+  /** Cooldown between @here uses (ms) */
+  hereCooldownMs: number
+  /** Minimum account age to use @everyone (ms) */
+  minAccountAgeForEveryone: number
+  /** Minimum messages sent before @everyone allowed */
+  minMessagesForEveryone: number
+  /** Enable spam detection for repeated mentions */
+  enableSpamDetection: boolean
+  /** Spam threshold (same mention within window) */
+  spamThreshold: number
+  /** Spam detection window (ms) */
+  spamWindowMs: number
+}
+
+/**
+ * Default anti-abuse configuration
+ */
+export const DEFAULT_ANTI_ABUSE_CONFIG: AntiAbuseConfig = {
+  maxGroupMentionsPerHour: 5,
+  maxMentionsPerMessage: 25,
+  everyoneCooldownMs: 5 * 60 * 1000, // 5 minutes
+  hereCooldownMs: 60 * 1000, // 1 minute
+  minAccountAgeForEveryone: 24 * 60 * 60 * 1000, // 24 hours
+  minMessagesForEveryone: 10,
+  enableSpamDetection: true,
+  spamThreshold: 3,
+  spamWindowMs: 60 * 1000, // 1 minute
+}
+
+/**
+ * User mention history for anti-abuse
+ */
+interface UserMentionHistory {
+  everyoneMentions: number[]
+  hereMentions: number[]
+  recentMentions: Array<{ type: MentionType; timestamp: number }>
+}
+
+const userMentionHistories = new Map<string, UserMentionHistory>()
+
+/**
+ * Get or create user mention history
+ */
+function getUserMentionHistory(userId: string): UserMentionHistory {
+  if (!userMentionHistories.has(userId)) {
+    userMentionHistories.set(userId, {
+      everyoneMentions: [],
+      hereMentions: [],
+      recentMentions: [],
+    })
+  }
+  return userMentionHistories.get(userId)!
+}
+
+/**
+ * Clean up old entries from mention history
+ */
+function cleanupMentionHistory(history: UserMentionHistory, windowMs: number): void {
+  const now = Date.now()
+  history.everyoneMentions = history.everyoneMentions.filter((t) => now - t < windowMs)
+  history.hereMentions = history.hereMentions.filter((t) => now - t < windowMs)
+  history.recentMentions = history.recentMentions.filter((m) => now - m.timestamp < windowMs)
+}
+
+/**
+ * Anti-abuse check result
+ */
+export interface AntiAbuseCheckResult {
+  allowed: boolean
+  reason?: string
+  cooldownRemainingMs?: number
+  suggestedAction?: 'wait' | 'reduce_mentions' | 'use_direct_mention'
+}
+
+/**
+ * Check if a mention passes anti-abuse rules
+ */
+export function checkAntiAbuse(
+  userId: string,
+  mentionType: MentionType,
+  mentionCount: number,
+  userAccountAge: number,
+  userMessageCount: number,
+  config: AntiAbuseConfig = DEFAULT_ANTI_ABUSE_CONFIG
+): AntiAbuseCheckResult {
+  const now = Date.now()
+  const history = getUserMentionHistory(userId)
+
+  // Clean up old entries
+  cleanupMentionHistory(history, 60 * 60 * 1000) // 1 hour window
+
+  // Check mention count per message
+  if (mentionCount > config.maxMentionsPerMessage) {
+    return {
+      allowed: false,
+      reason: `Maximum ${config.maxMentionsPerMessage} mentions per message`,
+      suggestedAction: 'reduce_mentions',
+    }
+  }
+
+  // Special checks for @everyone
+  if (mentionType === 'everyone') {
+    // Check account age
+    if (userAccountAge < config.minAccountAgeForEveryone) {
+      const remainingMs = config.minAccountAgeForEveryone - userAccountAge
+      return {
+        allowed: false,
+        reason: 'Account too new to use @everyone',
+        cooldownRemainingMs: remainingMs,
+        suggestedAction: 'wait',
+      }
+    }
+
+    // Check message count
+    if (userMessageCount < config.minMessagesForEveryone) {
+      return {
+        allowed: false,
+        reason: `Send at least ${config.minMessagesForEveryone} messages before using @everyone`,
+        suggestedAction: 'use_direct_mention',
+      }
+    }
+
+    // Check hourly limit
+    if (history.everyoneMentions.length >= config.maxGroupMentionsPerHour) {
+      const oldestMention = Math.min(...history.everyoneMentions)
+      const cooldownRemainingMs = 60 * 60 * 1000 - (now - oldestMention)
+      return {
+        allowed: false,
+        reason: 'Hourly @everyone limit reached',
+        cooldownRemainingMs,
+        suggestedAction: 'wait',
+      }
+    }
+
+    // Check cooldown
+    const lastEveryoneMention = Math.max(...history.everyoneMentions, 0)
+    if (lastEveryoneMention > 0 && now - lastEveryoneMention < config.everyoneCooldownMs) {
+      return {
+        allowed: false,
+        reason: 'Please wait before using @everyone again',
+        cooldownRemainingMs: config.everyoneCooldownMs - (now - lastEveryoneMention),
+        suggestedAction: 'wait',
+      }
+    }
+  }
+
+  // Special checks for @here
+  if (mentionType === 'here') {
+    // Check hourly limit
+    if (history.hereMentions.length >= config.maxGroupMentionsPerHour) {
+      const oldestMention = Math.min(...history.hereMentions)
+      const cooldownRemainingMs = 60 * 60 * 1000 - (now - oldestMention)
+      return {
+        allowed: false,
+        reason: 'Hourly @here limit reached',
+        cooldownRemainingMs,
+        suggestedAction: 'wait',
+      }
+    }
+
+    // Check cooldown
+    const lastHereMention = Math.max(...history.hereMentions, 0)
+    if (lastHereMention > 0 && now - lastHereMention < config.hereCooldownMs) {
+      return {
+        allowed: false,
+        reason: 'Please wait before using @here again',
+        cooldownRemainingMs: config.hereCooldownMs - (now - lastHereMention),
+        suggestedAction: 'wait',
+      }
+    }
+  }
+
+  // Spam detection
+  if (config.enableSpamDetection) {
+    const recentSameMentions = history.recentMentions.filter(
+      (m) => m.type === mentionType && now - m.timestamp < config.spamWindowMs
+    )
+
+    if (recentSameMentions.length >= config.spamThreshold) {
+      return {
+        allowed: false,
+        reason: 'Too many mentions in a short time. Please slow down.',
+        suggestedAction: 'wait',
+        cooldownRemainingMs: config.spamWindowMs,
+      }
+    }
+  }
+
+  return { allowed: true }
+}
+
+/**
+ * Record a mention for anti-abuse tracking
+ */
+export function recordMention(userId: string, mentionType: MentionType): void {
+  const now = Date.now()
+  const history = getUserMentionHistory(userId)
+
+  if (mentionType === 'everyone') {
+    history.everyoneMentions.push(now)
+  } else if (mentionType === 'here') {
+    history.hereMentions.push(now)
+  }
+
+  history.recentMentions.push({ type: mentionType, timestamp: now })
+
+  // Clean up to prevent memory leak
+  cleanupMentionHistory(history, 60 * 60 * 1000)
+}
+
+/**
+ * Reset anti-abuse tracking for a user (admin action)
+ */
+export function resetAntiAbuseTracking(userId: string): void {
+  userMentionHistories.delete(userId)
+}
+
+/**
+ * Clear all anti-abuse tracking (for testing)
+ */
+export function clearAllAntiAbuseTracking(): void {
+  userMentionHistories.clear()
+}
+
+/**
+ * Admin override for anti-abuse (bypass all checks)
+ */
+export function adminCanBypassAntiAbuse(userRole: UserRole): boolean {
+  return userRole === 'owner' || userRole === 'admin'
+}

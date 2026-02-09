@@ -17,7 +17,12 @@ describe('Permission Cache', () => {
     let cache: PermissionCache
 
     beforeEach(() => {
+      jest.useFakeTimers()
       cache = createPermissionCache({ maxSize: 100, ttlMs: 60000 })
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
     })
 
     describe('Basic Operations', () => {
@@ -199,7 +204,7 @@ describe('Permission Cache', () => {
     })
 
     describe('TTL Expiration', () => {
-      it('returns undefined for expired entries', async () => {
+      it('returns undefined for expired entries', () => {
         const shortTTLCache = createPermissionCache({ maxSize: 100, ttlMs: 50 })
 
         const key: CacheKey = {
@@ -209,13 +214,13 @@ describe('Permission Cache', () => {
 
         shortTTLCache.set(key, { allowed: true })
 
-        // Wait for expiration
-        await new Promise((resolve) => setTimeout(resolve, 60))
+        // Wait for expiration using fake timers
+        jest.advanceTimersByTime(60)
 
         expect(shortTTLCache.get(key)).toBeUndefined()
       })
 
-      it('returns entry before TTL expires', async () => {
+      it('returns entry before TTL expires', () => {
         const cache = createPermissionCache({ maxSize: 100, ttlMs: 1000 })
 
         const key: CacheKey = {
@@ -229,7 +234,7 @@ describe('Permission Cache', () => {
         expect(cache.get(key)).toBeDefined()
       })
 
-      it('has() returns false for expired entries', async () => {
+      it('has() returns false for expired entries', () => {
         const shortTTLCache = createPermissionCache({ maxSize: 100, ttlMs: 50 })
 
         const key: CacheKey = {
@@ -239,7 +244,7 @@ describe('Permission Cache', () => {
 
         shortTTLCache.set(key, { allowed: true })
 
-        await new Promise((resolve) => setTimeout(resolve, 60))
+        jest.advanceTimersByTime(60)
 
         expect(shortTTLCache.has(key)).toBe(false)
       })

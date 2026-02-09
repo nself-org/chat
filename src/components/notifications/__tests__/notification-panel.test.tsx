@@ -33,9 +33,21 @@ jest.mock('../notification-item', () => ({
     onClick: () => void
     onArchive: () => void
   }) => (
-    <div data-testid={`notification-${notification.id}`} onClick={onClick}>
-      <span>{notification.title}</span>
-      <button data-testid={`archive-${notification.id}`} onClick={onArchive}>
+    <div data-testid={`notification-${notification.id}`}>
+      <button
+        type="button"
+        onClick={onClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onClick()
+          }
+        }}
+        className="w-full text-left border-none bg-transparent cursor-pointer"
+      >
+        <span>{notification.title}</span>
+      </button>
+      <button type="button" data-testid={`archive-${notification.id}`} onClick={onArchive}>
         Archive
       </button>
     </div>

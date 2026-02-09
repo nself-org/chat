@@ -58,6 +58,24 @@ export { VideoPicker } from './VideoPicker'
 export { VoiceRecorder } from './VoiceRecorder'
 
 // ============================================================================
+// Enhanced Media Viewer System (Pinch-to-Zoom, Full-Screen)
+// ============================================================================
+
+export {
+  FullscreenMediaViewer,
+  ZoomableImage,
+  EnhancedVideoPlayer,
+  ThumbnailStrip,
+} from './media-viewer'
+
+export type {
+  FullscreenMediaViewerProps,
+  ZoomableImageProps,
+  EnhancedVideoPlayerProps,
+  ThumbnailStripProps,
+} from './media-viewer'
+
+// ============================================================================
 // Example Component
 // ============================================================================
 

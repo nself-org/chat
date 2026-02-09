@@ -47,6 +47,16 @@ const GET_DIGEST_SETTINGS = `
   }
 `
 
+const GET_USER_EMAIL = `
+  query GetUserEmail($userId: uuid!) {
+    users_by_pk(id: $userId) {
+      id
+      email
+      display_name
+    }
+  }
+`
+
 const UPDATE_DIGEST_SETTINGS = `
   mutation UpdateDigestSettings($userId: uuid!, $settings: jsonb!) {
     update_nchat_notification_preferences(
@@ -368,22 +378,36 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       })
     }
 
+    // Get user email
+    const userResult = await executeGraphQL<{
+      users_by_pk: { id: string; email: string; display_name: string } | null
+    }>(GET_USER_EMAIL, { userId }, authToken)
+
+    const userEmail = userResult.data?.users_by_pk?.email
+    if (!userEmail) {
+      return NextResponse.json(
+        { success: false, error: 'User email not found' },
+        { status: 404 }
+      )
+    }
+
     // Format digest
     const htmlContent = formatDigestEmail(notifications, period)
 
-    // In production, this would send via email service
-    // For now, we'll return the digest content
+    // Send via notifications API if configured
     const notificationsApiUrl = process.env.NOTIFICATIONS_API_URL
+    let emailSent = false
+
     if (notificationsApiUrl) {
       try {
-        await fetch(`${notificationsApiUrl}/api/send`, {
+        const sendResponse = await fetch(`${notificationsApiUrl}/api/send`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             user_id: userId,
             channel: 'email',
             category: 'system',
-            to: { email: 'user@example.com' }, // Would get from user profile
+            to: { email: userEmail },
             content: {
               subject: `Notification Digest - ${period.start.toLocaleDateString()}`,
               html: htmlContent,
@@ -395,18 +419,42 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             },
           }),
         })
+        emailSent = sendResponse.ok
       } catch (emailError) {
-        logger.warn('Failed to send digest email:', { context: emailError })
+        logger.warn('Failed to send digest email via notifications API:', { context: emailError })
+      }
+    }
+
+    // Fallback: use Resend if configured and notifications API failed
+    if (!emailSent && process.env.RESEND_API_KEY) {
+      try {
+        const resendResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: process.env.RESEND_FROM_EMAIL || 'noreply@nchat.app',
+            to: userEmail,
+            subject: `Notification Digest - ${period.start.toLocaleDateString()}`,
+            html: htmlContent,
+          }),
+        })
+        emailSent = resendResponse.ok
+      } catch (resendError) {
+        logger.warn('Failed to send digest email via Resend:', { context: resendError })
       }
     }
 
     return NextResponse.json({
       success: true,
       data: {
-        sent: true,
+        sent: emailSent,
         notificationCount: notifications.length,
         period,
-        preview: htmlContent,
+        email: userEmail,
+        preview: emailSent ? undefined : htmlContent,
       },
     })
   } catch (error) {

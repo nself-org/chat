@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Auth + Sessions + Presence
  *
  * Tests the integration between authentication, session management,

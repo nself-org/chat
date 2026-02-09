@@ -380,12 +380,18 @@ export interface VoiceMessageData {
  * Message edit history record.
  */
 export interface MessageEditRecord {
-  /** Previous content */
-  content: string
+  /** ID of the edit record */
+  id?: string
+  /** Previous content before the edit */
+  previousContent: string
+  /** New content after the edit */
+  newContent: string
+  /** Summary of the changes */
+  changeSummary?: string
   /** When the edit was made */
   editedAt: Date
-  /** Who made the edit */
-  editedBy: string
+  /** User ID of who made the edit */
+  editorId: string
 }
 
 // ============================================================================

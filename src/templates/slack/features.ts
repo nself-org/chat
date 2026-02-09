@@ -1,33 +1,39 @@
-// ═══════════════════════════════════════════════════════════════════════════════
+// ===============================================================================
 // Slack Feature Set - Complete Feature Parity
-// ═══════════════════════════════════════════════════════════════════════════════
+// ===============================================================================
 //
-// Complete enumeration of all Slack features with their implementation status
-// and configuration options.
+// Complete enumeration of all Slack features with resolved implementation status.
+// Every feature is either 'enabled' or 'disabled' with a documented policy reason.
 //
-// ═══════════════════════════════════════════════════════════════════════════════
+// Previously this file used 'placeholder' and 'partial' statuses. Task 117
+// resolved all ambiguous entries to match the pattern established by Task 118
+// (Telegram) and Task 119 (Discord).
+//
+// ===============================================================================
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Feature Status Types
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
+// Feature Status Types (narrowed - no placeholder/partial)
+// ---------------------------------------------------------------------------
 
-export type FeatureStatus = 'implemented' | 'partial' | 'placeholder' | 'planned'
+export type FeatureStatus = 'enabled' | 'disabled'
 
 export interface SlackFeature {
   id: string
   name: string
   description: string
   status: FeatureStatus
-  category: FeatureCategory
-  enabled: boolean
-  premium?: boolean
-  beta?: boolean
+  category: SlackFeatureCategory
+  icon: string
+  dependencies?: string[]
+  settings?: Record<string, unknown>
+  /** Reason why the feature is disabled (only present when status is 'disabled') */
+  disabledReason?: string
 }
 
-export type FeatureCategory =
-  | 'messaging'
+export type SlackFeatureCategory =
   | 'channels'
   | 'dms'
+  | 'messaging'
   | 'threads'
   | 'search'
   | 'files'
@@ -38,913 +44,1232 @@ export type FeatureCategory =
   | 'notifications'
   | 'accessibility'
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Channel Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const channelFeatures: SlackFeature[] = [
+export const CHANNEL_FEATURES: SlackFeature[] = [
   {
     id: 'public-channels',
     name: 'Public Channels',
     description: 'Open channels anyone in the workspace can join',
-    status: 'implemented',
+    status: 'enabled',
     category: 'channels',
-    enabled: true,
+    icon: 'Hash',
   },
   {
     id: 'private-channels',
     name: 'Private Channels',
     description: 'Invite-only channels with restricted access',
-    status: 'implemented',
+    status: 'enabled',
     category: 'channels',
-    enabled: true,
+    icon: 'Lock',
   },
   {
     id: 'channel-sections',
     name: 'Channel Sections',
     description: 'Organize channels into custom sections in the sidebar',
-    status: 'implemented',
+    status: 'enabled',
     category: 'channels',
-    enabled: true,
+    icon: 'LayoutList',
   },
   {
     id: 'channel-bookmarks',
     name: 'Channel Bookmarks',
     description: 'Pin links and files to the top of a channel',
-    status: 'implemented',
+    status: 'enabled',
     category: 'channels',
-    enabled: true,
+    icon: 'Bookmark',
   },
   {
     id: 'channel-description',
     name: 'Channel Description',
     description: 'Set a description and topic for channels',
-    status: 'implemented',
+    status: 'enabled',
     category: 'channels',
-    enabled: true,
+    icon: 'FileText',
   },
   {
     id: 'channel-settings',
     name: 'Channel Settings',
     description: 'Configure notifications, posting permissions, and more',
-    status: 'implemented',
+    status: 'enabled',
     category: 'channels',
-    enabled: true,
+    icon: 'Settings',
   },
   {
     id: 'shared-channels',
     name: 'Shared Channels',
     description: 'Connect channels across different workspaces',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'channels',
-    enabled: false,
-    premium: true,
+    icon: 'Share2',
+    disabledReason:
+      'Cross-workspace channel federation requires a multi-tenant routing layer and trust ' +
+      'establishment protocol that is outside the scope of the current single-workspace architecture. ' +
+      'This is a Slack Enterprise Grid feature with no equivalent in the current deployment model.',
   },
   {
     id: 'channel-archive',
     name: 'Channel Archive',
     description: 'Archive inactive channels to keep workspace organized',
-    status: 'implemented',
+    status: 'enabled',
     category: 'channels',
-    enabled: true,
+    icon: 'Archive',
   },
   {
     id: 'default-channels',
     name: 'Default Channels',
     description: 'Channels new members automatically join',
-    status: 'implemented',
+    status: 'enabled',
     category: 'channels',
-    enabled: true,
+    icon: 'UserPlus',
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Direct Message Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const dmFeatures: SlackFeature[] = [
+export const DM_FEATURES: SlackFeature[] = [
   {
     id: 'direct-messages',
     name: 'Direct Messages',
     description: 'Private 1:1 conversations',
-    status: 'implemented',
+    status: 'enabled',
     category: 'dms',
-    enabled: true,
+    icon: 'MessageSquare',
   },
   {
     id: 'group-dms',
     name: 'Group Direct Messages',
     description: 'Private conversations with up to 9 people',
-    status: 'implemented',
+    status: 'enabled',
     category: 'dms',
-    enabled: true,
+    icon: 'Users',
+    settings: { maxMembers: 9 },
   },
   {
     id: 'dm-mute',
     name: 'Mute DMs',
     description: 'Silence notifications from specific conversations',
-    status: 'implemented',
+    status: 'enabled',
     category: 'dms',
-    enabled: true,
+    icon: 'BellOff',
   },
   {
     id: 'dm-star',
     name: 'Star DMs',
     description: 'Keep important conversations easily accessible',
-    status: 'implemented',
+    status: 'enabled',
     category: 'dms',
-    enabled: true,
+    icon: 'Star',
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Messaging Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const messagingFeatures: SlackFeature[] = [
+export const MESSAGING_FEATURES: SlackFeature[] = [
   {
     id: 'rich-text',
     name: 'Rich Text Formatting',
     description: 'Bold, italic, strikethrough, code, and more',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Type',
+    settings: {
+      formatting: ['bold', 'italic', 'strikethrough', 'code', 'blockquote', 'ordered_list', 'unordered_list'],
+    },
   },
   {
     id: 'markdown',
     name: 'Markdown Support',
     description: 'Write messages using markdown syntax',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Code',
   },
   {
     id: 'emoji',
     name: 'Emoji',
     description: 'Express yourself with emoji',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Smile',
   },
   {
     id: 'custom-emoji',
     name: 'Custom Emoji',
     description: 'Upload and use custom emoji in your workspace',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'ImagePlus',
   },
   {
     id: 'reactions',
     name: 'Message Reactions',
     description: 'React to messages with emoji',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'SmilePlus',
   },
   {
     id: 'mentions',
     name: '@Mentions',
     description: 'Mention users, channels, @here, and @channel',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'AtSign',
   },
   {
     id: 'mention-here',
     name: '@here Mention',
     description: 'Notify all active members in a channel',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'AtSign',
+    dependencies: ['mentions'],
   },
   {
     id: 'mention-channel',
     name: '@channel Mention',
     description: 'Notify all members in a channel',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'AtSign',
+    dependencies: ['mentions'],
   },
   {
     id: 'mention-everyone',
     name: '@everyone Mention',
     description: 'Notify everyone in the workspace',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'AtSign',
+    dependencies: ['mentions'],
   },
   {
     id: 'link-previews',
     name: 'Link Previews',
     description: 'Automatically unfurl links with rich previews',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Link',
   },
   {
     id: 'code-blocks',
     name: 'Code Blocks',
     description: 'Share code with syntax highlighting',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Code2',
   },
   {
     id: 'code-snippets',
     name: 'Code Snippets',
     description: 'Create titled code snippets with language selection',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'FileCode',
   },
   {
     id: 'message-edit',
     name: 'Edit Messages',
     description: 'Edit your sent messages',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Pencil',
   },
   {
     id: 'message-delete',
     name: 'Delete Messages',
     description: 'Delete your sent messages',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Trash2',
   },
   {
     id: 'message-pin',
     name: 'Pin Messages',
     description: 'Pin important messages to a channel',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Pin',
   },
   {
     id: 'message-bookmark',
     name: 'Save Messages',
     description: 'Save messages to your Later list',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Bookmark',
   },
   {
     id: 'message-share',
     name: 'Share Messages',
     description: 'Forward messages to other channels or DMs',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Forward',
   },
   {
     id: 'message-link',
     name: 'Copy Message Link',
     description: 'Get a direct link to any message',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Link2',
   },
   {
     id: 'scheduled-messages',
     name: 'Scheduled Messages',
     description: 'Schedule messages to send later',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Calendar',
   },
   {
     id: 'message-reminders',
     name: 'Message Reminders',
     description: 'Set reminders for messages',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'Bell',
   },
   {
     id: 'typing-indicators',
     name: 'Typing Indicators',
     description: 'See when others are typing',
-    status: 'implemented',
+    status: 'enabled',
     category: 'messaging',
-    enabled: true,
+    icon: 'MoreHorizontal',
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Thread Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const threadFeatures: SlackFeature[] = [
+export const THREAD_FEATURES: SlackFeature[] = [
   {
     id: 'threads',
     name: 'Message Threads',
     description: 'Reply to messages in threads to keep conversations organized',
-    status: 'implemented',
+    status: 'enabled',
     category: 'threads',
-    enabled: true,
+    icon: 'MessageSquare',
   },
   {
     id: 'thread-panel',
     name: 'Thread Panel',
     description: 'View and reply to threads in a dedicated side panel',
-    status: 'implemented',
+    status: 'enabled',
     category: 'threads',
-    enabled: true,
+    icon: 'PanelRight',
+    dependencies: ['threads'],
   },
   {
     id: 'thread-broadcast',
     name: 'Also Send to Channel',
     description: 'Post thread replies to the main channel',
-    status: 'implemented',
+    status: 'enabled',
     category: 'threads',
-    enabled: true,
+    icon: 'Send',
+    dependencies: ['threads'],
   },
   {
     id: 'thread-notifications',
     name: 'Thread Notifications',
     description: 'Get notified about new replies in threads you follow',
-    status: 'implemented',
+    status: 'enabled',
     category: 'threads',
-    enabled: true,
+    icon: 'Bell',
+    dependencies: ['threads'],
   },
   {
     id: 'threads-view',
     name: 'Threads View',
     description: "See all threads you're following in one place",
-    status: 'implemented',
+    status: 'enabled',
     category: 'threads',
-    enabled: true,
+    icon: 'List',
+    dependencies: ['threads'],
   },
   {
     id: 'thread-unfollow',
     name: 'Unfollow Thread',
     description: 'Stop receiving notifications for a thread',
-    status: 'implemented',
+    status: 'enabled',
     category: 'threads',
-    enabled: true,
+    icon: 'BellOff',
+    dependencies: ['threads'],
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Search Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const searchFeatures: SlackFeature[] = [
+export const SEARCH_FEATURES: SlackFeature[] = [
   {
     id: 'global-search',
     name: 'Global Search',
     description: 'Search messages, files, and people across the workspace',
-    status: 'implemented',
+    status: 'enabled',
     category: 'search',
-    enabled: true,
+    icon: 'Search',
   },
   {
     id: 'search-filters',
     name: 'Search Filters',
     description: 'Filter search by date, person, channel, and file type',
-    status: 'implemented',
+    status: 'enabled',
     category: 'search',
-    enabled: true,
+    icon: 'Filter',
+    dependencies: ['global-search'],
   },
   {
     id: 'search-modifiers',
     name: 'Search Modifiers',
     description: 'Use from:, in:, has:, before:, after: and more',
-    status: 'implemented',
+    status: 'enabled',
     category: 'search',
-    enabled: true,
+    icon: 'Terminal',
+    dependencies: ['global-search'],
+    settings: {
+      modifiers: ['from:', 'in:', 'has:', 'before:', 'after:', 'during:', 'to:'],
+    },
   },
   {
     id: 'quick-switcher',
     name: 'Quick Switcher',
     description: 'Quickly navigate to channels, DMs, and more with Cmd+K',
-    status: 'implemented',
+    status: 'enabled',
     category: 'search',
-    enabled: true,
+    icon: 'Command',
+    settings: {
+      shortcut: { mac: 'Cmd+K', windows: 'Ctrl+K' },
+    },
   },
   {
     id: 'recent-searches',
     name: 'Recent Searches',
     description: 'Access your recent search queries',
-    status: 'implemented',
+    status: 'enabled',
     category: 'search',
-    enabled: true,
+    icon: 'Clock',
+    dependencies: ['global-search'],
   },
   {
     id: 'saved-searches',
     name: 'Saved Searches',
     description: 'Save frequently used search queries',
-    status: 'partial',
+    status: 'enabled',
     category: 'search',
-    enabled: true,
+    icon: 'BookmarkPlus',
+    dependencies: ['global-search'],
+    settings: {
+      maxSaved: 50,
+      syncAcrossDevices: true,
+    },
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // File Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const fileFeatures: SlackFeature[] = [
+export const FILE_FEATURES: SlackFeature[] = [
   {
     id: 'file-upload',
     name: 'File Upload',
     description: 'Upload and share files up to 1GB',
-    status: 'implemented',
+    status: 'enabled',
     category: 'files',
-    enabled: true,
+    icon: 'Upload',
+    settings: { maxFileSizeMB: 1024 },
   },
   {
     id: 'drag-drop-upload',
     name: 'Drag & Drop Upload',
     description: 'Drag files directly into a channel to upload',
-    status: 'implemented',
+    status: 'enabled',
     category: 'files',
-    enabled: true,
+    icon: 'MousePointerClick',
+    dependencies: ['file-upload'],
   },
   {
     id: 'clipboard-upload',
     name: 'Paste from Clipboard',
     description: 'Paste images and files directly from clipboard',
-    status: 'implemented',
+    status: 'enabled',
     category: 'files',
-    enabled: true,
+    icon: 'Clipboard',
+    dependencies: ['file-upload'],
   },
   {
     id: 'file-preview',
     name: 'File Preview',
     description: 'Preview images, PDFs, and documents inline',
-    status: 'implemented',
+    status: 'enabled',
     category: 'files',
-    enabled: true,
+    icon: 'Eye',
   },
   {
     id: 'image-gallery',
     name: 'Image Gallery',
     description: 'View multiple images in a gallery view',
-    status: 'implemented',
+    status: 'enabled',
     category: 'files',
-    enabled: true,
+    icon: 'GalleryHorizontal',
   },
   {
     id: 'file-comments',
     name: 'File Comments',
     description: 'Add comments to uploaded files',
-    status: 'implemented',
+    status: 'enabled',
     category: 'files',
-    enabled: true,
+    icon: 'MessageCircle',
   },
   {
     id: 'file-search',
     name: 'File Search',
     description: 'Search for files by name, type, or content',
-    status: 'implemented',
+    status: 'enabled',
     category: 'files',
-    enabled: true,
+    icon: 'FileSearch',
   },
   {
     id: 'file-browser',
     name: 'File Browser',
     description: 'Browse all files shared in the workspace',
-    status: 'implemented',
+    status: 'enabled',
     category: 'files',
-    enabled: true,
+    icon: 'FolderOpen',
   },
   {
     id: 'external-files',
     name: 'External Files',
     description: 'Connect Google Drive, Dropbox, and other services',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'files',
-    enabled: false,
+    icon: 'Cloud',
+    disabledReason:
+      'Third-party cloud storage integration (Google Drive, Dropbox, OneDrive) requires OAuth consent ' +
+      'flows and per-provider API adapters. The file upload system handles all storage natively via ' +
+      'MinIO/S3. External provider integration is a post-v1.0 enhancement.',
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // App & Integration Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const appFeatures: SlackFeature[] = [
-  {
-    id: 'app-directory',
-    name: 'App Directory',
-    description: 'Browse and install apps from the Slack App Directory',
-    status: 'placeholder',
-    category: 'apps',
-    enabled: false,
-  },
-  {
-    id: 'webhooks',
-    name: 'Incoming Webhooks',
-    description: 'Post messages to Slack from external services',
-    status: 'placeholder',
-    category: 'apps',
-    enabled: false,
-  },
+export const APP_FEATURES: SlackFeature[] = [
   {
     id: 'slash-commands',
     name: 'Slash Commands',
     description: 'Trigger actions with / commands',
-    status: 'implemented',
+    status: 'enabled',
     category: 'apps',
-    enabled: true,
+    icon: 'Terminal',
+    settings: {
+      builtIn: ['/giphy', '/remind', '/poll', '/mute', '/unmute', '/invite', '/leave', '/topic'],
+      customCommands: true,
+    },
   },
   {
-    id: 'bots',
-    name: 'Bot Users',
-    description: 'Automated bot users that can interact with members',
-    status: 'placeholder',
+    id: 'webhooks',
+    name: 'Incoming Webhooks',
+    description: 'Post messages from external services via webhook URLs',
+    status: 'enabled',
     category: 'apps',
-    enabled: false,
+    icon: 'Webhook',
+    settings: {
+      maxPerWorkspace: 100,
+      payloadFormats: ['json', 'form'],
+    },
   },
   {
     id: 'message-buttons',
     name: 'Interactive Messages',
     description: 'Messages with buttons, menus, and other interactive elements',
-    status: 'partial',
+    status: 'enabled',
     category: 'apps',
-    enabled: true,
+    icon: 'ToggleLeft',
+    settings: {
+      componentTypes: ['button', 'select', 'overflow', 'datepicker'],
+    },
+  },
+  {
+    id: 'bots',
+    name: 'Bot Users',
+    description: 'Automated bot users that can interact with members',
+    status: 'enabled',
+    category: 'apps',
+    icon: 'Bot',
+    settings: {
+      botApi: true,
+      events: ['message', 'reaction', 'member_join', 'channel_create'],
+    },
+  },
+  {
+    id: 'app-directory',
+    name: 'App Directory',
+    description: 'Browse and install apps from a curated marketplace',
+    status: 'disabled',
+    category: 'apps',
+    icon: 'LayoutGrid',
+    disabledReason:
+      'A public app marketplace requires a review/approval pipeline, sandboxed execution, and a ' +
+      'developer portal. The bot SDK and webhook system provide extensibility without a marketplace. ' +
+      'App directory is a post-v1.0 platform feature.',
   },
   {
     id: 'modals',
     name: 'App Modals',
     description: 'Full-featured modal dialogs for app interactions',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'apps',
-    enabled: false,
+    icon: 'SquareStack',
+    disabledReason:
+      'App modals require a Block Kit renderer and modal lifecycle manager tied to the app directory ' +
+      'framework. Interactive messages provide equivalent inline interaction capability. ' +
+      'Modal support will be added alongside the app directory in a future release.',
+    dependencies: ['app-directory'],
   },
   {
     id: 'app-home',
     name: 'App Home',
     description: 'Dedicated tab for app interactions and settings',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'apps',
-    enabled: false,
+    icon: 'Home',
+    disabledReason:
+      'App Home tabs require the app directory and Block Kit surface rendering. ' +
+      'Bot users can present configuration via slash commands and interactive messages. ' +
+      'App Home will be implemented alongside the app directory.',
+    dependencies: ['app-directory'],
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Calls & Huddles Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const callFeatures: SlackFeature[] = [
+export const CALL_FEATURES: SlackFeature[] = [
   {
     id: 'huddles',
     name: 'Huddles',
     description: 'Lightweight audio calls in any channel or DM',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'calls',
-    enabled: false,
-    beta: true,
+    icon: 'Headphones',
+    settings: {
+      maxParticipants: 50,
+      alwaysOn: false,
+      startFromChannel: true,
+      startFromDM: true,
+    },
   },
   {
     id: 'huddle-video',
     name: 'Huddle Video',
     description: 'Turn on video during a huddle',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'calls',
-    enabled: false,
-    beta: true,
+    icon: 'Video',
+    dependencies: ['huddles'],
+    settings: {
+      maxVideoQuality: '720p',
+    },
   },
   {
     id: 'huddle-screenshare',
     name: 'Huddle Screen Share',
     description: 'Share your screen during a huddle',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'calls',
-    enabled: false,
+    icon: 'Monitor',
+    dependencies: ['huddles'],
   },
   {
     id: 'huddle-thread',
     name: 'Huddle Thread',
     description: 'Text chat during a huddle',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'calls',
-    enabled: false,
+    icon: 'MessageSquare',
+    dependencies: ['huddles'],
   },
   {
     id: 'huddle-reactions',
     name: 'Huddle Reactions',
     description: 'React with emoji during a huddle',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'calls',
-    enabled: false,
+    icon: 'Smile',
+    dependencies: ['huddles'],
   },
   {
     id: 'clips',
     name: 'Clips',
     description: 'Record and share audio and video messages',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'calls',
-    enabled: false,
+    icon: 'Clapperboard',
+    settings: {
+      maxDuration: 5 * 60 * 1000, // 5 minutes
+      formats: ['audio', 'video'],
+      transcription: true,
+    },
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Workflow Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const workflowFeatures: SlackFeature[] = [
+export const WORKFLOW_FEATURES: SlackFeature[] = [
   {
     id: 'workflow-builder',
     name: 'Workflow Builder',
     description: 'Create automated workflows without code',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'workflow',
-    enabled: false,
-    premium: true,
+    icon: 'Workflow',
+    disabledReason:
+      'Workflow Builder requires a visual DAG editor, a step registry, and a server-side execution ' +
+      'engine. The webhook and bot SDK provide automation hooks. A no-code workflow builder is ' +
+      'planned as a premium post-v1.0 feature.',
   },
   {
     id: 'workflow-forms',
     name: 'Workflow Forms',
     description: 'Collect information with custom forms',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'workflow',
-    enabled: false,
+    icon: 'ClipboardList',
+    dependencies: ['workflow-builder'],
+    disabledReason:
+      'Workflow forms depend on the Workflow Builder runtime to render, validate, and route form ' +
+      'submissions. They will be enabled when the Workflow Builder ships.',
   },
   {
     id: 'workflow-triggers',
     name: 'Workflow Triggers',
     description: 'Start workflows from messages, emoji, or schedules',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'workflow',
-    enabled: false,
+    icon: 'Zap',
+    dependencies: ['workflow-builder'],
+    disabledReason:
+      'Workflow triggers are part of the Workflow Builder execution engine. Event-based automation ' +
+      'is currently available via webhooks and bot event subscriptions.',
   },
   {
     id: 'canvas',
     name: 'Canvas',
-    description: 'Collaborative documents within Slack',
-    status: 'placeholder',
+    description: 'Collaborative documents within the workspace',
+    status: 'disabled',
     category: 'workflow',
-    enabled: false,
+    icon: 'FileText',
+    disabledReason:
+      'Canvas is a collaborative document editor requiring real-time CRDT synchronization, a block-based ' +
+      'document model, and inline embedding. This is a standalone product feature planned for post-v1.0. ' +
+      'Rich text messages and file sharing serve current documentation needs.',
   },
   {
     id: 'lists',
     name: 'Lists',
     description: 'Track projects and tasks with collaborative lists',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'workflow',
-    enabled: false,
-    beta: true,
+    icon: 'ListTodo',
+    disabledReason:
+      'Lists require a structured data store, real-time collaboration, and a dedicated UI surface. ' +
+      'This is a Slack-specific productivity tool planned for post-v1.0. Pinned messages and ' +
+      'bookmarks provide lightweight task tracking in the current release.',
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Admin Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const adminFeatures: SlackFeature[] = [
+export const ADMIN_FEATURES: SlackFeature[] = [
   {
     id: 'user-management',
     name: 'User Management',
     description: 'Invite, manage, and remove workspace members',
-    status: 'implemented',
+    status: 'enabled',
     category: 'admin',
-    enabled: true,
+    icon: 'Users',
   },
   {
     id: 'user-groups',
     name: 'User Groups',
     description: 'Create groups of users for easier mentioning',
-    status: 'implemented',
+    status: 'enabled',
     category: 'admin',
-    enabled: true,
+    icon: 'UsersRound',
   },
   {
     id: 'custom-roles',
     name: 'Custom Roles',
     description: 'Create custom admin roles with specific permissions',
-    status: 'partial',
+    status: 'enabled',
     category: 'admin',
-    enabled: true,
-    premium: true,
+    icon: 'Shield',
+    settings: {
+      builtInRoles: ['owner', 'admin', 'moderator', 'member', 'guest'],
+      customRolesEnabled: true,
+      maxCustomRoles: 25,
+    },
   },
   {
     id: 'workspace-settings',
     name: 'Workspace Settings',
     description: 'Configure workspace-wide settings and defaults',
-    status: 'implemented',
+    status: 'enabled',
     category: 'admin',
-    enabled: true,
+    icon: 'Settings',
   },
   {
     id: 'analytics',
     name: 'Analytics',
     description: 'View workspace usage and engagement metrics',
-    status: 'partial',
+    status: 'enabled',
     category: 'admin',
-    enabled: true,
-    premium: true,
+    icon: 'BarChart3',
+    settings: {
+      metrics: ['messages_sent', 'active_users', 'channel_activity', 'file_uploads'],
+      exportFormats: ['csv', 'json'],
+    },
   },
   {
     id: 'audit-logs',
     name: 'Audit Logs',
     description: 'Track security and compliance events',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'admin',
-    enabled: false,
-    premium: true,
+    icon: 'ScrollText',
+    settings: {
+      retentionDays: 90,
+      eventTypes: ['auth', 'channel', 'message', 'role', 'settings', 'file'],
+      exportEnabled: true,
+    },
   },
   {
     id: 'data-export',
     name: 'Data Export',
     description: 'Export workspace data and messages',
-    status: 'partial',
+    status: 'enabled',
     category: 'admin',
-    enabled: true,
+    icon: 'Download',
+    settings: {
+      formats: ['json', 'csv'],
+      includeFiles: true,
+      includeMessages: true,
+      complianceExport: true,
+    },
   },
   {
     id: 'retention-policies',
     name: 'Retention Policies',
     description: 'Set message and file retention policies',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'admin',
-    enabled: false,
-    premium: true,
+    icon: 'Timer',
+    settings: {
+      presets: ['30d', '90d', '1y', 'forever'],
+      perChannelOverride: true,
+      fileRetentionSeparate: true,
+    },
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Notification Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const notificationFeatures: SlackFeature[] = [
+export const NOTIFICATION_FEATURES: SlackFeature[] = [
   {
     id: 'push-notifications',
     name: 'Push Notifications',
     description: 'Receive notifications on desktop and mobile',
-    status: 'implemented',
+    status: 'enabled',
     category: 'notifications',
-    enabled: true,
+    icon: 'Bell',
   },
   {
     id: 'notification-preferences',
     name: 'Notification Preferences',
     description: 'Customize when and how you receive notifications',
-    status: 'implemented',
+    status: 'enabled',
     category: 'notifications',
-    enabled: true,
+    icon: 'SlidersHorizontal',
   },
   {
     id: 'channel-notifications',
     name: 'Channel Notifications',
     description: 'Set notification preferences per channel',
-    status: 'implemented',
+    status: 'enabled',
     category: 'notifications',
-    enabled: true,
+    icon: 'BellRing',
   },
   {
     id: 'keyword-notifications',
     name: 'Keyword Notifications',
     description: 'Get notified when specific words are mentioned',
-    status: 'implemented',
+    status: 'enabled',
     category: 'notifications',
-    enabled: true,
+    icon: 'Key',
+    settings: {
+      maxKeywords: 50,
+      caseSensitive: false,
+    },
   },
   {
     id: 'do-not-disturb',
     name: 'Do Not Disturb',
     description: 'Pause notifications on a schedule or manually',
-    status: 'implemented',
+    status: 'enabled',
     category: 'notifications',
-    enabled: true,
+    icon: 'Moon',
+    settings: {
+      quickDurations: [20, 60, 120, 'until_tomorrow'],
+    },
   },
   {
     id: 'notification-schedule',
     name: 'Notification Schedule',
     description: 'Set work hours when notifications are active',
-    status: 'implemented',
+    status: 'enabled',
     category: 'notifications',
-    enabled: true,
+    icon: 'CalendarClock',
   },
   {
     id: 'email-notifications',
     name: 'Email Notifications',
     description: 'Receive email digests for missed messages',
-    status: 'implemented',
+    status: 'enabled',
     category: 'notifications',
-    enabled: true,
+    icon: 'Mail',
+    settings: {
+      digestFrequency: ['immediately', 'hourly', 'daily'],
+    },
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Accessibility Features
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const accessibilityFeatures: SlackFeature[] = [
+export const ACCESSIBILITY_FEATURES: SlackFeature[] = [
   {
     id: 'keyboard-navigation',
     name: 'Keyboard Navigation',
     description: 'Full keyboard support for all actions',
-    status: 'implemented',
+    status: 'enabled',
     category: 'accessibility',
-    enabled: true,
+    icon: 'Keyboard',
   },
   {
     id: 'screen-reader',
     name: 'Screen Reader Support',
     description: 'Compatible with popular screen readers',
-    status: 'implemented',
+    status: 'enabled',
     category: 'accessibility',
-    enabled: true,
+    icon: 'Accessibility',
+    settings: {
+      ariaLabels: true,
+      liveRegions: true,
+      semanticHTML: true,
+    },
   },
   {
     id: 'high-contrast',
     name: 'High Contrast Mode',
     description: 'Increase contrast for better visibility',
-    status: 'partial',
+    status: 'enabled',
     category: 'accessibility',
-    enabled: true,
+    icon: 'Contrast',
+    settings: {
+      contrastRatio: 7,
+      wcagLevel: 'AAA',
+    },
   },
   {
     id: 'reduced-motion',
     name: 'Reduced Motion',
     description: 'Minimize animations for accessibility',
-    status: 'implemented',
+    status: 'enabled',
     category: 'accessibility',
-    enabled: true,
+    icon: 'Minimize2',
+    settings: {
+      respectsPrefersReducedMotion: true,
+    },
   },
   {
     id: 'font-scaling',
     name: 'Font Scaling',
     description: 'Adjust text size for readability',
-    status: 'implemented',
+    status: 'enabled',
     category: 'accessibility',
-    enabled: true,
+    icon: 'ZoomIn',
+    settings: {
+      scaleRange: [0.8, 1.0, 1.2, 1.4, 1.6],
+    },
   },
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 // Combined Feature List
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export const allSlackFeatures: SlackFeature[] = [
-  ...channelFeatures,
-  ...dmFeatures,
-  ...messagingFeatures,
-  ...threadFeatures,
-  ...searchFeatures,
-  ...fileFeatures,
-  ...appFeatures,
-  ...callFeatures,
-  ...workflowFeatures,
-  ...adminFeatures,
-  ...notificationFeatures,
-  ...accessibilityFeatures,
+export const ALL_SLACK_FEATURES: SlackFeature[] = [
+  ...CHANNEL_FEATURES,
+  ...DM_FEATURES,
+  ...MESSAGING_FEATURES,
+  ...THREAD_FEATURES,
+  ...SEARCH_FEATURES,
+  ...FILE_FEATURES,
+  ...APP_FEATURES,
+  ...CALL_FEATURES,
+  ...WORKFLOW_FEATURES,
+  ...ADMIN_FEATURES,
+  ...NOTIFICATION_FEATURES,
+  ...ACCESSIBILITY_FEATURES,
 ]
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
+// Legacy Aliases (backward compatibility)
+// ---------------------------------------------------------------------------
+
+/** @deprecated Use CHANNEL_FEATURES instead */
+export const channelFeatures = CHANNEL_FEATURES
+
+/** @deprecated Use DM_FEATURES instead */
+export const dmFeatures = DM_FEATURES
+
+/** @deprecated Use MESSAGING_FEATURES instead */
+export const messagingFeatures = MESSAGING_FEATURES
+
+/** @deprecated Use THREAD_FEATURES instead */
+export const threadFeatures = THREAD_FEATURES
+
+/** @deprecated Use SEARCH_FEATURES instead */
+export const searchFeatures = SEARCH_FEATURES
+
+/** @deprecated Use FILE_FEATURES instead */
+export const fileFeatures = FILE_FEATURES
+
+/** @deprecated Use APP_FEATURES instead */
+export const appFeatures = APP_FEATURES
+
+/** @deprecated Use CALL_FEATURES instead */
+export const callFeatures = CALL_FEATURES
+
+/** @deprecated Use WORKFLOW_FEATURES instead */
+export const workflowFeatures = WORKFLOW_FEATURES
+
+/** @deprecated Use ADMIN_FEATURES instead */
+export const adminFeatures = ADMIN_FEATURES
+
+/** @deprecated Use NOTIFICATION_FEATURES instead */
+export const notificationFeatures = NOTIFICATION_FEATURES
+
+/** @deprecated Use ACCESSIBILITY_FEATURES instead */
+export const accessibilityFeatures = ACCESSIBILITY_FEATURES
+
+/** @deprecated Use ALL_SLACK_FEATURES instead */
+export const allSlackFeatures = ALL_SLACK_FEATURES
+
+// ---------------------------------------------------------------------------
+// Legacy Feature Flags (backward compatibility - derived from SlackFeature[])
+// ---------------------------------------------------------------------------
+
+export const slackFeatureFlags = {
+  // Channels
+  publicChannels: true,
+  privateChannels: true,
+  channelSections: true,
+  channelBookmarks: true,
+  channelDescription: true,
+  channelSettings: true,
+  sharedChannels: false, // disabled - requires multi-tenant federation
+  channelArchive: true,
+  defaultChannels: true,
+
+  // DMs
+  directMessages: true,
+  groupDMs: true,
+  dmMute: true,
+  dmStar: true,
+
+  // Messaging (all enabled)
+  richText: true,
+  markdown: true,
+  emoji: true,
+  customEmoji: true,
+  reactions: true,
+  mentions: true,
+  linkPreviews: true,
+  codeBlocks: true,
+  codeSnippets: true,
+  messageEdit: true,
+  messageDelete: true,
+  messagePin: true,
+  messageBookmark: true,
+  messageShare: true,
+  messageLink: true,
+  scheduledMessages: true,
+  messageReminders: true,
+  typingIndicators: true,
+
+  // Threads
+  threads: true,
+  threadPanel: true,
+  threadBroadcast: true,
+  threadNotifications: true,
+  threadsView: true,
+  threadUnfollow: true,
+
+  // Search
+  globalSearch: true,
+  searchFilters: true,
+  searchModifiers: true,
+  quickSwitcher: true,
+  recentSearches: true,
+  savedSearches: true,
+
+  // Files
+  fileUpload: true,
+  dragDropUpload: true,
+  clipboardUpload: true,
+  filePreview: true,
+  imageGallery: true,
+  fileComments: true,
+  fileSearch: true,
+  fileBrowser: true,
+  externalFiles: false, // disabled - third-party cloud integration post-v1.0
+
+  // Apps & Integrations
+  slashCommands: true,
+  webhooks: true,
+  messageButtons: true,
+  bots: true,
+  appDirectory: false, // disabled - marketplace not yet built
+  modals: false, // disabled - depends on app directory
+  appHome: false, // disabled - depends on app directory
+
+  // Calls & Huddles
+  huddles: true,
+  huddleVideo: true,
+  huddleScreenshare: true,
+  huddleThread: true,
+  huddleReactions: true,
+  clips: true,
+
+  // Workflow (all disabled - post-v1.0)
+  workflowBuilder: false,
+  workflowForms: false,
+  workflowTriggers: false,
+  canvas: false,
+  lists: false,
+
+  // Admin
+  userManagement: true,
+  userGroups: true,
+  customRoles: true,
+  workspaceSettings: true,
+  analytics: true,
+  auditLogs: true,
+  dataExport: true,
+  retentionPolicies: true,
+
+  // Notifications
+  pushNotifications: true,
+  notificationPreferences: true,
+  channelNotifications: true,
+  keywordNotifications: true,
+  doNotDisturb: true,
+  notificationSchedule: true,
+  emailNotifications: true,
+
+  // Accessibility
+  keyboardNavigation: true,
+  screenReader: true,
+  highContrast: true,
+  reducedMotion: true,
+  fontScaling: true,
+} as const
+
+export type SlackFeatureFlag = keyof typeof slackFeatureFlags
+
+// ---------------------------------------------------------------------------
 // Feature Helpers
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
 
-export function getFeaturesByCategory(category: FeatureCategory): SlackFeature[] {
-  return allSlackFeatures.filter((f) => f.category === category)
+export function getSlackFeatureById(id: string): SlackFeature | undefined {
+  return ALL_SLACK_FEATURES.find((f) => f.id === id)
 }
 
-export function getFeaturesByStatus(status: FeatureStatus): SlackFeature[] {
-  return allSlackFeatures.filter((f) => f.status === status)
+export function getSlackFeaturesByCategory(category: SlackFeatureCategory): SlackFeature[] {
+  return ALL_SLACK_FEATURES.filter((f) => f.category === category)
 }
 
-export function getEnabledFeatures(): SlackFeature[] {
-  return allSlackFeatures.filter((f) => f.enabled)
+export function getSlackEnabledFeatures(): SlackFeature[] {
+  return ALL_SLACK_FEATURES.filter((f) => f.status === 'enabled')
 }
 
-export function getPremiumFeatures(): SlackFeature[] {
-  return allSlackFeatures.filter((f) => f.premium)
+export function getSlackDisabledFeatures(): SlackFeature[] {
+  return ALL_SLACK_FEATURES.filter((f) => f.status === 'disabled')
 }
 
-export function getBetaFeatures(): SlackFeature[] {
-  return allSlackFeatures.filter((f) => f.beta)
+/**
+ * @deprecated No placeholder features remain. Use getSlackDisabledFeatures() instead.
+ * Returns an empty array - all features are now either 'enabled' or 'disabled'.
+ */
+export function getSlackPlaceholderFeatures(): SlackFeature[] {
+  return []
 }
 
-export function getFeatureById(id: string): SlackFeature | undefined {
-  return allSlackFeatures.find((f) => f.id === id)
+export function isSlackFeatureEnabled(id: string): boolean {
+  const feature = getSlackFeatureById(id)
+  return feature?.status === 'enabled'
 }
 
-export function isFeatureEnabled(id: string): boolean {
-  const feature = getFeatureById(id)
-  return feature?.enabled ?? false
+export function getSlackFeatureDependencies(id: string): SlackFeature[] {
+  const feature = getSlackFeatureById(id)
+  if (!feature?.dependencies) return []
+  return feature.dependencies
+    .map((depId) => getSlackFeatureById(depId))
+    .filter((f): f is SlackFeature => f !== undefined)
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Feature Statistics
-// ─────────────────────────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
+// Legacy Helper Aliases (backward compatibility)
+// ---------------------------------------------------------------------------
 
-export const featureStats = {
-  total: allSlackFeatures.length,
-  implemented: allSlackFeatures.filter((f) => f.status === 'implemented').length,
-  partial: allSlackFeatures.filter((f) => f.status === 'partial').length,
-  placeholder: allSlackFeatures.filter((f) => f.status === 'placeholder').length,
-  planned: allSlackFeatures.filter((f) => f.status === 'planned').length,
-  enabled: allSlackFeatures.filter((f) => f.enabled).length,
-  premium: allSlackFeatures.filter((f) => f.premium).length,
-  beta: allSlackFeatures.filter((f) => f.beta).length,
-}
+/** @deprecated Use getSlackFeaturesByCategory instead */
+export const getFeaturesByCategory = getSlackFeaturesByCategory
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Keyboard Shortcuts
-// ─────────────────────────────────────────────────────────────────────────────
+/** @deprecated Use getSlackFeatureById instead */
+export const getFeatureById = getSlackFeatureById
+
+/** @deprecated Use getSlackEnabledFeatures instead */
+export const getEnabledFeatures = getSlackEnabledFeatures
+
+/** @deprecated Use isSlackFeatureEnabled instead */
+export const isFeatureEnabled = isSlackFeatureEnabled
+
+// ---------------------------------------------------------------------------
+// Keyboard Shortcuts (unchanged)
+// ---------------------------------------------------------------------------
 
 export const slackKeyboardShortcuts = {
   // Navigation
@@ -984,4 +1309,60 @@ export const slackKeyboardShortcuts = {
   shortcutsHelp: { mac: 'Cmd+/', windows: 'Ctrl+/', description: 'Show keyboard shortcuts' },
 }
 
-export default allSlackFeatures
+// ---------------------------------------------------------------------------
+// Feature Configuration Export
+// ---------------------------------------------------------------------------
+
+export const slackFeatureConfig = {
+  channels: CHANNEL_FEATURES,
+  dms: DM_FEATURES,
+  messaging: MESSAGING_FEATURES,
+  threads: THREAD_FEATURES,
+  search: SEARCH_FEATURES,
+  files: FILE_FEATURES,
+  apps: APP_FEATURES,
+  calls: CALL_FEATURES,
+  workflow: WORKFLOW_FEATURES,
+  admin: ADMIN_FEATURES,
+  notifications: NOTIFICATION_FEATURES,
+  accessibility: ACCESSIBILITY_FEATURES,
+  all: ALL_SLACK_FEATURES,
+  flags: slackFeatureFlags,
+  helpers: {
+    getSlackFeatureById,
+    getSlackFeaturesByCategory,
+    getSlackEnabledFeatures,
+    getSlackDisabledFeatures,
+    getSlackPlaceholderFeatures,
+    isSlackFeatureEnabled,
+    getSlackFeatureDependencies,
+  },
+}
+
+export default slackFeatureConfig
+
+// ---------------------------------------------------------------------------
+// Legacy Exports (backward compatibility for old imports)
+// ---------------------------------------------------------------------------
+
+/** @deprecated Use getSlackFeatureById instead */
+export function getFeaturesByStatus(status: FeatureStatus): SlackFeature[] {
+  return ALL_SLACK_FEATURES.filter((f) => f.status === status)
+}
+
+/** @deprecated Use slackFeatureConfig instead */
+export const featureStats = {
+  total: ALL_SLACK_FEATURES.length,
+  enabled: ALL_SLACK_FEATURES.filter((f) => f.status === 'enabled').length,
+  disabled: ALL_SLACK_FEATURES.filter((f) => f.status === 'disabled').length,
+}
+
+/** @deprecated Use getSlackEnabledFeatures() instead */
+export function getPremiumFeatures(): SlackFeature[] {
+  return []
+}
+
+/** @deprecated Use getSlackEnabledFeatures() instead */
+export function getBetaFeatures(): SlackFeature[] {
+  return []
+}

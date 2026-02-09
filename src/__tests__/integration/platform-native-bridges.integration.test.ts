@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Platform + Native Bridges
  *
  * Tests the integration between platform abstractions and native bridge
@@ -181,7 +183,9 @@ describe('Platform + Native Bridges Integration', () => {
     it('should access native notifications', () => {
       const hasNativeNotifications = typeof Notification !== 'undefined'
 
-      expect(hasNativeNotifications).toBe(false) // In Node test environment
+      // Notification is mocked in jest.setup.js for push notification tests
+      // In a real native platform, this would check for native notification APIs
+      expect(hasNativeNotifications).toBe(true)
     })
 
     it('should access device camera', async () => {

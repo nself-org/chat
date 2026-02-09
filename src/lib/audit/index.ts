@@ -95,3 +95,31 @@ export {
   type ArchiveResult,
   type RetentionStatistics,
 } from './audit-retention'
+
+// Integrity (Tamper Detection)
+export {
+  AuditIntegrityService,
+  getIntegrityService,
+  createIntegrityService,
+  computeHash,
+  computeHMAC,
+  verifyHMAC,
+  generateGenesisHash,
+  computeEntryHash,
+  createIntegrityEntry,
+  verifyEntry,
+  verifyChain,
+  buildMerkleTree,
+  getMerkleRoot,
+  generateMerkleProof,
+  verifyMerkleProof,
+  DEFAULT_INTEGRITY_CONFIG,
+  type HashAlgorithm,
+  type IntegrityAuditEntry,
+  type EntryVerificationResult,
+  type ChainVerificationResult,
+  type ChainMetadata,
+  type MerkleNode,
+  type MerkleProof,
+  type IntegrityConfig,
+} from './audit-integrity'

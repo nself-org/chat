@@ -8,6 +8,7 @@ export * from './search.service'
 export * from './media.service'
 export * from './ai.service'
 export * from './workflows.service'
+export * from './operations.service'
 
 // Re-export services for convenience
 export { analyticsService } from './analytics.service'

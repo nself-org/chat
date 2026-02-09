@@ -9,16 +9,38 @@ on:
     # Run daily at 6 AM UTC
     - cron: '0 6 * * *'
   workflow_dispatch:
+    inputs:
+      fail_on_findings:
+        description: 'Fail workflow on critical/high findings'
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   contents: read
   security-events: write
   actions: read
+  pull-requests: write
+
+env:
+  NODE_VERSION: '20'
+  # Merge blocking policy: fail on critical or high vulnerabilities
+  FAIL_ON_CRITICAL: 'true'
+  FAIL_ON_HIGH: 'true'
+  MAX_MEDIUM_ALLOWED: '10'
 
 jobs:
-  dependency-audit:
-    name: Dependency Audit
+  # ==========================================================================
+  # SAST - Static Application Security Testing
+  # ==========================================================================
+  sast-scan:
+    name: SAST Scan
     runs-on: ubuntu-latest
+    outputs:
+      findings_critical: ${{ steps.analyze.outputs.critical }}
+      findings_high: ${{ steps.analyze.outputs.high }}
+      findings_medium: ${{ steps.analyze.outputs.medium }}
+      should_block: ${{ steps.analyze.outputs.should_block }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,34 +51,147 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run custom SAST scanner
+        id: sast
+        run: |
+          # Run our custom SAST scanner
+          pnpm tsx scripts/run-sast-scan.ts --output sast-results.json || true
+
+          if [ -f "sast-results.json" ]; then
+            echo "SAST scan completed"
+            cat sast-results.json
+          else
+            echo '{"findings":[],"summary":{"critical":0,"high":0,"medium":0,"low":0}}' > sast-results.json
+          fi
+
+      - name: Run Semgrep SAST
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/typescript
+            p/react
+            p/nodejs
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+          generateSarif: true
+        continue-on-error: true
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+      - name: Upload Semgrep results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+          category: 'semgrep-sast'
+        continue-on-error: true
+
+      - name: Analyze SAST results
+        id: analyze
+        run: |
+          CRITICAL=0
+          HIGH=0
+          MEDIUM=0
+
+          # Parse custom SAST results
+          if [ -f "sast-results.json" ]; then
+            CRITICAL=$(jq -r '.summary.critical // 0' sast-results.json)
+            HIGH=$(jq -r '.summary.high // 0' sast-results.json)
+            MEDIUM=$(jq -r '.summary.medium // 0' sast-results.json)
+          fi
+
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+          echo "medium=$MEDIUM" >> $GITHUB_OUTPUT
+
+          # Determine if we should block
+          SHOULD_BLOCK="false"
+          if [ "${{ env.FAIL_ON_CRITICAL }}" = "true" ] && [ "$CRITICAL" -gt "0" ]; then
+            SHOULD_BLOCK="true"
+            echo "::error::Found $CRITICAL critical SAST findings - blocking merge"
+          fi
+          if [ "${{ env.FAIL_ON_HIGH }}" = "true" ] && [ "$HIGH" -gt "0" ]; then
+            SHOULD_BLOCK="true"
+            echo "::error::Found $HIGH high severity SAST findings - blocking merge"
+          fi
+
+          echo "should_block=$SHOULD_BLOCK" >> $GITHUB_OUTPUT
+          echo "## SAST Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Severity | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Critical | $CRITICAL |" >> $GITHUB_STEP_SUMMARY
+          echo "| High | $HIGH |" >> $GITHUB_STEP_SUMMARY
+          echo "| Medium | $MEDIUM |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload SAST results artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sast-results
+          path: |
+            sast-results.json
+            semgrep.sarif
+          retention-days: 30
+
+  # ==========================================================================
+  # SCA - Software Composition Analysis (Dependencies)
+  # ==========================================================================
+  dependency-scan:
+    name: Dependency Scan (SCA)
+    runs-on: ubuntu-latest
+    outputs:
+      findings_critical: ${{ steps.analyze.outputs.critical }}
+      findings_high: ${{ steps.analyze.outputs.high }}
+      findings_moderate: ${{ steps.analyze.outputs.moderate }}
+      should_block: ${{ steps.analyze.outputs.should_block }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Run pnpm audit
-        run: pnpm audit --audit-level=moderate
+        id: audit
+        run: |
+          # Run audit and capture output
+          pnpm audit --json > audit-report.json 2>&1 || true
+
+          # Extract counts from audit report
+          if [ -f "audit-report.json" ]; then
+            CRITICAL=$(jq -r '.metadata.vulnerabilities.critical // 0' audit-report.json)
+            HIGH=$(jq -r '.metadata.vulnerabilities.high // 0' audit-report.json)
+            MODERATE=$(jq -r '.metadata.vulnerabilities.moderate // 0' audit-report.json)
+            LOW=$(jq -r '.metadata.vulnerabilities.low // 0' audit-report.json)
+
+            echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+            echo "high=$HIGH" >> $GITHUB_OUTPUT
+            echo "moderate=$MODERATE" >> $GITHUB_OUTPUT
+            echo "low=$LOW" >> $GITHUB_OUTPUT
+          else
+            echo "critical=0" >> $GITHUB_OUTPUT
+            echo "high=0" >> $GITHUB_OUTPUT
+            echo "moderate=0" >> $GITHUB_OUTPUT
+            echo "low=0" >> $GITHUB_OUTPUT
+          fi
         continue-on-error: true
-
-      - name: Generate audit report
-        run: pnpm audit --json > audit-report.json || true
-        continue-on-error: true
-
-      - name: Upload audit report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: audit-report
-          path: audit-report.json
-          retention-days: 30
-
-  trivy-scan:
-    name: Trivy Filesystem Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -74,57 +209,59 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
-          category: 'trivy-filesystem'
-
-      - name: Upload Trivy results as artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: trivy-scan-results
-          path: trivy-results.sarif
-          retention-days: 30
-
-  semgrep:
-    name: Semgrep SAST
-    runs-on: ubuntu-latest
-    container:
-      image: semgrep/semgrep
-    if: github.actor != 'dependabot[bot]'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Semgrep
-        run: |
-          semgrep scan \
-            --config auto \
-            --sarif \
-            --output semgrep-results.sarif \
-            --severity ERROR \
-            --severity WARNING
+          category: 'trivy-sca'
         continue-on-error: true
-        env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
 
-      - name: Upload Semgrep results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: semgrep-results.sarif
-          category: 'semgrep'
+      - name: Analyze dependency results
+        id: analyze
+        run: |
+          CRITICAL=${{ steps.audit.outputs.critical || 0 }}
+          HIGH=${{ steps.audit.outputs.high || 0 }}
+          MODERATE=${{ steps.audit.outputs.moderate || 0 }}
 
-      - name: Upload Semgrep results as artifact
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+          echo "moderate=$MODERATE" >> $GITHUB_OUTPUT
+
+          # Determine if we should block
+          SHOULD_BLOCK="false"
+          if [ "${{ env.FAIL_ON_CRITICAL }}" = "true" ] && [ "$CRITICAL" -gt "0" ]; then
+            SHOULD_BLOCK="true"
+            echo "::error::Found $CRITICAL critical dependency vulnerabilities - blocking merge"
+          fi
+          if [ "${{ env.FAIL_ON_HIGH }}" = "true" ] && [ "$HIGH" -gt "0" ]; then
+            SHOULD_BLOCK="true"
+            echo "::error::Found $HIGH high severity dependency vulnerabilities - blocking merge"
+          fi
+
+          echo "should_block=$SHOULD_BLOCK" >> $GITHUB_OUTPUT
+          echo "## Dependency Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Severity | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Critical | $CRITICAL |" >> $GITHUB_STEP_SUMMARY
+          echo "| High | $HIGH |" >> $GITHUB_STEP_SUMMARY
+          echo "| Moderate | $MODERATE |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload dependency scan results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: semgrep-scan-results
-          path: semgrep-results.sarif
+          name: dependency-scan-results
+          path: |
+            audit-report.json
+            trivy-results.sarif
           retention-days: 30
 
+  # ==========================================================================
+  # Secrets Scan
+  # ==========================================================================
   secrets-scan:
     name: Secrets Scan
     runs-on: ubuntu-latest
-    # Only run on PRs or scheduled/manual runs (not push to main)
+    outputs:
+      found_secrets: ${{ steps.scan.outputs.found_secrets }}
+    # Only run on PRs or scheduled/manual runs (not push to main to avoid blocking on existing history)
     if: github.event_name == 'pull_request' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
@@ -132,17 +269,66 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: TruffleHog OSS
+      - name: TruffleHog scan
+        id: trufflehog
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           base: ${{ github.event.pull_request.base.sha || '' }}
           head: ${{ github.event.pull_request.head.sha || 'HEAD' }}
-          extra_args: --debug --only-verified
+          extra_args: --only-verified
+        continue-on-error: true
 
+      - name: Run custom secret scanner
+        id: custom_scan
+        run: |
+          # Create a simple secret scanner
+          FOUND=0
+
+          # Scan for common secret patterns in staged files
+          PATTERNS=(
+            'AKIA[0-9A-Z]{16}'
+            'gh[pousr]_[A-Za-z0-9_]{36,}'
+            'sk_(live|test)_[0-9a-zA-Z]{24,}'
+            'xox[baprs]-[0-9A-Za-z-]+'
+            '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----'
+          )
+
+          for pattern in "${PATTERNS[@]}"; do
+            if grep -rE "$pattern" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" --include="*.env*" src/ 2>/dev/null | grep -v "node_modules" | grep -v ".test."; then
+              FOUND=1
+              echo "::warning::Potential secret found matching pattern: $pattern"
+            fi
+          done
+
+          echo "found_secrets=$FOUND" >> $GITHUB_OUTPUT
+
+      - name: Analyze secrets scan
+        id: scan
+        run: |
+          FOUND="${{ steps.custom_scan.outputs.found_secrets || '0' }}"
+          echo "found_secrets=$FOUND" >> $GITHUB_OUTPUT
+
+          if [ "$FOUND" = "1" ]; then
+            echo "::error::Potential secrets detected - review before merging"
+          fi
+
+          echo "## Secrets Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "$FOUND" = "1" ]; then
+            echo "**WARNING**: Potential secrets detected!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No verified secrets found." >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # ==========================================================================
+  # License Compliance
+  # ==========================================================================
   license-check:
     name: License Compliance
     runs-on: ubuntu-latest
+    outputs:
+      has_restricted: ${{ steps.check.outputs.has_restricted }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -153,42 +339,205 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Check licenses
+        id: check
         run: |
-          npx license-checker --production \
-            --onlyAllow "MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;CC0-1.0;CC-BY-3.0;CC-BY-4.0;0BSD;Unlicense;Python-2.0;Zlib;WTFPL" \
-            --summary
+          # Allowed licenses (permissive)
+          ALLOWED="MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;CC0-1.0;CC-BY-3.0;CC-BY-4.0;0BSD;Unlicense;Python-2.0;Zlib;WTFPL;BlueOak-1.0.0"
+
+          # Run license checker
+          npx license-checker --production --onlyAllow "$ALLOWED" --summary > license-report.txt 2>&1 || HAS_RESTRICTED=1
+
+          if [ "${HAS_RESTRICTED:-0}" = "1" ]; then
+            echo "has_restricted=true" >> $GITHUB_OUTPUT
+            echo "::warning::Some dependencies have restricted licenses"
+          else
+            echo "has_restricted=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "## License Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat license-report.txt >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
-  security-summary:
-    name: Security Summary
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: license-report
+          path: license-report.txt
+          retention-days: 30
+
+  # ==========================================================================
+  # CodeQL Analysis
+  # ==========================================================================
+  codeql:
+    name: CodeQL Analysis
     runs-on: ubuntu-latest
-    needs: [dependency-audit, trivy-scan, semgrep, secrets-scan, license-check]
-    if: always()
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"
+
+  # ==========================================================================
+  # Security Gate - Enforces merge blocking policy
+  # ==========================================================================
+  security-gate:
+    name: Security Gate
+    runs-on: ubuntu-latest
+    needs: [sast-scan, dependency-scan, secrets-scan, license-check]
+    if: always()
+    steps:
+      - name: Evaluate security gate
+        id: gate
+        run: |
+          # Collect results
+          SAST_BLOCK="${{ needs.sast-scan.outputs.should_block || 'false' }}"
+          DEP_BLOCK="${{ needs.dependency-scan.outputs.should_block || 'false' }}"
+          SECRETS_FOUND="${{ needs.secrets-scan.outputs.found_secrets || '0' }}"
+
+          # Count findings
+          SAST_CRITICAL="${{ needs.sast-scan.outputs.findings_critical || 0 }}"
+          SAST_HIGH="${{ needs.sast-scan.outputs.findings_high || 0 }}"
+          DEP_CRITICAL="${{ needs.dependency-scan.outputs.findings_critical || 0 }}"
+          DEP_HIGH="${{ needs.dependency-scan.outputs.findings_high || 0 }}"
+
+          # Calculate totals
+          TOTAL_CRITICAL=$((SAST_CRITICAL + DEP_CRITICAL))
+          TOTAL_HIGH=$((SAST_HIGH + DEP_HIGH))
+
+          echo "## Security Gate Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| SAST Scan | ${{ needs.sast-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Scan | ${{ needs.dependency-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Secrets Scan | ${{ needs.secrets-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| License Check | ${{ needs.license-check.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Findings" >> $GITHUB_STEP_SUMMARY
+          echo "- Total Critical: $TOTAL_CRITICAL" >> $GITHUB_STEP_SUMMARY
+          echo "- Total High: $TOTAL_HIGH" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Determine gate status
+          GATE_PASS="true"
+          REASONS=""
+
+          if [ "$SAST_BLOCK" = "true" ]; then
+            GATE_PASS="false"
+            REASONS="$REASONS- SAST findings exceed threshold\n"
+          fi
+
+          if [ "$DEP_BLOCK" = "true" ]; then
+            GATE_PASS="false"
+            REASONS="$REASONS- Dependency vulnerabilities exceed threshold\n"
+          fi
+
+          if [ "$SECRETS_FOUND" = "1" ]; then
+            GATE_PASS="false"
+            REASONS="$REASONS- Potential secrets detected\n"
+          fi
+
+          if [ "$GATE_PASS" = "true" ]; then
+            echo "### Result: PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "gate_passed=true" >> $GITHUB_OUTPUT
+          else
+            echo "### Result: BLOCKED" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Blocking Reasons:**" >> $GITHUB_STEP_SUMMARY
+            echo -e "$REASONS" >> $GITHUB_STEP_SUMMARY
+            echo "gate_passed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Enforce security gate
+        if: ${{ steps.gate.outputs.gate_passed == 'false' && (github.event_name == 'pull_request' || github.event.inputs.fail_on_findings == 'true') }}
+        run: |
+          echo "::error::Security gate failed - merge blocked due to security findings"
+          exit 1
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const gatePassed = '${{ steps.gate.outputs.gate_passed }}' === 'true';
+            const sastCritical = parseInt('${{ needs.sast-scan.outputs.findings_critical || 0 }}');
+            const sastHigh = parseInt('${{ needs.sast-scan.outputs.findings_high || 0 }}');
+            const depCritical = parseInt('${{ needs.dependency-scan.outputs.findings_critical || 0 }}');
+            const depHigh = parseInt('${{ needs.dependency-scan.outputs.findings_high || 0 }}');
+
+            let body = gatePassed
+              ? '## Security Scan Results: PASSED\n\n'
+              : '## Security Scan Results: BLOCKED\n\n';
+
+            body += '| Scanner | Critical | High |\n';
+            body += '|---------|----------|------|\n';
+            body += `| SAST | ${sastCritical} | ${sastHigh} |\n`;
+            body += `| Dependencies | ${depCritical} | ${depHigh} |\n\n`;
+
+            if (!gatePassed) {
+              body += '**This PR is blocked due to security findings.** Please address the vulnerabilities before merging.\n\n';
+              body += 'View the [Security tab](../../security) for detailed findings.';
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+        continue-on-error: true
+
+  # ==========================================================================
+  # Summary Report
+  # ==========================================================================
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [sast-scan, dependency-scan, secrets-scan, license-check, codeql, security-gate]
+    if: always()
+    steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         continue-on-error: true
 
-      - name: Generate summary
+      - name: Generate final summary
         run: |
-          echo "## Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "# Security Scan Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Scan Type | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Dependency Audit | ${{ needs.dependency-audit.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Trivy Scan | ${{ needs.trivy-scan.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Semgrep SAST | ${{ needs.semgrep.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "Scan completed at: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Job Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| SAST Scan | ${{ needs.sast-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Scan | ${{ needs.dependency-scan.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Secrets Scan | ${{ needs.secrets-scan.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| License Check | ${{ needs.license-check.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Scan completed at: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "| CodeQL | ${{ needs.codeql.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Gate | ${{ needs.security-gate.result }} |" >> $GITHUB_STEP_SUMMARY

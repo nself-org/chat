@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Chat Flow Integration Tests
  *
  * Tests for the complete chat flow including selecting channels,

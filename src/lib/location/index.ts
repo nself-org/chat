@@ -114,6 +114,7 @@ export {
 
 // Geocoding
 export {
+  type GeocodingProvider,
   type GeocodingResult,
   type ReverseGeocodingOptions,
   type PlacesSearchOptions,
@@ -124,6 +125,7 @@ export {
   formatAddress,
   getPlaceCategoryIcon,
   getPlaceCategoryName,
+  getGeocodingProviderStatus,
 } from './geocoding'
 
 // Location broadcasting

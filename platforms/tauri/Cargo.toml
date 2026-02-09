@@ -1,6 +1,6 @@
 [package]
 name = "nchat"
-version = "1.0.0"
+version = "0.9.1"
 description = "nself-chat desktop application"
 authors = ["nself"]
 license = "MIT"

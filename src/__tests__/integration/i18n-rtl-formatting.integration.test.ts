@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: i18n + RTL + Formatting
  *
  * Tests the integration between internationalization, RTL (right-to-left) support,

@@ -2,7 +2,7 @@
  * Scheduled Messages GraphQL Operations
  *
  * Comprehensive queries and mutations for scheduled message CRUD.
- * Connects to the Hasura GraphQL backend via nchat_scheduled_messages table.
+ * Connects to the Hasura GraphQL backend via nchat_scheduled_message table.
  */
 
 import { gql } from '@apollo/client'
@@ -93,7 +93,7 @@ export interface UpdateScheduledMessageStatusVariables {
 // ============================================================================
 
 export const SCHEDULED_MESSAGE_FRAGMENT = gql`
-  fragment ScheduledMessage on nchat_scheduled_messages {
+  fragment ScheduledMessage on nchat_scheduled_message {
     id
     user_id
     channel_id
@@ -120,7 +120,7 @@ export const SCHEDULED_MESSAGE_FRAGMENT = gql`
 `
 
 export const SCHEDULED_MESSAGE_BASIC_FRAGMENT = gql`
-  fragment ScheduledMessageBasic on nchat_scheduled_messages {
+  fragment ScheduledMessageBasic on nchat_scheduled_message {
     id
     user_id
     channel_id
@@ -147,7 +147,7 @@ export const GET_SCHEDULED_MESSAGES = gql`
     $limit: Int = 50
     $offset: Int = 0
   ) {
-    nchat_scheduled_messages(
+    nchat_scheduled_message(
       where: {
         user_id: { _eq: $userId }
         status: { _eq: $status }
@@ -159,7 +159,7 @@ export const GET_SCHEDULED_MESSAGES = gql`
     ) {
       ...ScheduledMessage
     }
-    nchat_scheduled_messages_aggregate(
+    nchat_scheduled_message_aggregate(
       where: {
         user_id: { _eq: $userId }
         status: { _eq: $status }
@@ -179,7 +179,7 @@ export const GET_SCHEDULED_MESSAGES = gql`
  */
 export const GET_SCHEDULED_MESSAGE = gql`
   query GetScheduledMessage($id: uuid!) {
-    nchat_scheduled_messages_by_pk(id: $id) {
+    nchat_scheduled_message_by_pk(id: $id) {
       ...ScheduledMessage
     }
   }
@@ -192,7 +192,7 @@ export const GET_SCHEDULED_MESSAGE = gql`
  */
 export const GET_DUE_SCHEDULED_MESSAGES = gql`
   query GetDueScheduledMessages($currentTime: timestamptz!, $limit: Int = 100) {
-    nchat_scheduled_messages(
+    nchat_scheduled_message(
       where: { status: { _eq: "pending" }, scheduled_at: { _lte: $currentTime } }
       order_by: { scheduled_at: asc }
       limit: $limit
@@ -208,28 +208,28 @@ export const GET_DUE_SCHEDULED_MESSAGES = gql`
  */
 export const GET_SCHEDULED_MESSAGES_COUNT = gql`
   query GetScheduledMessagesCount($userId: uuid!) {
-    pending: nchat_scheduled_messages_aggregate(
+    pending: nchat_scheduled_message_aggregate(
       where: { user_id: { _eq: $userId }, status: { _eq: "pending" } }
     ) {
       aggregate {
         count
       }
     }
-    sent: nchat_scheduled_messages_aggregate(
+    sent: nchat_scheduled_message_aggregate(
       where: { user_id: { _eq: $userId }, status: { _eq: "sent" } }
     ) {
       aggregate {
         count
       }
     }
-    failed: nchat_scheduled_messages_aggregate(
+    failed: nchat_scheduled_message_aggregate(
       where: { user_id: { _eq: $userId }, status: { _eq: "failed" } }
     ) {
       aggregate {
         count
       }
     }
-    cancelled: nchat_scheduled_messages_aggregate(
+    cancelled: nchat_scheduled_message_aggregate(
       where: { user_id: { _eq: $userId }, status: { _eq: "cancelled" } }
     ) {
       aggregate {
@@ -256,7 +256,7 @@ export const INSERT_SCHEDULED_MESSAGE = gql`
     $attachments: jsonb
     $maxRetries: Int = 3
   ) {
-    insert_nchat_scheduled_messages_one(
+    insert_nchat_scheduled_message_one(
       object: {
         user_id: $userId
         channel_id: $channelId
@@ -287,7 +287,7 @@ export const UPDATE_SCHEDULED_MESSAGE = gql`
     $threadId: uuid
     $attachments: jsonb
   ) {
-    update_nchat_scheduled_messages_by_pk(
+    update_nchat_scheduled_message_by_pk(
       pk_columns: { id: $id }
       _set: {
         content: $content
@@ -307,7 +307,7 @@ export const UPDATE_SCHEDULED_MESSAGE = gql`
  */
 export const DELETE_SCHEDULED_MESSAGE = gql`
   mutation DeleteScheduledMessage($id: uuid!) {
-    update_nchat_scheduled_messages_by_pk(pk_columns: { id: $id }, _set: { status: "cancelled" }) {
+    update_nchat_scheduled_message_by_pk(pk_columns: { id: $id }, _set: { status: "cancelled" }) {
       id
       status
     }
@@ -325,7 +325,7 @@ export const UPDATE_SCHEDULED_MESSAGE_STATUS = gql`
     $errorMessage: String
     $retryCount: Int
   ) {
-    update_nchat_scheduled_messages_by_pk(
+    update_nchat_scheduled_message_by_pk(
       pk_columns: { id: $id }
       _set: {
         status: $status
@@ -348,7 +348,7 @@ export const UPDATE_SCHEDULED_MESSAGE_STATUS = gql`
  */
 export const INCREMENT_SCHEDULED_MESSAGE_RETRY = gql`
   mutation IncrementScheduledMessageRetry($id: uuid!, $errorMessage: String) {
-    update_nchat_scheduled_messages_by_pk(
+    update_nchat_scheduled_message_by_pk(
       pk_columns: { id: $id }
       _inc: { retry_count: 1 }
       _set: { error_message: $errorMessage }
@@ -366,7 +366,7 @@ export const INCREMENT_SCHEDULED_MESSAGE_RETRY = gql`
  */
 export const HARD_DELETE_SCHEDULED_MESSAGE = gql`
   mutation HardDeleteScheduledMessage($id: uuid!) {
-    delete_nchat_scheduled_messages_by_pk(id: $id) {
+    delete_nchat_scheduled_message_by_pk(id: $id) {
       id
     }
   }
@@ -377,7 +377,7 @@ export const HARD_DELETE_SCHEDULED_MESSAGE = gql`
  */
 export const BULK_CANCEL_SCHEDULED_MESSAGES = gql`
   mutation BulkCancelScheduledMessages($ids: [uuid!]!) {
-    update_nchat_scheduled_messages(
+    update_nchat_scheduled_message(
       where: { id: { _in: $ids }, status: { _eq: "pending" } }
       _set: { status: "cancelled" }
     ) {

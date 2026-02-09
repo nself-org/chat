@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Offline + Sync + Cache
  *
  * Tests the integration between offline mode, sync queue management,
@@ -34,11 +36,14 @@ describe('Offline + Sync + Cache Integration', () => {
   const mockUserId = 'user-1'
 
   beforeEach(() => {
+    jest.useFakeTimers()
     localStorage.clear()
     jest.clearAllMocks()
   })
 
   afterEach(() => {
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
     localStorage.clear()
   })
 
@@ -626,6 +631,12 @@ describe('Offline + Sync + Cache Integration', () => {
 
       // Should only write once after debounce
       expect(cacheWrites).toHaveLength(0) // Not written yet
+
+      // Advance timers by debounce time
+      jest.advanceTimersByTime(DEBOUNCE_MS)
+
+      // Should have written once
+      expect(cacheWrites).toHaveLength(1)
     })
 
     it('should lazy load cached data', () => {

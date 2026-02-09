@@ -11,12 +11,14 @@ describe('MemoryRateLimitStore', () => {
   let store: MemoryRateLimitStore
 
   beforeEach(() => {
+    jest.useFakeTimers()
     store = createMemoryStore()
   })
 
   afterEach(async () => {
     await store.clear()
     store.destroy()
+    jest.useRealTimers()
   })
 
   const defaultConfig: RateLimitConfig = {
@@ -129,8 +131,8 @@ describe('MemoryRateLimitStore', () => {
       let result = await store.check('user-1', shortWindow)
       expect(result.allowed).toBe(false)
 
-      // Wait for window to expire
-      await new Promise((resolve) => setTimeout(resolve, 1100))
+      // Wait for window to expire using fake timers
+      jest.advanceTimersByTime(1100)
 
       // Should be allowed again
       result = await store.check('user-1', shortWindow)

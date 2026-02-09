@@ -6,5 +6,6 @@
  */
 
 export { ScreenShareOverlay as default, ScreenShareOverlay } from './ScreenShareOverlay'
-export { ScreenShareControls } from './ScreenShareControls'
+export { ScreenShareControls, ScreenShareButton } from './ScreenShareControls'
 export { ScreenShareSettings } from './ScreenShareSettings'
+export { ScreenShareViewer } from './ScreenShareViewer'

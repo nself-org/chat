@@ -193,9 +193,9 @@ const EditHistoryItem = memo(function EditHistoryItem({
       {isExpanded && (
         <div className="px-4 pb-4">
           {showDiff && previousContent ? (
-            <DiffView oldContent={record.content} newContent={previousContent} />
+            <DiffView oldContent={previousContent} newContent={record.newContent} />
           ) : (
-            <div className="bg-muted/30 rounded-md border p-3 text-sm">{record.content}</div>
+            <div className="bg-muted/30 rounded-md border p-3 text-sm">{record.newContent}</div>
           )}
         </div>
       )}
@@ -339,7 +339,7 @@ export const MessageEditHistory = memo(function MessageEditHistory({
                 <EditHistoryItem
                   key={index}
                   record={record}
-                  previousContent={index === 0 ? currentContent : fullHistory[index - 1]?.content}
+                  previousContent={index === 0 ? currentContent : fullHistory[index - 1]?.newContent}
                   index={index}
                   showDiff={showDiff}
                   isExpanded={expandedIndex === index}

@@ -6,6 +6,12 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { gql } from '@apollo/client'
+import { logger } from '@/lib/logger'
+import { apolloClient } from '@/lib/apollo-client'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 // Schema validation
 const createBroadcastListSchema = z.object({
@@ -36,12 +42,41 @@ const broadcastFiltersSchema = z.object({
   offset: z.number().int().min(0).default(0),
 })
 
+// Helper functions
+function getUserIdFromRequest(request: NextRequest): string | null {
+  return request.headers.get('x-user-id') || null
+}
+
+function transformBroadcastList(raw: Record<string, unknown>) {
+  return {
+    id: raw.id,
+    workspaceId: raw.workspace_id,
+    name: raw.name,
+    description: raw.description,
+    icon: raw.icon,
+    ownerId: raw.owner_id,
+    subscriptionMode: raw.subscription_mode,
+    allowReplies: raw.allow_replies,
+    showSenderName: raw.show_sender_name,
+    trackDelivery: raw.track_delivery,
+    trackReads: raw.track_reads,
+    maxSubscribers: raw.max_subscribers,
+    subscriberCount: raw.subscriber_count,
+    totalMessagesSent: raw.total_messages_sent,
+    lastBroadcastAt: raw.last_broadcast_at,
+    createdAt: raw.created_at,
+    updatedAt: raw.updated_at,
+  }
+}
+
 /**
  * GET /api/channels/broadcast
  * List broadcast lists for the workspace
  */
 export async function GET(request: NextRequest) {
   try {
+    logger.info('GET /api/channels/broadcast - List broadcast lists')
+
     const { searchParams } = new URL(request.url)
     const filters = broadcastFiltersSchema.parse({
       workspaceId: searchParams.get('workspaceId') || undefined,
@@ -50,72 +85,57 @@ export async function GET(request: NextRequest) {
       offset: Number(searchParams.get('offset')) || 0,
     })
 
-    // TODO: Get user from session
-    const userId = request.headers.get('x-user-id') || 'dev-user-id'
+    if (!filters.workspaceId) {
+      return NextResponse.json(
+        { success: false, error: 'workspaceId is required' },
+        { status: 400 }
+      )
+    }
 
-    // TODO: Fetch broadcast lists from database
-    // Show lists where user is owner or subscriber
-    // If ownerId filter provided, filter by that owner
+    const userId = getUserIdFromRequest(request)
 
-    // Mock response
-    const broadcastLists = [
-      {
-        id: 'broadcast-1',
-        workspaceId: filters.workspaceId || 'workspace-1',
-        name: 'Product Updates',
-        description: 'Weekly product announcements and updates',
-        icon: null,
-        ownerId: filters.ownerId || userId,
-        subscriptionMode: 'open',
-        allowReplies: false,
-        showSenderName: true,
-        trackDelivery: true,
-        trackReads: true,
-        maxSubscribers: 1000,
-        subscriberCount: 234,
-        totalMessagesSent: 42,
-        lastBroadcastAt: new Date('2024-02-01').toISOString(),
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
+    // Fetch broadcast lists from database
+    const { data } = await apolloClient.query({
+      query: GET_BROADCAST_LISTS_QUERY,
+      variables: {
+        workspaceId: filters.workspaceId,
+        ownerId: filters.ownerId,
+        limit: filters.limit,
+        offset: filters.offset,
       },
-      {
-        id: 'broadcast-2',
-        workspaceId: filters.workspaceId || 'workspace-1',
-        name: 'Company News',
-        description: 'Important company-wide announcements',
-        icon: null,
-        ownerId: filters.ownerId || userId,
-        subscriptionMode: 'admin',
-        allowReplies: false,
-        showSenderName: true,
-        trackDelivery: true,
-        trackReads: false,
-        maxSubscribers: 5000,
-        subscriberCount: 1500,
-        totalMessagesSent: 18,
-        lastBroadcastAt: new Date('2024-02-02').toISOString(),
-        createdAt: new Date('2024-01-15').toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ]
+      fetchPolicy: 'network-only',
+    })
+
+    const broadcastLists = (data?.nchat_broadcast_lists || []).map(transformBroadcastList)
+    const total = data?.nchat_broadcast_lists_aggregate?.aggregate?.count || broadcastLists.length
+
+    logger.info('GET /api/channels/broadcast - Success', {
+      total,
+      returned: broadcastLists.length,
+    })
 
     return NextResponse.json({
+      success: true,
       broadcastLists,
       pagination: {
         limit: filters.limit,
         offset: filters.offset,
-        total: broadcastLists.length,
+        total,
+        hasMore: filters.offset + filters.limit < total,
       },
     })
   } catch (error) {
-    console.error('Error fetching broadcast lists:', error)
+    logger.error('Error fetching broadcast lists:', error as Error)
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid query parameters', details: error.errors },
+        { success: false, error: 'Invalid query parameters', details: error.errors },
         { status: 400 }
       )
     }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch broadcast lists' },
+      { status: 500 }
+    )
   }
 }
 
@@ -125,6 +145,16 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    logger.info('POST /api/channels/broadcast - Create broadcast list')
+
+    const userId = getUserIdFromRequest(request)
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
     // Parse and validate request body
     const body = await request.json()
 
@@ -132,160 +162,358 @@ export async function POST(request: NextRequest) {
     const isSendRequest = 'broadcastListId' in body && 'content' in body
 
     if (isSendRequest) {
-      return handleSendBroadcast(request, body)
+      return handleSendBroadcast(request, body, userId)
     }
 
     const validation = createBroadcastListSchema.safeParse(body)
 
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Invalid request body', details: validation.error.errors },
+        { success: false, error: 'Invalid request body', details: validation.error.errors },
         { status: 400 }
       )
     }
 
     const data = validation.data
 
-    // TODO: Get user from session
-    const userId = request.headers.get('x-user-id') || 'dev-user-id'
-
-    // TODO: Verify user has permission to create broadcast lists in workspace
-    // const hasPermission = await checkWorkspacePermission(userId, data.workspaceId, 'CREATE_BROADCAST')
-    // if (!hasPermission) {
-    //   return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
-    // }
-
     // Create broadcast list
-    const broadcastListId = `broadcast-${Date.now()}`
-    const now = new Date().toISOString()
+    const { data: insertData } = await apolloClient.mutate({
+      mutation: CREATE_BROADCAST_LIST_MUTATION,
+      variables: {
+        workspaceId: data.workspaceId,
+        name: data.name,
+        description: data.description,
+        icon: data.icon,
+        ownerId: userId,
+        subscriptionMode: data.subscriptionMode,
+        allowReplies: data.allowReplies,
+        showSenderName: data.showSenderName,
+        trackDelivery: data.trackDelivery,
+        trackReads: data.trackReads,
+        maxSubscribers: data.maxSubscribers,
+        subscriberCount: data.initialSubscriberIds.length,
+      },
+    })
 
-    const broadcastList = {
-      id: broadcastListId,
-      workspaceId: data.workspaceId,
-      name: data.name,
-      description: data.description || null,
-      icon: data.icon || null,
-      ownerId: userId,
-      subscriptionMode: data.subscriptionMode,
-      allowReplies: data.allowReplies,
-      showSenderName: data.showSenderName,
-      trackDelivery: data.trackDelivery,
-      trackReads: data.trackReads,
-      maxSubscribers: data.maxSubscribers,
-      subscriberCount: data.initialSubscriberIds.length,
-      totalMessagesSent: 0,
-      lastBroadcastAt: null,
-      createdAt: now,
-      updatedAt: now,
+    const broadcastList = insertData?.insert_nchat_broadcast_lists_one
+    if (!broadcastList) {
+      throw new Error('Failed to create broadcast list')
     }
 
-    // TODO: Database transaction to:
-    // 1. Create broadcast list
-    // 2. Add initial subscribers
-    // 3. Create subscription records with status='active'
+    // Add initial subscribers if provided
+    if (data.initialSubscriberIds.length > 0) {
+      const subscribers = data.initialSubscriberIds.map((subId) => ({
+        broadcast_list_id: broadcastList.id,
+        user_id: subId,
+        subscribed_by: userId,
+        notifications_enabled: true,
+        status: 'active',
+      }))
 
-    // Mock response with subscribers
-    const subscribers = data.initialSubscriberIds.map((subId) => ({
-      broadcastListId,
-      userId: subId,
-      subscribedAt: now,
-      subscribedBy: userId,
-      notificationsEnabled: true,
-      status: 'active',
-    }))
+      await apolloClient.mutate({
+        mutation: ADD_BROADCAST_SUBSCRIBERS_MUTATION,
+        variables: { subscribers },
+      })
+    }
 
-    // TODO: Broadcast creation event to workspace
-    // await broadcastListCreated(broadcastList)
+    logger.info('POST /api/channels/broadcast - Success', {
+      broadcastListId: broadcastList.id,
+      name: data.name,
+      createdBy: userId,
+    })
 
     return NextResponse.json(
       {
         success: true,
-        broadcastList,
-        subscribers,
+        broadcastList: transformBroadcastList(broadcastList),
+        message: 'Broadcast list created successfully',
       },
       { status: 201 }
     )
   } catch (error) {
-    console.error('Error creating broadcast list:', error)
+    logger.error('Error creating broadcast list:', error as Error)
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request body', details: error.errors },
+        { success: false, error: 'Invalid request body', details: error.errors },
         { status: 400 }
       )
     }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { success: false, error: 'Failed to create broadcast list' },
+      { status: 500 }
+    )
   }
 }
 
 /**
  * Handle sending a broadcast message
  */
-async function handleSendBroadcast(request: NextRequest, body: unknown): Promise<NextResponse> {
+async function handleSendBroadcast(
+  request: NextRequest,
+  body: unknown,
+  userId: string
+): Promise<NextResponse> {
   const validation = sendBroadcastSchema.safeParse(body)
 
   if (!validation.success) {
     return NextResponse.json(
-      { error: 'Invalid broadcast data', details: validation.error.errors },
+      { success: false, error: 'Invalid broadcast data', details: validation.error.errors },
       { status: 400 }
     )
   }
 
   const data = validation.data
 
-  // TODO: Get user from session
-  const userId = request.headers.get('x-user-id') || 'dev-user-id'
+  // Verify user is owner of the broadcast list
+  const { data: listData } = await apolloClient.query({
+    query: GET_BROADCAST_LIST_OWNER_QUERY,
+    variables: { broadcastListId: data.broadcastListId },
+    fetchPolicy: 'network-only',
+  })
 
-  // TODO: Verify user is owner or has permission to send broadcasts
-  // const broadcastList = await getBroadcastListById(data.broadcastListId)
-  // if (!broadcastList || broadcastList.ownerId !== userId) {
-  //   return NextResponse.json({ error: 'Not authorized to send broadcasts to this list' }, { status: 403 })
-  // }
-
-  // TODO: Get all active subscribers
-  // const subscribers = await getActiveSubscribers(data.broadcastListId)
-
-  const broadcastMessageId = `broadcast-msg-${Date.now()}`
-  const now = new Date().toISOString()
-
-  // Create broadcast message
-  const broadcastMessage = {
-    id: broadcastMessageId,
-    broadcastListId: data.broadcastListId,
-    content: data.content,
-    attachments: data.attachments,
-    sentBy: userId,
-    sentAt: data.scheduledFor || now,
-    scheduledFor: data.scheduledFor || null,
-    isScheduled: !!data.scheduledFor,
-    totalRecipients: 100, // Mock count
-    deliveredCount: 0,
-    readCount: 0,
-    failedCount: 0,
+  const broadcastList = listData?.nchat_broadcast_lists_by_pk
+  if (!broadcastList) {
+    return NextResponse.json(
+      { success: false, error: 'Broadcast list not found' },
+      { status: 404 }
+    )
   }
 
-  // TODO: Queue broadcast for delivery
-  // If scheduled, add to scheduler
-  // Otherwise, start delivery immediately
-  // for (const subscriber of subscribers) {
-  //   await queueBroadcastDelivery({
-  //     broadcastMessageId,
-  //     userId: subscriber.userId,
-  //     scheduledFor: data.scheduledFor || null,
-  //   })
-  // }
+  if (broadcastList.owner_id !== userId) {
+    return NextResponse.json(
+      { success: false, error: 'Not authorized to send broadcasts to this list' },
+      { status: 403 }
+    )
+  }
 
-  // TODO: Update broadcast list stats
-  // await incrementTotalMessagesSent(data.broadcastListId)
-  // await updateLastBroadcastAt(data.broadcastListId, now)
+  // Create broadcast message
+  const { data: messageData } = await apolloClient.mutate({
+    mutation: CREATE_BROADCAST_MESSAGE_MUTATION,
+    variables: {
+      broadcastListId: data.broadcastListId,
+      content: data.content,
+      attachments: data.attachments,
+      sentBy: userId,
+      scheduledFor: data.scheduledFor,
+      isScheduled: !!data.scheduledFor,
+      totalRecipients: broadcastList.subscriber_count,
+    },
+  })
+
+  const broadcastMessage = messageData?.insert_nchat_broadcast_messages_one
+
+  // Update broadcast list stats
+  await apolloClient.mutate({
+    mutation: UPDATE_BROADCAST_LIST_STATS_MUTATION,
+    variables: {
+      broadcastListId: data.broadcastListId,
+      lastBroadcastAt: data.scheduledFor || new Date().toISOString(),
+    },
+  })
+
+  logger.info('POST /api/channels/broadcast - Broadcast sent', {
+    broadcastListId: data.broadcastListId,
+    messageId: broadcastMessage?.id,
+    scheduled: !!data.scheduledFor,
+  })
 
   return NextResponse.json(
     {
       success: true,
-      broadcastMessage,
+      broadcastMessage: {
+        id: broadcastMessage.id,
+        broadcastListId: broadcastMessage.broadcast_list_id,
+        content: broadcastMessage.content,
+        attachments: broadcastMessage.attachments,
+        sentBy: broadcastMessage.sent_by,
+        sentAt: broadcastMessage.sent_at,
+        scheduledFor: broadcastMessage.scheduled_for,
+        isScheduled: broadcastMessage.is_scheduled,
+        totalRecipients: broadcastMessage.total_recipients,
+        deliveredCount: 0,
+        readCount: 0,
+        failedCount: 0,
+      },
       message: data.scheduledFor
         ? 'Broadcast scheduled successfully'
         : 'Broadcast queued for delivery',
     },
-    { status: 202 } // Accepted
+    { status: 202 }
   )
 }
+
+// =============================================================================
+// GraphQL Queries and Mutations
+// =============================================================================
+
+const GET_BROADCAST_LISTS_QUERY = gql`
+  query GetBroadcastLists(
+    $workspaceId: uuid!
+    $ownerId: uuid
+    $limit: Int!
+    $offset: Int!
+  ) {
+    nchat_broadcast_lists(
+      where: {
+        workspace_id: { _eq: $workspaceId }
+        owner_id: { _eq: $ownerId }
+      }
+      order_by: { created_at: desc }
+      limit: $limit
+      offset: $offset
+    ) {
+      id
+      workspace_id
+      name
+      description
+      icon
+      owner_id
+      subscription_mode
+      allow_replies
+      show_sender_name
+      track_delivery
+      track_reads
+      max_subscribers
+      subscriber_count
+      total_messages_sent
+      last_broadcast_at
+      created_at
+      updated_at
+    }
+    nchat_broadcast_lists_aggregate(
+      where: {
+        workspace_id: { _eq: $workspaceId }
+        owner_id: { _eq: $ownerId }
+      }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`
+
+const GET_BROADCAST_LIST_OWNER_QUERY = gql`
+  query GetBroadcastListOwner($broadcastListId: uuid!) {
+    nchat_broadcast_lists_by_pk(id: $broadcastListId) {
+      id
+      owner_id
+      subscriber_count
+    }
+  }
+`
+
+const CREATE_BROADCAST_LIST_MUTATION = gql`
+  mutation CreateBroadcastList(
+    $workspaceId: uuid!
+    $name: String!
+    $description: String
+    $icon: String
+    $ownerId: uuid!
+    $subscriptionMode: String!
+    $allowReplies: Boolean!
+    $showSenderName: Boolean!
+    $trackDelivery: Boolean!
+    $trackReads: Boolean!
+    $maxSubscribers: Int!
+    $subscriberCount: Int!
+  ) {
+    insert_nchat_broadcast_lists_one(
+      object: {
+        workspace_id: $workspaceId
+        name: $name
+        description: $description
+        icon: $icon
+        owner_id: $ownerId
+        subscription_mode: $subscriptionMode
+        allow_replies: $allowReplies
+        show_sender_name: $showSenderName
+        track_delivery: $trackDelivery
+        track_reads: $trackReads
+        max_subscribers: $maxSubscribers
+        subscriber_count: $subscriberCount
+        total_messages_sent: 0
+      }
+    ) {
+      id
+      workspace_id
+      name
+      description
+      icon
+      owner_id
+      subscription_mode
+      allow_replies
+      show_sender_name
+      track_delivery
+      track_reads
+      max_subscribers
+      subscriber_count
+      total_messages_sent
+      last_broadcast_at
+      created_at
+      updated_at
+    }
+  }
+`
+
+const ADD_BROADCAST_SUBSCRIBERS_MUTATION = gql`
+  mutation AddBroadcastSubscribers(
+    $subscribers: [nchat_broadcast_subscribers_insert_input!]!
+  ) {
+    insert_nchat_broadcast_subscribers(objects: $subscribers) {
+      affected_rows
+    }
+  }
+`
+
+const CREATE_BROADCAST_MESSAGE_MUTATION = gql`
+  mutation CreateBroadcastMessage(
+    $broadcastListId: uuid!
+    $content: String!
+    $attachments: jsonb
+    $sentBy: uuid!
+    $scheduledFor: timestamptz
+    $isScheduled: Boolean!
+    $totalRecipients: Int!
+  ) {
+    insert_nchat_broadcast_messages_one(
+      object: {
+        broadcast_list_id: $broadcastListId
+        content: $content
+        attachments: $attachments
+        sent_by: $sentBy
+        scheduled_for: $scheduledFor
+        is_scheduled: $isScheduled
+        total_recipients: $totalRecipients
+        delivered_count: 0
+        read_count: 0
+        failed_count: 0
+      }
+    ) {
+      id
+      broadcast_list_id
+      content
+      attachments
+      sent_by
+      sent_at
+      scheduled_for
+      is_scheduled
+      total_recipients
+      delivered_count
+      read_count
+      failed_count
+    }
+  }
+`
+
+const UPDATE_BROADCAST_LIST_STATS_MUTATION = gql`
+  mutation UpdateBroadcastListStats($broadcastListId: uuid!, $lastBroadcastAt: timestamptz!) {
+    update_nchat_broadcast_lists_by_pk(
+      pk_columns: { id: $broadcastListId }
+      _inc: { total_messages_sent: 1 }
+      _set: { last_broadcast_at: $lastBroadcastAt }
+    ) {
+      id
+    }
+  }
+`

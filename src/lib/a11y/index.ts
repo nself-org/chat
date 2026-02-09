@@ -88,3 +88,56 @@ export {
 export type { FocusableElement, NavigationOptions, RovingTabIndexOptions } from './keyboard-nav'
 
 export type { RGB, HSL, ContrastLevel, ContrastResult } from './contrast'
+
+// Chat-specific accessibility
+export {
+  // Message navigation
+  navigateToNextMessage,
+  navigateToPreviousMessage,
+  navigateToFirstUnread,
+  navigateToLatestMessage,
+  navigateToOldestMessage,
+  // Message announcements
+  announceNewMessage,
+  announceMessageContent,
+  announceNewMessages,
+  announceMessageEdited,
+  announceMessageDeleted,
+  // Thread navigation
+  announceThreadOpened,
+  navigateToThreadReply,
+  announceThreadClosed,
+  announceNewThreadReply,
+  // Reactions
+  announceReactionAdded,
+  announceReactionRemoved,
+  announceMessageReactions,
+  getEmojiName,
+  // Typing indicators
+  announceTyping,
+  announceTypingStopped,
+  // Channel navigation
+  announceChannelSwitch,
+  announceChannelList,
+  findNextUnreadChannel,
+  // Keyboard shortcuts
+  getChatKeyboardShortcuts,
+  announceKeyboardShortcut,
+  // Status updates
+  announceUserStatus,
+  announceUserPresence,
+  announceConnectionStatus,
+  // ARIA attributes
+  getMessageAriaAttributes,
+  getChannelAriaAttributes,
+  getMessagePoliteness,
+} from './chat-accessibility'
+
+export type {
+  Message,
+  Reaction,
+  Channel,
+  Thread,
+  TypingUser,
+  KeyboardShortcut,
+} from './chat-accessibility'

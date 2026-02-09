@@ -112,6 +112,8 @@ export type SecurityAction =
   | 'sso_login_initiated'
   | 'sso_login_success'
   | 'sso_login_failed'
+  | 'sso_logout_request_created'
+  | 'sso_logout_response_processed'
 
 export type IntegrationAction =
   | 'app_install'

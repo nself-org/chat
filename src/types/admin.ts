@@ -2,7 +2,7 @@
  * Admin Dashboard Types for nself-chat
  *
  * Type definitions for analytics, moderation, muting, and data export functionality.
- * Part of STREAM-5: Admin Dashboard implementation for v0.9.0.
+ * Part of STREAM-5: Admin Dashboard implementation for v0.9.1.
  */
 
 import type { User, UserBasicInfo, UserRole } from './user'

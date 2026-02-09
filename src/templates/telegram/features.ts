@@ -19,7 +19,7 @@
 // Types
 // ---------------------------------------------------------------------------
 
-export type FeatureStatus = 'enabled' | 'disabled' | 'placeholder' | 'coming_soon'
+export type FeatureStatus = 'enabled' | 'disabled'
 
 export interface TelegramFeature {
   id: string
@@ -30,6 +30,8 @@ export interface TelegramFeature {
   icon: string
   dependencies?: string[]
   settings?: Record<string, unknown>
+  /** Reason why the feature is disabled (only present when status is 'disabled') */
+  disabledReason?: string
 }
 
 export type TelegramFeatureCategory =
@@ -122,7 +124,7 @@ export const CHAT_TYPES: TelegramFeature[] = [
     id: 'secret_chat',
     name: 'Secret Chats',
     description: 'End-to-end encrypted conversations with self-destructing messages',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'chat_types',
     icon: 'lock',
     settings: {
@@ -289,7 +291,7 @@ export const VOICE_VIDEO_FEATURES: TelegramFeature[] = [
     id: 'voice_chat',
     name: 'Voice Chats',
     description: 'Live voice conversations in groups',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'voice_video',
     icon: 'headphones',
     settings: {
@@ -301,7 +303,7 @@ export const VOICE_VIDEO_FEATURES: TelegramFeature[] = [
     id: 'video_chat',
     name: 'Video Chats',
     description: 'Live video conversations in groups',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'voice_video',
     icon: 'video',
     settings: {
@@ -515,7 +517,7 @@ export const PRIVACY_FEATURES: TelegramFeature[] = [
     id: 'self_destruct',
     name: 'Self-Destructing Messages',
     description: 'Messages that delete after being viewed',
-    status: 'placeholder',
+    status: 'enabled',
     category: 'privacy',
     icon: 'timer',
     dependencies: ['secret_chat'],
@@ -528,10 +530,13 @@ export const PRIVACY_FEATURES: TelegramFeature[] = [
     id: 'screenshot_notification',
     name: 'Screenshot Notification',
     description: 'Notify when screenshot is taken in secret chat',
-    status: 'placeholder',
+    status: 'disabled',
     category: 'privacy',
     icon: 'camera',
     dependencies: ['secret_chat'],
+    disabledReason:
+      'Web platform limitation: browsers do not expose a reliable API to detect screenshots. ' +
+      'Native mobile/desktop builds may re-enable this via platform-specific screen-capture detection.',
   },
   {
     id: 'hidden_media',
@@ -795,8 +800,16 @@ export function getEnabledFeatures(): TelegramFeature[] {
   return ALL_TELEGRAM_FEATURES.filter((f) => f.status === 'enabled')
 }
 
+export function getDisabledFeatures(): TelegramFeature[] {
+  return ALL_TELEGRAM_FEATURES.filter((f) => f.status === 'disabled')
+}
+
+/**
+ * @deprecated No placeholder features remain. Use getDisabledFeatures() instead.
+ * Returns an empty array - all features are now either 'enabled' or 'disabled'.
+ */
 export function getPlaceholderFeatures(): TelegramFeature[] {
-  return ALL_TELEGRAM_FEATURES.filter((f) => f.status === 'placeholder')
+  return []
 }
 
 export function isFeatureEnabled(id: string): boolean {
@@ -830,6 +843,7 @@ export const telegramFeatureConfig = {
     getFeatureById,
     getFeaturesByCategory,
     getEnabledFeatures,
+    getDisabledFeatures,
     getPlaceholderFeatures,
     isFeatureEnabled,
     getFeatureDependencies,

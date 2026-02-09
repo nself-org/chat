@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSocket } from './use-socket'
 import { SOCKET_EVENTS, type TypingPayload } from '@/lib/realtime'
 import { useAuth } from '@/contexts/auth-context'
+import { useUserStore } from '@/stores/user-store'
 
 /**
  * User typing information
@@ -44,6 +45,7 @@ const DEFAULT_CONFIG: Required<TypingConfig> = {
 export function useTyping(channelId: string, config: TypingConfig = {}) {
   const { subscribe, emit, isConnected } = useSocket()
   const { user } = useAuth()
+  const getUser = useUserStore((state) => state.getUser)
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([])
 
   const fullConfig = { ...DEFAULT_CONFIG, ...config }
@@ -219,12 +221,13 @@ export function useTyping(channelId: string, config: TypingConfig = {}) {
       if (data.channelId !== channelId) return
 
       if (data.isTyping) {
-        // Add user to typing list
-        // In a real app, you'd fetch user info from a user service/store
+        // Add user to typing list - fetch user info from store
+        const cachedUser = getUser(data.userId)
         const typingUser: TypingUser = {
           id: data.userId,
-          username: data.userId, // TODO: fetch from user service
-          displayName: data.userId, // TODO: fetch from user service
+          username: cachedUser?.username || data.userId,
+          displayName: cachedUser?.displayName || data.userId,
+          avatarUrl: cachedUser?.avatarUrl,
           startedAt: new Date().toISOString(),
         }
         addTypingUser(typingUser)

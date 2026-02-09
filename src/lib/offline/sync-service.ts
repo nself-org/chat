@@ -458,10 +458,11 @@ class OfflineSyncService {
   }
 
   /**
-   * Get current user ID (stub - implement actual auth)
+   * Get current user ID from localStorage
+   * Falls back to localStorage as the offline sync runs independently
+   * of React context. The auth context sets this value on login.
    */
   private getCurrentUserId(): string | null {
-    // TODO: Implement actual user ID retrieval
     return typeof window !== 'undefined' ? localStorage.getItem('userId') : null
   }
 

@@ -76,7 +76,15 @@
   "functions": {
     "api/**/*.ts": {
       "maxDuration": 10
+    },
+    "api/jobs/process-scheduled-messages/route.ts": {
+      "maxDuration": 300
     }
   },
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/jobs/process-scheduled-messages",
+      "schedule": "* * * * *"
+    }
+  ]
 }

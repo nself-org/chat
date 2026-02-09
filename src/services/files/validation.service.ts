@@ -4,7 +4,7 @@
  * Provides comprehensive file validation including:
  * - Size limits based on user tier
  * - MIME type and extension validation
- * - Virus scanning placeholder
+ * - Virus scanning (ClamAV, VirusTotal, or plugin backend)
  * - EXIF metadata stripping
  */
 
@@ -366,36 +366,132 @@ export function validateDocumentFile(
 }
 
 // ============================================================================
-// Virus Scanning Placeholder
+// Virus Scanning Integration
 // ============================================================================
 
+import {
+  getVirusScannerService,
+  type VirusScanResult,
+  type ScannerHealth,
+} from './virus-scanner.service'
+
 /**
- * Placeholder for virus scanning
- * In production, integrate with ClamAV or a cloud scanning service
+ * Scan a file for viruses using the configured scanner backend
+ *
+ * Supports multiple backends:
+ * - ClamAV (local/remote clamd server)
+ * - VirusTotal API
+ * - File-processing plugin scanner
+ *
+ * Configuration via environment variables:
+ * - FILE_ENABLE_VIRUS_SCAN: Enable/disable scanning (default: false)
+ * - CLAMAV_HOST, CLAMAV_PORT: ClamAV server configuration
+ * - VIRUSTOTAL_API_KEY: VirusTotal API key
+ * - FILE_PROCESSING_URL: Plugin scanner URL
+ *
+ * @example
+ * ```typescript
+ * const result = await scanFileForViruses(file, { fileName: 'document.pdf' })
+ * if (!result.clean) {
+ *   console.log('Threats found:', result.threats)
+ *   // Handle infected file
+ * }
+ * ```
  */
 export async function scanFileForViruses(
   file: File | Buffer | ArrayBuffer,
   options: {
     timeout?: number
-    scannerUrl?: string
+    fileName?: string
+    fileId?: string
   } = {}
 ): Promise<{
   scanned: boolean
   clean: boolean
   threats: string[]
   error?: string
+  backend?: string
+  scanDuration?: number
+  shouldBlock?: boolean
 }> {
-  // Log warning that virus scanning is not available
-  logger.warn('[FileValidation] Virus scanning is not configured. File uploaded without scanning.')
+  const scanner = getVirusScannerService()
+  const config = scanner.getConfigSummary()
 
-  // Return clean result by default
-  // In production, this should integrate with a real scanning service
-  return {
-    scanned: false,
-    clean: true,
-    threats: [],
-    error: 'Virus scanning service not configured',
+  // Log status for debugging
+  if (!config.enabled) {
+    logger.debug('[FileValidation] Virus scanning is disabled')
   }
+
+  try {
+    const result = await scanner.scanFile(file, {
+      fileName: options.fileName,
+      fileId: options.fileId,
+      timeout: options.timeout,
+    })
+
+    // Log warning if scanner is unavailable but scanning is enabled
+    if (config.enabled && !result.scanned && config.backend !== 'none') {
+      logger.warn('[FileValidation] Virus scanning failed - scanner unavailable', {
+        backend: config.backend,
+        error: result.error,
+      })
+    }
+
+    return {
+      scanned: result.scanned,
+      clean: result.clean,
+      threats: result.threats,
+      error: result.error,
+      backend: result.backend,
+      scanDuration: result.scanDuration,
+      shouldBlock: result.shouldBlock,
+    }
+  } catch (error) {
+    logger.error('[FileValidation] Virus scan error', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    })
+
+    return {
+      scanned: false,
+      clean: true, // Default to clean on error (configurable)
+      threats: [],
+      error: error instanceof Error ? error.message : 'Scan failed',
+      shouldBlock: config.blockOnScannerUnavailable,
+    }
+  }
+}
+
+/**
+ * Get the current health status of the virus scanner
+ */
+export async function getVirusScannerHealth(): Promise<ScannerHealth> {
+  const scanner = getVirusScannerService()
+  return scanner.checkHealth()
+}
+
+/**
+ * Get virus scanner configuration summary (safe for logging)
+ */
+export function getVirusScannerConfig(): {
+  enabled: boolean
+  backend: string
+  fallbackBackend?: string
+  blockOnScannerUnavailable: boolean
+} {
+  const scanner = getVirusScannerService()
+  return scanner.getConfigSummary()
+}
+
+/**
+ * Quarantine an infected file
+ */
+export async function quarantineInfectedFile(
+  fileId: string,
+  storagePath: string,
+  threats: string[]
+): Promise<{ quarantined: boolean; quarantinePath?: string; error?: string }> {
+  const scanner = getVirusScannerService()
+  return scanner.quarantineFile(fileId, storagePath, threats)
 }
 
 // ============================================================================
@@ -403,33 +499,393 @@ export async function scanFileForViruses(
 // ============================================================================
 
 /**
- * Strip EXIF metadata from image files
- * This is a placeholder - actual implementation requires image processing library
+ * Sensitive EXIF fields that should be stripped for privacy
  */
-export async function stripExifMetadata(file: File): Promise<{
-  file: File
-  stripped: boolean
-  originalMetadata?: Record<string, unknown>
-  error?: string
-}> {
-  // Check if file is an image that might contain EXIF
-  const exifTypes = ['image/jpeg', 'image/tiff', 'image/heic', 'image/heif']
+export const SENSITIVE_EXIF_FIELDS = [
+  // GPS/Location data
+  'gps',
+  'GPSLatitude',
+  'GPSLongitude',
+  'GPSAltitude',
+  'GPSTimeStamp',
+  'GPSDateStamp',
+  'GPSProcessingMethod',
+  'GPSAreaInformation',
+  'GPSDestLatitude',
+  'GPSDestLongitude',
+  // Device information
+  'Make',
+  'Model',
+  'Software',
+  'HostComputer',
+  'SerialNumber',
+  'LensSerialNumber',
+  'BodySerialNumber',
+  'CameraSerialNumber',
+  'InternalSerialNumber',
+  'DeviceSettingDescription',
+  // Personal information
+  'Artist',
+  'Copyright',
+  'ImageDescription',
+  'UserComment',
+  'OwnerName',
+  'CameraOwnerName',
+  'Author',
+  // Date/time (can be used for tracking)
+  'DateTimeOriginal',
+  'CreateDate',
+  'ModifyDate',
+  'DateTimeDigitized',
+  'SubSecTimeOriginal',
+  'SubSecTimeDigitized',
+  // Other potentially sensitive
+  'MakerNote',
+  'ImageUniqueID',
+  'DocumentName',
+  'PageName',
+  'XPAuthor',
+  'XPComment',
+  'XPKeywords',
+  'XPSubject',
+  'XPTitle',
+] as const
 
-  if (!exifTypes.includes(file.type)) {
+export interface ExifStrippingOptions {
+  /** Which fields to strip (default: all sensitive fields) */
+  fieldsToStrip?: string[]
+  /** Preserve orientation for correct image display */
+  preserveOrientation?: boolean
+  /** Preserve color profile (ICC) for accurate colors */
+  preserveColorProfile?: boolean
+  /** Log the stripped metadata for debugging */
+  logStrippedData?: boolean
+}
+
+export interface ExifStrippingResult {
+  /** The processed file with EXIF stripped */
+  file: File
+  /** The processed buffer (for server-side use) */
+  buffer?: Buffer
+  /** Whether stripping was performed */
+  stripped: boolean
+  /** Fields that were stripped */
+  strippedFields?: string[]
+  /** Original metadata before stripping (if requested) */
+  originalMetadata?: Record<string, unknown>
+  /** Any error that occurred */
+  error?: string
+  /** Processing time in milliseconds */
+  processingTime?: number
+}
+
+/**
+ * Check if the current environment supports sharp (Node.js only)
+ */
+function isSharpAvailable(): boolean {
+  if (typeof window !== 'undefined') {
+    return false // Browser environment
+  }
+  try {
+    require.resolve('sharp')
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Strip EXIF metadata from image files using sharp
+ *
+ * Removes sensitive metadata including:
+ * - GPS/location data
+ * - Device information (make, model, serial numbers)
+ * - Personal information (artist, copyright, comments)
+ * - Date/time stamps
+ * - Maker notes
+ *
+ * @example
+ * ```typescript
+ * const result = await stripExifMetadata(imageFile)
+ * if (result.stripped) {
+ *   console.log('Stripped fields:', result.strippedFields)
+ *   // Use result.file for the cleaned image
+ * }
+ * ```
+ */
+export async function stripExifMetadata(
+  file: File | Buffer | ArrayBuffer,
+  options: ExifStrippingOptions = {}
+): Promise<ExifStrippingResult> {
+  const startTime = Date.now()
+  const {
+    preserveOrientation = true,
+    preserveColorProfile = true,
+    logStrippedData = false,
+  } = options
+
+  // Determine file type
+  let mimeType: string
+  let fileName: string
+
+  if (file instanceof File) {
+    mimeType = file.type
+    fileName = file.name
+  } else {
+    // For Buffer/ArrayBuffer, assume JPEG unless we can detect otherwise
+    mimeType = 'image/jpeg'
+    fileName = 'image.jpg'
+  }
+
+  // Check if file is an image that might contain EXIF
+  const exifSupportedTypes = ['image/jpeg', 'image/tiff', 'image/heic', 'image/heif', 'image/webp']
+
+  // Helper to create a File from various input types
+  const createFile = (input: File | Buffer | ArrayBuffer): File => {
+    if (input instanceof File) return input
+    // Convert Buffer/ArrayBuffer to Uint8Array for File constructor
+    const uint8Array = input instanceof ArrayBuffer ? new Uint8Array(input) : new Uint8Array(input)
+    return new File([uint8Array], fileName, { type: mimeType })
+  }
+
+  if (!exifSupportedTypes.some((type) => mimeType.toLowerCase().includes(type.split('/')[1]))) {
     return {
-      file,
+      file: createFile(file),
       stripped: false,
+      processingTime: Date.now() - startTime,
     }
   }
 
-  // In production, use a library like piexifjs or sharp to strip EXIF
-  // For now, return the original file with a warning
-  logger.warn('[FileValidation] EXIF stripping is not implemented. Original file returned.')
+  // Check if we're in a Node.js environment with sharp available
+  if (!isSharpAvailable()) {
+    logger.warn(
+      '[FileValidation] EXIF stripping requires sharp (Node.js only). Skipping in browser.'
+    )
+    return {
+      file: createFile(file),
+      stripped: false,
+      error: 'EXIF stripping only available in Node.js environment',
+      processingTime: Date.now() - startTime,
+    }
+  }
 
+  try {
+    // Dynamic import to avoid issues in browser builds
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const sharpModule = require('sharp')
+    // Handle both CommonJS default export and direct export
+    const sharp: (input: Buffer) => import('sharp').Sharp =
+      typeof sharpModule === 'function' ? sharpModule : sharpModule.default
+
+    // Convert input to Buffer
+    let inputBuffer: Buffer
+    if (file instanceof File) {
+      const arrayBuffer = await file.arrayBuffer()
+      inputBuffer = Buffer.from(arrayBuffer)
+    } else if (file instanceof ArrayBuffer) {
+      inputBuffer = Buffer.from(file)
+    } else {
+      inputBuffer = file
+    }
+
+    // Get original metadata for logging/returning
+    const sharpInstance = sharp(inputBuffer)
+    const originalMetadata = await sharpInstance.metadata()
+
+    // Extract fields that will be stripped (for reporting)
+    const strippedFields: string[] = []
+
+    if (originalMetadata.exif) {
+      // We're stripping all EXIF, so add all sensitive fields that might exist
+      SENSITIVE_EXIF_FIELDS.forEach((field) => {
+        strippedFields.push(field)
+      })
+    }
+
+    // Create a new sharp instance for processing
+    const processedSharp = sharp(inputBuffer)
+
+    // Configure sharp to strip metadata
+    // By default, sharp removes all metadata when you just process the image
+    // We need to explicitly handle what to keep
+
+    let outputBuffer: Buffer
+
+    if (preserveOrientation && preserveColorProfile) {
+      // Rotate based on EXIF orientation, then strip all metadata
+      // The rotation "applies" the orientation so we don't need the EXIF anymore
+      // Use withMetadata() to preserve a web-friendly sRGB ICC profile
+      outputBuffer = await processedSharp
+        .rotate() // Auto-rotate based on EXIF orientation
+        .withMetadata() // Preserves sRGB color profile by default
+        .toBuffer()
+    } else if (preserveOrientation) {
+      // Just rotate and strip everything (including color profile)
+      outputBuffer = await processedSharp.rotate().toBuffer()
+    } else if (preserveColorProfile) {
+      // Keep color profile (sRGB) but strip everything else
+      outputBuffer = await processedSharp.withMetadata().toBuffer()
+    } else {
+      // Strip everything
+      outputBuffer = await processedSharp.toBuffer()
+    }
+
+    // Verify metadata was stripped
+    const verifySharp = sharp(outputBuffer)
+    const newMetadata = await verifySharp.metadata()
+
+    if (logStrippedData) {
+      logger.info('[FileValidation] EXIF metadata stripped', {
+        originalHadExif: !!originalMetadata.exif,
+        strippedHasExif: !!newMetadata.exif,
+        strippedFields: strippedFields.length,
+        preservedOrientation: preserveOrientation,
+        preservedColorProfile: preserveColorProfile && !!newMetadata.icc,
+      })
+    }
+
+    // Create a new File from the processed buffer
+    const processedFile = new File([new Uint8Array(outputBuffer)], fileName, { type: mimeType })
+
+    return {
+      file: processedFile,
+      buffer: outputBuffer,
+      stripped: true,
+      strippedFields,
+      originalMetadata: logStrippedData
+        ? {
+            format: originalMetadata.format,
+            width: originalMetadata.width,
+            height: originalMetadata.height,
+            hasExif: !!originalMetadata.exif,
+            hasIcc: !!originalMetadata.icc,
+            orientation: originalMetadata.orientation,
+          }
+        : undefined,
+      processingTime: Date.now() - startTime,
+    }
+  } catch (error) {
+    logger.error('[FileValidation] Failed to strip EXIF metadata', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    })
+
+    return {
+      file: createFile(file),
+      stripped: false,
+      error: error instanceof Error ? error.message : 'Failed to strip EXIF metadata',
+      processingTime: Date.now() - startTime,
+    }
+  }
+}
+
+/**
+ * Strip EXIF metadata from a Buffer (server-side convenience function)
+ */
+export async function stripExifFromBuffer(
+  buffer: Buffer,
+  mimeType: string = 'image/jpeg',
+  options: ExifStrippingOptions = {}
+): Promise<{
+  buffer: Buffer
+  stripped: boolean
+  error?: string
+}> {
+  const result = await stripExifMetadata(buffer, options)
   return {
-    file,
-    stripped: false,
-    error: 'EXIF stripping not implemented',
+    buffer: result.buffer || buffer,
+    stripped: result.stripped,
+    error: result.error,
+  }
+}
+
+/**
+ * Check if an image contains EXIF data
+ */
+export async function hasExifData(file: File | Buffer): Promise<boolean> {
+  if (!isSharpAvailable()) {
+    logger.warn('[FileValidation] EXIF detection requires sharp (Node.js only)')
+    return false
+  }
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const sharpModule = require('sharp')
+    const sharp: (input: Buffer) => import('sharp').Sharp =
+      typeof sharpModule === 'function' ? sharpModule : sharpModule.default
+
+    let inputBuffer: Buffer
+    if (file instanceof File) {
+      const arrayBuffer = await file.arrayBuffer()
+      inputBuffer = Buffer.from(arrayBuffer)
+    } else {
+      inputBuffer = file
+    }
+
+    const sharpInstance = sharp(inputBuffer)
+    const metadata = await sharpInstance.metadata()
+
+    return !!metadata.exif
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Extract EXIF metadata from an image (for debugging/auditing)
+ */
+export async function extractExifMetadata(file: File | Buffer): Promise<{
+  hasExif: boolean
+  metadata?: Record<string, unknown>
+  error?: string
+}> {
+  if (!isSharpAvailable()) {
+    return {
+      hasExif: false,
+      error: 'EXIF extraction requires sharp (Node.js only)',
+    }
+  }
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const sharpModule = require('sharp')
+    const sharp: (input: Buffer) => import('sharp').Sharp =
+      typeof sharpModule === 'function' ? sharpModule : sharpModule.default
+
+    let inputBuffer: Buffer
+    if (file instanceof File) {
+      const arrayBuffer = await file.arrayBuffer()
+      inputBuffer = Buffer.from(arrayBuffer)
+    } else {
+      inputBuffer = file
+    }
+
+    const sharpInstance = sharp(inputBuffer)
+    const metadata = await sharpInstance.metadata()
+
+    return {
+      hasExif: !!metadata.exif,
+      metadata: {
+        format: metadata.format,
+        width: metadata.width,
+        height: metadata.height,
+        space: metadata.space,
+        channels: metadata.channels,
+        depth: metadata.depth,
+        density: metadata.density,
+        chromaSubsampling: metadata.chromaSubsampling,
+        isProgressive: metadata.isProgressive,
+        hasProfile: metadata.hasProfile,
+        hasAlpha: metadata.hasAlpha,
+        orientation: metadata.orientation,
+        exifSize: metadata.exif?.length,
+        iccSize: metadata.icc?.length,
+      },
+    }
+  } catch (error) {
+    return {
+      hasExif: false,
+      error: error instanceof Error ? error.message : 'Failed to extract metadata',
+    }
   }
 }
 

@@ -1,6 +1,11 @@
 /**
  * NFT Verifier
  * Verify NFT ownership and token balances for token gating
+ *
+ * This module provides real on-chain verification using:
+ * - Alchemy NFT API (recommended for production)
+ * - Direct RPC calls as fallback
+ * - Support for ERC-20, ERC-721, and ERC-1155 tokens
  */
 
 import type { CryptoNetwork, TokenType, TokenRequirement } from '@/types/billing'
@@ -11,99 +16,224 @@ export interface VerificationResult {
   balance?: number
   tokenIds?: string[]
   error?: string
+  source?: 'alchemy' | 'rpc' | 'cache'
 }
 
 /**
- * ERC-20 ABI (minimal)
+ * Get Alchemy API key for network (read at runtime for testing)
  */
-const ERC20_ABI = [
-  {
-    constant: true,
-    inputs: [{ name: '_owner', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: 'balance', type: 'uint256' }],
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'decimals',
-    outputs: [{ name: '', type: 'uint8' }],
-    type: 'function',
-  },
-]
+function getAlchemyApiKey(network: CryptoNetwork): string | undefined {
+  switch (network) {
+    case 'ethereum':
+      return process.env.NEXT_PUBLIC_ALCHEMY_ETHEREUM_API_KEY
+    case 'polygon':
+      return process.env.NEXT_PUBLIC_ALCHEMY_POLYGON_API_KEY
+    case 'arbitrum':
+      return process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_API_KEY
+    case 'bsc':
+      return undefined // Alchemy doesn't support BSC, use direct RPC
+    default:
+      return undefined
+  }
+}
+
+const ALCHEMY_BASE_URLS: Record<CryptoNetwork, string> = {
+  ethereum: 'https://eth-mainnet.g.alchemy.com/nft/v3/',
+  polygon: 'https://polygon-mainnet.g.alchemy.com/nft/v3/',
+  arbitrum: 'https://arb-mainnet.g.alchemy.com/nft/v3/',
+  bsc: '', // Not supported
+}
+
+const ALCHEMY_RPC_URLS: Record<CryptoNetwork, string> = {
+  ethereum: 'https://eth-mainnet.g.alchemy.com/v2/',
+  polygon: 'https://polygon-mainnet.g.alchemy.com/v2/',
+  arbitrum: 'https://arb-mainnet.g.alchemy.com/v2/',
+  bsc: '', // Not supported
+}
 
 /**
- * ERC-721 ABI (minimal)
+ * Fallback RPC URLs for networks not supported by Alchemy or when API key is missing
  */
-const ERC721_ABI = [
-  {
-    constant: true,
-    inputs: [{ name: '_owner', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: '', type: 'uint256' }],
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [
-      { name: '_owner', type: 'address' },
-      { name: '_index', type: 'uint256' },
-    ],
-    name: 'tokenOfOwnerByIndex',
-    outputs: [{ name: '', type: 'uint256' }],
-    type: 'function',
-  },
-]
+const FALLBACK_RPC_URLS: Record<CryptoNetwork, string> = {
+  ethereum: CRYPTO_NETWORKS.ethereum.rpcUrl,
+  polygon: CRYPTO_NETWORKS.polygon.rpcUrl,
+  bsc: CRYPTO_NETWORKS.bsc.rpcUrl,
+  arbitrum: CRYPTO_NETWORKS.arbitrum.rpcUrl,
+}
 
 /**
- * ERC-1155 ABI (minimal)
+ * ERC-20 ABI (minimal for balanceOf and decimals)
  */
-const ERC1155_ABI = [
-  {
-    constant: true,
-    inputs: [
-      { name: '_owner', type: 'address' },
-      { name: '_id', type: 'uint256' },
-    ],
-    name: 'balanceOf',
-    outputs: [{ name: '', type: 'uint256' }],
-    type: 'function',
-  },
-]
+const ERC20_BALANCE_SELECTOR = '0x70a08231' // balanceOf(address)
+const ERC20_DECIMALS_SELECTOR = '0x313ce567' // decimals()
 
 /**
- * Get Web3 provider for a network
+ * ERC-721 ABI (minimal for balanceOf and ownerOf)
+ */
+const ERC721_BALANCE_SELECTOR = '0x70a08231' // balanceOf(address)
+const ERC721_OWNER_OF_SELECTOR = '0x6352211e' // ownerOf(uint256)
+
+/**
+ * ERC-1155 ABI (minimal for balanceOf)
+ */
+const ERC1155_BALANCE_OF_SELECTOR = '0x00fdd58e' // balanceOf(address, uint256)
+
+/**
+ * Cache for verification results (5 minute TTL)
+ */
+const verificationCache = new Map<
+  string,
+  {
+    result: VerificationResult
+    timestamp: number
+  }
+>()
+
+const CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
+
+/**
+ * Generate cache key for verification
+ */
+function getCacheKey(
+  network: CryptoNetwork,
+  contractAddress: string,
+  walletAddress: string,
+  tokenType: TokenType,
+  tokenIds?: string[]
+): string {
+  return `${network}:${contractAddress}:${walletAddress}:${tokenType}:${tokenIds?.join(',') || ''}`
+}
+
+/**
+ * Get cached result if valid
+ */
+function getCachedResult(cacheKey: string): VerificationResult | null {
+  const cached = verificationCache.get(cacheKey)
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return { ...cached.result, source: 'cache' }
+  }
+  verificationCache.delete(cacheKey)
+  return null
+}
+
+/**
+ * Set cache result
+ */
+function setCacheResult(cacheKey: string, result: VerificationResult): void {
+  verificationCache.set(cacheKey, {
+    result,
+    timestamp: Date.now(),
+  })
+}
+
+/**
+ * Encode address parameter (left-padded to 32 bytes)
+ */
+function encodeAddress(address: string): string {
+  return address.toLowerCase().replace('0x', '').padStart(64, '0')
+}
+
+/**
+ * Encode uint256 parameter (left-padded to 32 bytes)
+ */
+function encodeUint256(value: string | number | bigint): string {
+  const bigValue = typeof value === 'string' ? BigInt(value) : BigInt(value)
+  return bigValue.toString(16).padStart(64, '0')
+}
+
+/**
+ * Decode hex result to bigint
+ */
+function decodeUint256(result: string): bigint {
+  if (!result || result === '0x' || result === '0x0') {
+    return BigInt(0)
+  }
+  return BigInt(result)
+}
+
+/**
+ * Get RPC URL for network
+ */
+function getRpcUrl(network: CryptoNetwork): string {
+  const alchemyKey = getAlchemyApiKey(network)
+  if (alchemyKey && ALCHEMY_RPC_URLS[network]) {
+    return `${ALCHEMY_RPC_URLS[network]}${alchemyKey}`
+  }
+  return FALLBACK_RPC_URLS[network]
+}
+
+/**
+ * Make JSON-RPC call
+ */
+async function rpcCall(
+  network: CryptoNetwork,
+  contractAddress: string,
+  data: string
+): Promise<string> {
+  const rpcUrl = getRpcUrl(network)
+
+  const response = await fetch(rpcUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'eth_call',
+      params: [
+        {
+          to: contractAddress,
+          data,
+        },
+        'latest',
+      ],
+      id: 1,
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`RPC request failed: ${response.statusText}`)
+  }
+
+  const json = await response.json()
+
+  if (json.error) {
+    throw new Error(`RPC error: ${json.error.message}`)
+  }
+
+  return json.result
+}
+
+/**
+ * Get Web3 provider for a network (browser environment)
  */
 function getProvider(network: CryptoNetwork) {
   if (typeof window === 'undefined') {
-    throw new Error('Web3 provider only available in browser')
+    return null
   }
 
   const ethereum = (window as any).ethereum
   if (!ethereum) {
-    throw new Error('No Web3 provider found')
+    return null
   }
 
   return ethereum
 }
 
 /**
- * Call contract method
+ * Make eth_call using browser provider
  */
-async function callContract(
+async function browserRpcCall(
   network: CryptoNetwork,
   contractAddress: string,
-  abi: any[],
-  method: string,
-  params: any[]
-): Promise<any> {
+  data: string
+): Promise<string> {
   const provider = getProvider(network)
 
-  // Create the call data
-  const data = encodeCallData(abi, method, params)
+  if (!provider) {
+    throw new Error('No Web3 provider found')
+  }
 
-  // Make the call
   const result = await provider.request({
     method: 'eth_call',
     params: [
@@ -119,29 +249,24 @@ async function callContract(
 }
 
 /**
- * Encode call data (simplified)
- * In production, use a proper Web3 library
+ * Make RPC call with fallback (try server-side first, then browser)
  */
-function encodeCallData(abi: any[], method: string, params: any[]): string {
-  // This is a simplified implementation
-  // In production, use ethers.js or web3.js
-  const signature = abi.find((item) => item.name === method)
-  if (!signature) throw new Error(`Method ${method} not found in ABI`)
-
-  // For now, return empty data
-  // Proper implementation would encode the function signature and parameters
-  return '0x'
+async function makeRpcCall(
+  network: CryptoNetwork,
+  contractAddress: string,
+  data: string
+): Promise<string> {
+  try {
+    // Try server-side RPC first
+    return await rpcCall(network, contractAddress, data)
+  } catch {
+    // Fall back to browser provider
+    return await browserRpcCall(network, contractAddress, data)
+  }
 }
 
 /**
- * Decode result (simplified)
- */
-function decodeResult(result: string): bigint {
-  return BigInt(result)
-}
-
-/**
- * Verify ERC-20 token balance
+ * Verify ERC-20 token balance via RPC
  */
 export async function verifyERC20Balance(
   network: CryptoNetwork,
@@ -149,32 +274,167 @@ export async function verifyERC20Balance(
   walletAddress: string,
   minBalance: number
 ): Promise<VerificationResult> {
+  const cacheKey = getCacheKey(network, contractAddress, walletAddress, 'erc20')
+  const cached = getCachedResult(cacheKey)
+  if (cached) return cached
+
   try {
-    const result = await callContract(network, contractAddress, ERC20_ABI, 'balanceOf', [
-      walletAddress,
-    ])
+    // Get balance
+    const balanceData = `${ERC20_BALANCE_SELECTOR}${encodeAddress(walletAddress)}`
+    const balanceResult = await makeRpcCall(network, contractAddress, balanceData)
+    const rawBalance = decodeUint256(balanceResult)
 
-    const balance = Number(decodeResult(result))
-    const decimalsResult = await callContract(network, contractAddress, ERC20_ABI, 'decimals', [])
-    const decimals = Number(decodeResult(decimalsResult))
+    // Get decimals
+    let decimals = 18 // Default to 18 decimals
+    try {
+      const decimalsResult = await makeRpcCall(network, contractAddress, ERC20_DECIMALS_SELECTOR)
+      decimals = Number(decodeUint256(decimalsResult))
+    } catch {
+      // Some tokens don't implement decimals(), use default
+    }
 
-    // Adjust for decimals
-    const actualBalance = balance / Math.pow(10, decimals)
+    // Calculate actual balance
+    const actualBalance = Number(rawBalance) / Math.pow(10, decimals)
 
-    return {
+    const result: VerificationResult = {
       verified: actualBalance >= minBalance,
       balance: actualBalance,
+      source: 'rpc',
+    }
+
+    setCacheResult(cacheKey, result)
+    return result
+  } catch (error: any) {
+    return {
+      verified: false,
+      error: error.message || 'Failed to verify ERC-20 balance',
+    }
+  }
+}
+
+/**
+ * Verify ERC-721 NFT ownership via Alchemy API
+ */
+async function verifyERC721ViaAlchemy(
+  network: CryptoNetwork,
+  contractAddress: string,
+  walletAddress: string,
+  requiredTokenIds?: string[],
+  minTokenCount?: number
+): Promise<VerificationResult | null> {
+  const apiKey = getAlchemyApiKey(network)
+  const baseUrl = ALCHEMY_BASE_URLS[network]
+
+  if (!apiKey || !baseUrl) {
+    return null // Alchemy not available for this network
+  }
+
+  try {
+    // Use Alchemy's getNFTsForOwner API
+    const url = `${baseUrl}${apiKey}/getNFTsForOwner?owner=${walletAddress}&contractAddresses[]=${contractAddress}&withMetadata=false`
+
+    const response = await fetch(url, {
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Alchemy API error: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    const ownedNfts = data.ownedNfts || []
+    const balance = ownedNfts.length
+    const ownedTokenIds = ownedNfts.map((nft: any) => nft.tokenId)
+
+    // Check specific token IDs if required
+    if (requiredTokenIds && requiredTokenIds.length > 0) {
+      const hasRequiredTokens = requiredTokenIds.every((id) => ownedTokenIds.includes(id))
+      return {
+        verified: hasRequiredTokens,
+        balance,
+        tokenIds: ownedTokenIds,
+        source: 'alchemy',
+      }
+    }
+
+    // Check minimum token count
+    const required = minTokenCount ?? 1
+    return {
+      verified: balance >= required,
+      balance,
+      tokenIds: ownedTokenIds,
+      source: 'alchemy',
+    }
+  } catch (error) {
+    console.warn('Alchemy API verification failed, falling back to RPC:', error)
+    return null // Fall back to RPC
+  }
+}
+
+/**
+ * Verify ERC-721 NFT ownership via direct RPC
+ */
+async function verifyERC721ViaRPC(
+  network: CryptoNetwork,
+  contractAddress: string,
+  walletAddress: string,
+  requiredTokenIds?: string[],
+  minTokenCount?: number
+): Promise<VerificationResult> {
+  try {
+    // Get balance using balanceOf
+    const balanceData = `${ERC721_BALANCE_SELECTOR}${encodeAddress(walletAddress)}`
+    const balanceResult = await makeRpcCall(network, contractAddress, balanceData)
+    const balance = Number(decodeUint256(balanceResult))
+
+    // If specific token IDs required, verify ownership of each
+    if (requiredTokenIds && requiredTokenIds.length > 0) {
+      const ownedTokenIds: string[] = []
+
+      for (const tokenId of requiredTokenIds) {
+        try {
+          const ownerData = `${ERC721_OWNER_OF_SELECTOR}${encodeUint256(tokenId)}`
+          const ownerResult = await makeRpcCall(network, contractAddress, ownerData)
+          const owner = '0x' + ownerResult.slice(26).toLowerCase()
+
+          if (owner === walletAddress.toLowerCase()) {
+            ownedTokenIds.push(tokenId)
+          }
+        } catch {
+          // Token might not exist or be burned
+        }
+      }
+
+      const hasAllRequired = requiredTokenIds.every((id) => ownedTokenIds.includes(id))
+
+      return {
+        verified: hasAllRequired,
+        balance,
+        tokenIds: ownedTokenIds,
+        source: 'rpc',
+      }
+    }
+
+    // Check minimum token count
+    const required = minTokenCount ?? 1
+    return {
+      verified: balance >= required,
+      balance,
+      source: 'rpc',
     }
   } catch (error: any) {
     return {
       verified: false,
-      error: error.message,
+      error: error.message || 'Failed to verify ERC-721 ownership',
     }
   }
 }
 
 /**
  * Verify ERC-721 NFT ownership
+ * Uses Alchemy API when available, falls back to RPC
  */
 export async function verifyERC721Ownership(
   network: CryptoNetwork,
@@ -183,50 +443,110 @@ export async function verifyERC721Ownership(
   requiredTokenIds?: string[],
   minTokenCount?: number
 ): Promise<VerificationResult> {
+  const cacheKey = getCacheKey(
+    network,
+    contractAddress,
+    walletAddress,
+    'erc721',
+    requiredTokenIds
+  )
+  const cached = getCachedResult(cacheKey)
+  if (cached) return cached
+
+  // Try Alchemy first (more reliable and provides token IDs)
+  const alchemyResult = await verifyERC721ViaAlchemy(
+    network,
+    contractAddress,
+    walletAddress,
+    requiredTokenIds,
+    minTokenCount
+  )
+
+  if (alchemyResult) {
+    setCacheResult(cacheKey, alchemyResult)
+    return alchemyResult
+  }
+
+  // Fall back to RPC
+  const rpcResult = await verifyERC721ViaRPC(
+    network,
+    contractAddress,
+    walletAddress,
+    requiredTokenIds,
+    minTokenCount
+  )
+
+  if (!rpcResult.error) {
+    setCacheResult(cacheKey, rpcResult)
+  }
+
+  return rpcResult
+}
+
+/**
+ * Verify ERC-1155 token ownership via Alchemy API
+ */
+async function verifyERC1155ViaAlchemy(
+  network: CryptoNetwork,
+  contractAddress: string,
+  walletAddress: string,
+  tokenIds: string[],
+  minTokenCount?: number
+): Promise<VerificationResult | null> {
+  const apiKey = getAlchemyApiKey(network)
+  const baseUrl = ALCHEMY_BASE_URLS[network]
+
+  if (!apiKey || !baseUrl) {
+    return null // Alchemy not available for this network
+  }
+
   try {
-    // Get balance (number of NFTs owned)
-    const balanceResult = await callContract(network, contractAddress, ERC721_ABI, 'balanceOf', [
-      walletAddress,
-    ])
+    // Use Alchemy's getNFTsForOwner API for ERC-1155
+    const url = `${baseUrl}${apiKey}/getNFTsForOwner?owner=${walletAddress}&contractAddresses[]=${contractAddress}&withMetadata=false`
 
-    const balance = Number(decodeResult(balanceResult))
+    const response = await fetch(url, {
+      headers: {
+        Accept: 'application/json',
+      },
+    })
 
-    // If specific token IDs required
-    if (requiredTokenIds && requiredTokenIds.length > 0) {
-      // Check each required token ID
-      // This would require additional contract calls
-      // For now, just check balance
-      return {
-        verified: balance > 0,
-        balance,
+    if (!response.ok) {
+      throw new Error(`Alchemy API error: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    const ownedNfts = data.ownedNfts || []
+
+    // Calculate total balance for requested token IDs
+    let totalBalance = 0
+    const matchedTokenIds: string[] = []
+
+    for (const nft of ownedNfts) {
+      if (tokenIds.includes(nft.tokenId)) {
+        // ERC-1155 returns balance in the response
+        const balance = parseInt(nft.balance || '1', 10)
+        totalBalance += balance
+        matchedTokenIds.push(nft.tokenId)
       }
     }
 
-    // If minimum token count required
-    if (minTokenCount !== undefined) {
-      return {
-        verified: balance >= minTokenCount,
-        balance,
-      }
-    }
-
-    // Just need to own at least one
+    const required = minTokenCount ?? 1
     return {
-      verified: balance > 0,
-      balance,
+      verified: totalBalance >= required,
+      balance: totalBalance,
+      tokenIds: matchedTokenIds,
+      source: 'alchemy',
     }
-  } catch (error: any) {
-    return {
-      verified: false,
-      error: error.message,
-    }
+  } catch (error) {
+    console.warn('Alchemy API verification failed, falling back to RPC:', error)
+    return null
   }
 }
 
 /**
- * Verify ERC-1155 token ownership
+ * Verify ERC-1155 token ownership via direct RPC
  */
-export async function verifyERC1155Ownership(
+async function verifyERC1155ViaRPC(
   network: CryptoNetwork,
   contractAddress: string,
   walletAddress: string,
@@ -235,31 +555,79 @@ export async function verifyERC1155Ownership(
 ): Promise<VerificationResult> {
   try {
     let totalBalance = 0
+    const ownedTokenIds: string[] = []
 
     // Check balance for each token ID
     for (const tokenId of tokenIds) {
-      const result = await callContract(network, contractAddress, ERC1155_ABI, 'balanceOf', [
-        walletAddress,
-        tokenId,
-      ])
+      const data = `${ERC1155_BALANCE_OF_SELECTOR}${encodeAddress(walletAddress)}${encodeUint256(tokenId)}`
+      const result = await makeRpcCall(network, contractAddress, data)
+      const balance = Number(decodeUint256(result))
 
-      const balance = Number(decodeResult(result))
-      totalBalance += balance
+      if (balance > 0) {
+        totalBalance += balance
+        ownedTokenIds.push(tokenId)
+      }
     }
 
-    const required = minTokenCount || 1
+    const required = minTokenCount ?? 1
 
     return {
       verified: totalBalance >= required,
       balance: totalBalance,
-      tokenIds,
+      tokenIds: ownedTokenIds,
+      source: 'rpc',
     }
   } catch (error: any) {
     return {
       verified: false,
-      error: error.message,
+      error: error.message || 'Failed to verify ERC-1155 ownership',
     }
   }
+}
+
+/**
+ * Verify ERC-1155 token ownership
+ * Uses Alchemy API when available, falls back to RPC
+ */
+export async function verifyERC1155Ownership(
+  network: CryptoNetwork,
+  contractAddress: string,
+  walletAddress: string,
+  tokenIds: string[],
+  minTokenCount?: number
+): Promise<VerificationResult> {
+  const cacheKey = getCacheKey(network, contractAddress, walletAddress, 'erc1155', tokenIds)
+  const cached = getCachedResult(cacheKey)
+  if (cached) return cached
+
+  // Try Alchemy first
+  const alchemyResult = await verifyERC1155ViaAlchemy(
+    network,
+    contractAddress,
+    walletAddress,
+    tokenIds,
+    minTokenCount
+  )
+
+  if (alchemyResult) {
+    setCacheResult(cacheKey, alchemyResult)
+    return alchemyResult
+  }
+
+  // Fall back to RPC
+  const rpcResult = await verifyERC1155ViaRPC(
+    network,
+    contractAddress,
+    walletAddress,
+    tokenIds,
+    minTokenCount
+  )
+
+  if (!rpcResult.error) {
+    setCacheResult(cacheKey, rpcResult)
+  }
+
+  return rpcResult
 }
 
 /**
@@ -272,6 +640,22 @@ export async function verifyTokenRequirement(
   if (!requirement.enabled) {
     return {
       verified: true,
+    }
+  }
+
+  // Validate wallet address format
+  if (!walletAddress || !/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+    return {
+      verified: false,
+      error: 'Invalid wallet address',
+    }
+  }
+
+  // Validate contract address format
+  if (!requirement.contractAddress || !/^0x[a-fA-F0-9]{40}$/.test(requirement.contractAddress)) {
+    return {
+      verified: false,
+      error: 'Invalid contract address',
     }
   }
 
@@ -328,11 +712,18 @@ export async function verifyAllRequirements(
 }> {
   const results = new Map<string, VerificationResult>()
 
-  for (const requirement of requirements) {
-    if (!requirement.enabled) continue
+  // Run verifications in parallel for better performance
+  const verificationPromises = requirements
+    .filter((r) => r.enabled)
+    .map(async (requirement) => {
+      const result = await verifyTokenRequirement(requirement, walletAddress)
+      return { id: requirement.id, result }
+    })
 
-    const result = await verifyTokenRequirement(requirement, walletAddress)
-    results.set(requirement.id, result)
+  const verificationResults = await Promise.all(verificationPromises)
+
+  for (const { id, result } of verificationResults) {
+    results.set(id, result)
   }
 
   const allVerified = Array.from(results.values()).every((r) => r.verified)
@@ -348,12 +739,9 @@ export async function verifyAllRequirements(
  */
 export async function checkChannelAccess(
   channelId: string,
-  walletAddress: string
+  walletAddress: string,
+  requirements: TokenRequirement[]
 ): Promise<boolean> {
-  // This would fetch channel requirements from database
-  // For now, return mock data
-  const requirements: TokenRequirement[] = []
-
   if (requirements.length === 0) {
     return true // No requirements, public channel
   }
@@ -423,19 +811,94 @@ export async function getUserTokenHoldings(
 }
 
 /**
- * Verify ownership using Alchemy/Moralis API (recommended for production)
+ * Verify ownership using Alchemy NFT API directly
+ * This is the recommended approach for production
  */
 export async function verifyOwnershipViaAPI(
   walletAddress: string,
   contractAddress: string,
-  network: CryptoNetwork
+  network: CryptoNetwork,
+  tokenType: TokenType = 'erc721'
 ): Promise<VerificationResult> {
-  // This would use Alchemy NFT API or Moralis
-  // Example: https://docs.alchemy.com/reference/getnfts
-  // For now, return placeholder
+  // Validate inputs
+  if (!walletAddress || !/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+    return {
+      verified: false,
+      error: 'Invalid wallet address',
+    }
+  }
 
-  return {
-    verified: false,
-    error: 'API verification not implemented',
+  if (!contractAddress || !/^0x[a-fA-F0-9]{40}$/.test(contractAddress)) {
+    return {
+      verified: false,
+      error: 'Invalid contract address',
+    }
+  }
+
+  const apiKey = getAlchemyApiKey(network)
+  const baseUrl = ALCHEMY_BASE_URLS[network]
+
+  if (!apiKey || !baseUrl) {
+    // Fall back to RPC verification for unsupported networks
+    if (tokenType === 'erc20') {
+      return verifyERC20Balance(network, contractAddress, walletAddress, 0)
+    } else if (tokenType === 'erc721') {
+      return verifyERC721ViaRPC(network, contractAddress, walletAddress)
+    } else {
+      return {
+        verified: false,
+        error: `Alchemy not available for ${network}. Please use direct verification methods.`,
+      }
+    }
+  }
+
+  try {
+    const url = `${baseUrl}${apiKey}/getNFTsForOwner?owner=${walletAddress}&contractAddresses[]=${contractAddress}&withMetadata=false`
+
+    const response = await fetch(url, {
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Alchemy API error: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    const ownedNfts = data.ownedNfts || []
+    const balance = ownedNfts.length
+    const tokenIds = ownedNfts.map((nft: any) => nft.tokenId)
+
+    return {
+      verified: balance > 0,
+      balance,
+      tokenIds,
+      source: 'alchemy',
+    }
+  } catch (error: any) {
+    return {
+      verified: false,
+      error: error.message || 'API verification failed',
+    }
+  }
+}
+
+/**
+ * Clear verification cache
+ * Useful when user acquires new tokens
+ */
+export function clearVerificationCache(): void {
+  verificationCache.clear()
+}
+
+/**
+ * Clear cache for specific wallet
+ */
+export function clearWalletCache(walletAddress: string): void {
+  for (const key of verificationCache.keys()) {
+    if (key.includes(walletAddress.toLowerCase())) {
+      verificationCache.delete(key)
+    }
   }
 }

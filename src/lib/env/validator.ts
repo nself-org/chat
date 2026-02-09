@@ -99,8 +99,9 @@ const clientEnvSchema = z.object({
   // Stripe (public key)
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
 
-  // Maps
+  // Maps & Geocoding
   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().optional(),
+  NEXT_PUBLIC_MAPBOX_API_KEY: z.string().optional(),
 
   // Analytics (public)
   NEXT_PUBLIC_PLAUSIBLE_DOMAIN: z.string().optional(),

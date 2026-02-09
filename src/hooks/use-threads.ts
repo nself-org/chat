@@ -374,6 +374,7 @@ export function useThreads({
 export function useThreadActivity(options: { limit?: number } = {}): UseThreadActivityReturn {
   const { limit = 50 } = options
   const { user } = useAuth()
+  const threads = useThreadStore((state) => state.threads)
 
   // Query: Get thread activity feed
   const { data, loading, error, fetchMore, refetch } = useQuery(GET_THREAD_ACTIVITY_FEED, {
@@ -412,6 +413,11 @@ export function useThreadActivity(options: { limit?: number } = {}): UseThreadAc
           type = 'thread_created'
         }
 
+        // Check read state from thread store
+        const thread = threads.get(msg.thread.id)
+        const lastReadId = thread?.lastReadMessageId
+        const isRead = lastReadId ? msg.id <= lastReadId : false
+
         return {
           id: msg.id,
           type,
@@ -420,11 +426,11 @@ export function useThreadActivity(options: { limit?: number } = {}): UseThreadAc
           message: msg as unknown as ThreadMessage,
           channel: msg.thread.channel,
           timestamp: new Date(msg.created_at),
-          isRead: false, // TODO: implement read state
+          isRead,
         }
       }
     )
-  }, [data, user?.id])
+  }, [data, user?.id, threads])
 
   // Actions
   const loadMoreActivity = useCallback(async () => {

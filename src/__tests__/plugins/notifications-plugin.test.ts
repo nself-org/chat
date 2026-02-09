@@ -14,7 +14,7 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals'
 // Configuration
 const NOTIFICATIONS_URL =
   process.env.NEXT_PUBLIC_NOTIFICATIONS_URL || 'http://notifications.localhost:3102'
-const PLUGINS_ENABLED = process.env.PLUGINS_ENABLED !== 'false'
+const PLUGINS_ENABLED = process.env.PLUGINS_ENABLED === 'true'
 const TEST_TIMEOUT = 30000
 
 // Test data

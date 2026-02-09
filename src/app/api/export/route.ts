@@ -44,6 +44,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { gql } from '@apollo/client'
 import type { ExportConfig } from '@/lib/import-export/types'
 import { randomUUID } from 'crypto'
 import {
@@ -61,7 +62,7 @@ import {
   type AuthenticatedRequest,
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
-
+import { getServerApolloClient } from '@/lib/apollo-client'
 import { logger } from '@/lib/logger'
 
 // ============================================================================
@@ -90,6 +91,123 @@ const CONFIG = {
   // Valid formats
   VALID_FORMATS: ['json', 'csv'] as const,
 }
+
+// ============================================================================
+// GraphQL Queries for Export
+// ============================================================================
+
+/**
+ * Query to get messages for export with full authorization check.
+ * Only returns messages from channels where the user is a member.
+ */
+const GET_MESSAGES_FOR_EXPORT = gql`
+  query GetMessagesForExport(
+    $userId: uuid!
+    $channelIds: [uuid!]
+    $dateFrom: timestamptz
+    $dateTo: timestamptz
+    $limit: Int = 50000
+  ) {
+    nchat_messages(
+      where: {
+        _and: [
+          { is_deleted: { _eq: false } }
+          { channel: { members: { user_id: { _eq: $userId } } } }
+          { channel_id: { _in: $channelIds } }
+          { created_at: { _gte: $dateFrom } }
+          { created_at: { _lte: $dateTo } }
+        ]
+      }
+      order_by: { created_at: desc }
+      limit: $limit
+    ) {
+      id
+      content
+      type
+      created_at
+      edited_at
+      is_pinned
+      channel_id
+      user_id
+      channel {
+        id
+        name
+        slug
+      }
+      user {
+        id
+        username
+        display_name
+      }
+      attachments {
+        id
+        file_name
+        file_url
+        file_type
+        file_size
+      }
+      reactions {
+        emoji
+        user {
+          id
+        }
+      }
+    }
+  }
+`
+
+/**
+ * Query to get user's channels for export.
+ * Only returns channels where the user is a member.
+ */
+const GET_USER_CHANNELS_FOR_EXPORT = gql`
+  query GetUserChannelsForExport($userId: uuid!, $channelIds: [uuid!]) {
+    nchat_channels(
+      where: {
+        _and: [{ members: { user_id: { _eq: $userId } } }, { id: { _in: $channelIds } }]
+      }
+      order_by: { name: asc }
+    ) {
+      id
+      name
+      slug
+      description
+      type
+      is_private
+      is_archived
+      created_at
+    }
+  }
+`
+
+/**
+ * Query to get users in channels the requesting user has access to.
+ * Returns users from shared channels only.
+ */
+const GET_USERS_FOR_EXPORT = gql`
+  query GetUsersForExport($userId: uuid!, $channelIds: [uuid!]) {
+    nchat_users(
+      where: {
+        channel_memberships: {
+          channel: {
+            _and: [{ members: { user_id: { _eq: $userId } } }, { id: { _in: $channelIds } }]
+          }
+        }
+      }
+      order_by: { display_name: asc }
+    ) {
+      id
+      username
+      display_name
+      email
+      avatar_url
+      created_at
+      role {
+        name
+      }
+    }
+  }
+`
 
 // ============================================================================
 // Types
@@ -154,8 +272,62 @@ interface ExportedMessage {
   }>
 }
 
+// Types for database results
+interface DbMessage {
+  id: string
+  content: string
+  type: string
+  created_at: string
+  edited_at?: string
+  is_pinned: boolean
+  channel_id: string
+  user_id: string
+  channel: {
+    id: string
+    name: string
+    slug: string
+  }
+  user: {
+    id: string
+    username: string
+    display_name: string
+  }
+  attachments: Array<{
+    id: string
+    file_name: string
+    file_url: string
+    file_type: string
+    file_size: number
+  }>
+  reactions: Array<{
+    emoji: string
+    user: { id: string }
+  }>
+}
+
+interface DbChannel {
+  id: string
+  name: string
+  slug: string
+  description: string
+  type: string
+  is_private: boolean
+  is_archived: boolean
+  created_at: string
+}
+
+interface DbUser {
+  id: string
+  username: string
+  display_name: string
+  email: string
+  avatar_url?: string
+  created_at: string
+  role?: { name: string }
+}
+
 // ============================================================================
-// In-Memory Storage (Mock - Use database/queue in production)
+// In-Memory Storage (Job queue - in production, use Redis or database)
 // ============================================================================
 
 const exportJobs = new Map<string, ExportJob>()
@@ -171,50 +343,6 @@ setInterval(() => {
     }
   }
 }, 60000) // Every minute
-
-// ============================================================================
-// Mock Data
-// ============================================================================
-
-const mockMessages: ExportedMessage[] = [
-  {
-    id: 'msg-1',
-    content: 'Hello team! Here is the weekly update.',
-    channelId: 'channel-general',
-    channelName: 'general',
-    userId: 'user-1',
-    userName: 'John Doe',
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    reactions: [{ emoji: 'thumbsup', count: 3, users: ['user-2', 'user-3', 'user-4'] }],
-  },
-  {
-    id: 'msg-2',
-    content: 'Great progress on the project!',
-    channelId: 'channel-general',
-    channelName: 'general',
-    userId: 'user-2',
-    userName: 'Jane Smith',
-    createdAt: new Date(Date.now() - 82800000).toISOString(),
-  },
-  {
-    id: 'msg-3',
-    content: 'Check out the new design mockups',
-    channelId: 'channel-design',
-    channelName: 'design',
-    userId: 'user-3',
-    userName: 'Alice Designer',
-    createdAt: new Date(Date.now() - 79200000).toISOString(),
-    attachments: [
-      {
-        id: 'file-1',
-        filename: 'mockup.png',
-        url: '/files/mockup.png',
-        mimeType: 'image/png',
-        size: 512000,
-      },
-    ],
-  },
-]
 
 // ============================================================================
 // Helpers
@@ -272,48 +400,127 @@ function validateExportRequest(
 }
 
 /**
- * Fetch messages for export (mock implementation)
+ * Fetch messages for export from database.
+ * Enforces authorization - only returns messages from channels user is a member of.
  */
 async function fetchMessagesForExport(
   userId: string,
   request: ExportRequest
 ): Promise<ExportedMessage[]> {
-  // In production, this would query the database:
-  // const { data } = await graphqlClient.query({
-  //   query: GET_USER_MESSAGES,
-  //   variables: {
-  //     userId,
-  //     channelIds: request.channelIds,
-  //     dateFrom: request.dateFrom,
-  //     dateTo: request.dateTo,
-  //     limit: CONFIG.MAX_MESSAGES
-  //   }
-  // })
+  const client = getServerApolloClient()
 
-  let messages = [...mockMessages]
+  try {
+    const { data } = await client.query({
+      query: GET_MESSAGES_FOR_EXPORT,
+      variables: {
+        userId,
+        channelIds: request.channelIds?.length ? request.channelIds : null,
+        dateFrom: request.dateFrom || null,
+        dateTo: request.dateTo || null,
+        limit: CONFIG.MAX_MESSAGES,
+      },
+      fetchPolicy: 'no-cache',
+    })
 
-  // Filter by channels
-  if (request.channelIds && request.channelIds.length > 0) {
-    messages = messages.filter((m) => request.channelIds!.includes(m.channelId))
+    const dbMessages: DbMessage[] = data?.nchat_messages || []
+
+    // Transform database results to export format
+    const messages: ExportedMessage[] = dbMessages.map((msg) => {
+      // Group reactions by emoji
+      const reactionMap = new Map<string, string[]>()
+      for (const r of msg.reactions || []) {
+        const users = reactionMap.get(r.emoji) || []
+        users.push(r.user.id)
+        reactionMap.set(r.emoji, users)
+      }
+      const reactions = Array.from(reactionMap.entries()).map(([emoji, users]) => ({
+        emoji,
+        count: users.length,
+        users,
+      }))
+
+      const message: ExportedMessage = {
+        id: msg.id,
+        content: msg.content,
+        channelId: msg.channel_id,
+        channelName: msg.channel?.name || 'unknown',
+        userId: msg.user_id,
+        userName: msg.user?.display_name || msg.user?.username || 'unknown',
+        createdAt: msg.created_at,
+        editedAt: msg.edited_at || undefined,
+        reactions: reactions.length > 0 ? reactions : undefined,
+      }
+
+      // Include attachments if requested
+      if (request.includeAttachments && msg.attachments?.length > 0) {
+        message.attachments = msg.attachments.map((a) => ({
+          id: a.id,
+          filename: a.file_name,
+          url: a.file_url,
+          mimeType: a.file_type,
+          size: a.file_size,
+        }))
+      }
+
+      return message
+    })
+
+    return messages
+  } catch (error) {
+    logger.error('Error fetching messages for export:', error)
+    throw new Error('Failed to fetch messages for export')
   }
+}
 
-  // Filter by date
-  if (request.dateFrom) {
-    const from = new Date(request.dateFrom).getTime()
-    messages = messages.filter((m) => new Date(m.createdAt).getTime() >= from)
+/**
+ * Fetch channels for export from database.
+ * Only returns channels where user is a member.
+ */
+async function fetchChannelsForExport(
+  userId: string,
+  channelIds?: string[]
+): Promise<DbChannel[]> {
+  const client = getServerApolloClient()
+
+  try {
+    const { data } = await client.query({
+      query: GET_USER_CHANNELS_FOR_EXPORT,
+      variables: {
+        userId,
+        channelIds: channelIds?.length ? channelIds : null,
+      },
+      fetchPolicy: 'no-cache',
+    })
+
+    return data?.nchat_channels || []
+  } catch (error) {
+    logger.error('Error fetching channels for export:', error)
+    throw new Error('Failed to fetch channels for export')
   }
+}
 
-  if (request.dateTo) {
-    const to = new Date(request.dateTo).getTime()
-    messages = messages.filter((m) => new Date(m.createdAt).getTime() <= to)
+/**
+ * Fetch users for export from database.
+ * Only returns users from channels where requesting user is also a member.
+ */
+async function fetchUsersForExport(userId: string, channelIds?: string[]): Promise<DbUser[]> {
+  const client = getServerApolloClient()
+
+  try {
+    const { data } = await client.query({
+      query: GET_USERS_FOR_EXPORT,
+      variables: {
+        userId,
+        channelIds: channelIds?.length ? channelIds : null,
+      },
+      fetchPolicy: 'no-cache',
+    })
+
+    return data?.nchat_users || []
+  } catch (error) {
+    logger.error('Error fetching users for export:', error)
+    throw new Error('Failed to fetch users for export')
   }
-
-  // Remove attachments if not requested
-  if (!request.includeAttachments) {
-    messages = messages.map((m) => ({ ...m, attachments: undefined }))
-  }
-
-  return messages
 }
 
 /**
@@ -350,7 +557,7 @@ function messagesToCsv(messages: ExportedMessage[]): string {
 }
 
 /**
- * Process export job (mock async processing)
+ * Process export job asynchronously
  */
 async function processExportJob(jobId: string, job: ExportJob): Promise<void> {
   try {
@@ -359,7 +566,7 @@ async function processExportJob(jobId: string, job: ExportJob): Promise<void> {
     job.progress = 10
     exportJobs.set(jobId, job)
 
-    // Fetch data
+    // Fetch data from database
     const messages = await fetchMessagesForExport(job.userId, {
       type: job.type,
       format: job.format,
@@ -503,7 +710,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
     body && typeof body === 'object' && 'options' in body && 'filters' in body
 
   if (isNewStyleExport) {
-    return handleNewStyleExport(body as ExportConfig)
+    return handleNewStyleExport(request.user.id, body as ExportConfig)
   }
 
   const validation = validateExportRequest(body)
@@ -575,191 +782,188 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
 // New-Style Export Handler (Direct Download)
 // ============================================================================
 
-const MOCK_EXPORT_USERS = [
-  {
-    id: '1',
-    username: 'john_doe',
-    display_name: 'John Doe',
-    email: 'john@example.com',
-    role: 'admin',
-    created_at: '2024-01-15T10:30:00Z',
-  },
-  {
-    id: '2',
-    username: 'jane_smith',
-    display_name: 'Jane Smith',
-    email: 'jane@example.com',
-    role: 'member',
-    created_at: '2024-01-16T14:20:00Z',
-  },
-  {
-    id: '3',
-    username: 'bob_wilson',
-    display_name: 'Bob Wilson',
-    email: 'bob@example.com',
-    role: 'member',
-    created_at: '2024-01-17T09:15:00Z',
-  },
-]
+// Types for export data
+interface ExportUser {
+  id: string
+  username: string
+  display_name: string
+  email: string
+  role: string
+  created_at: string
+}
 
-const MOCK_EXPORT_CHANNELS = [
-  {
-    id: '1',
-    name: 'general',
-    slug: 'general',
-    description: 'General discussion',
-    type: 'public',
-    is_private: false,
-    is_archived: false,
-    created_at: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'random',
-    slug: 'random',
-    description: 'Random chat',
-    type: 'public',
-    is_private: false,
-    is_archived: false,
-    created_at: '2024-01-01T00:00:00Z',
-  },
-  {
-    id: '3',
-    name: 'engineering',
-    slug: 'engineering',
-    description: 'Engineering team discussions',
-    type: 'private',
-    is_private: true,
-    is_archived: false,
-    created_at: '2024-01-02T00:00:00Z',
-  },
-]
+interface ExportChannel {
+  id: string
+  name: string
+  slug: string
+  description: string
+  type: string
+  is_private: boolean
+  is_archived: boolean
+  created_at: string
+}
 
-const MOCK_EXPORT_MESSAGES = [
-  {
-    id: '1',
-    channel_id: '1',
-    user_id: '1',
-    content: 'Hello everyone! Welcome to the team.',
-    type: 'text',
-    created_at: '2024-01-15T10:35:00Z',
-    is_pinned: true,
-  },
-  {
-    id: '2',
-    channel_id: '1',
-    user_id: '2',
-    content: 'Thanks John! Excited to be here.',
-    type: 'text',
-    created_at: '2024-01-15T10:40:00Z',
-    is_pinned: false,
-  },
-  {
-    id: '3',
-    channel_id: '2',
-    user_id: '3',
-    content: 'Anyone want to grab coffee?',
-    type: 'text',
-    created_at: '2024-01-15T14:00:00Z',
-    is_pinned: false,
-  },
-  {
-    id: '4',
-    channel_id: '3',
-    user_id: '1',
-    content: 'Sprint planning tomorrow at 10am',
-    type: 'text',
-    created_at: '2024-01-16T09:00:00Z',
-    is_pinned: true,
-  },
-]
+interface ExportMessage {
+  id: string
+  channel_id: string
+  user_id: string
+  content: string
+  type: string
+  created_at: string
+  is_pinned: boolean
+}
 
-async function handleNewStyleExport(config: ExportConfig): Promise<NextResponse> {
-  // Get data based on options
-  let users = config.options.includeUsers ? [...MOCK_EXPORT_USERS] : []
-  let channels = config.options.includeChannels ? [...MOCK_EXPORT_CHANNELS] : []
-  let messages = config.options.includeMessages ? [...MOCK_EXPORT_MESSAGES] : []
+async function handleNewStyleExport(
+  userId: string,
+  config: ExportConfig
+): Promise<NextResponse> {
+  try {
+    // Fetch real data from database with authorization
+    let users: ExportUser[] = []
+    let channels: ExportChannel[] = []
+    let messages: ExportMessage[] = []
 
-  // Apply channel filter
-  if (config.filters.channelIds?.length) {
-    const channelIdSet = new Set(config.filters.channelIds)
-    channels = channels.filter((c) => channelIdSet.has(c.id))
-    messages = messages.filter((m) => channelIdSet.has(m.channel_id))
-  }
+    const channelIds = config.filters.channelIds
 
-  // Apply date range filter
-  if (config.filters.dateRange) {
-    const { start, end } = config.filters.dateRange
-    messages = messages.filter((m) => {
-      const msgDate = new Date(m.created_at)
-      if (start && msgDate < new Date(start)) return false
-      if (end && msgDate > new Date(end)) return false
-      return true
-    })
-  }
+    // Fetch channels the user has access to
+    if (config.options.includeChannels || config.options.includeMessages) {
+      const dbChannels = await fetchChannelsForExport(userId, channelIds)
+      channels = dbChannels.map((c) => ({
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        description: c.description,
+        type: c.type,
+        is_private: c.is_private,
+        is_archived: c.is_archived,
+        created_at: c.created_at,
+      }))
+    }
 
-  // Anonymize users if requested
-  if (config.options.anonymizeUsers) {
-    const userIdMap = new Map(users.map((u, index) => [u.id, `user_${index + 1}`]))
-    users = users.map((u, index) => ({
-      ...u,
-      username: `user_${index + 1}`,
-      display_name: `User ${index + 1}`,
-      email: `user${index + 1}@example.com`,
-    }))
-    messages = messages.map((m) => ({
-      ...m,
-      user_id: userIdMap.get(m.user_id) || m.user_id,
-    }))
-  }
+    // If no channels found that user has access to, return empty
+    if (channelIds?.length && channels.length === 0) {
+      return forbiddenResponse('You do not have access to the requested channels')
+    }
 
-  // Generate export content
-  let content: string
-  let contentType: string
-  let filename: string
+    // Get valid channel IDs for subsequent queries
+    const validChannelIds = channels.map((c) => c.id)
 
-  if (config.format === 'csv') {
-    content = generateExportCsv(users, channels, messages, config.options)
-    contentType = 'text/csv'
-    filename = `nchat-export-${Date.now()}.csv`
-  } else {
-    content = JSON.stringify(
-      {
-        metadata: {
-          exportedAt: new Date().toISOString(),
-          format: 'json',
-          version: '1.0.0',
-          filters: config.filters,
-          stats: {
-            usersExported: users.length,
-            channelsExported: channels.length,
-            messagesExported: messages.length,
+    // Fetch users from accessible channels
+    if (config.options.includeUsers) {
+      const dbUsers = await fetchUsersForExport(userId, validChannelIds)
+      users = dbUsers.map((u) => ({
+        id: u.id,
+        username: u.username,
+        display_name: u.display_name,
+        email: u.email,
+        role: u.role?.name || 'member',
+        created_at: u.created_at,
+      }))
+    }
+
+    // Fetch messages from accessible channels
+    if (config.options.includeMessages) {
+      const exportedMessages = await fetchMessagesForExport(userId, {
+        type: 'messages',
+        channelIds: validChannelIds,
+        dateFrom: config.filters.dateRange?.start,
+        dateTo: config.filters.dateRange?.end,
+        includeAttachments: config.options.includeAttachments,
+      })
+
+      messages = exportedMessages.map((m) => ({
+        id: m.id,
+        channel_id: m.channelId,
+        user_id: m.userId,
+        content: m.content,
+        type: 'text',
+        created_at: m.createdAt,
+        is_pinned: false,
+      }))
+    }
+
+    // Don't include channels if not requested
+    if (!config.options.includeChannels) {
+      channels = []
+    }
+
+    // Apply date range filter for messages (already handled in query, but double-check)
+    if (config.filters.dateRange) {
+      const { start, end } = config.filters.dateRange
+      messages = messages.filter((m) => {
+        const msgDate = new Date(m.created_at)
+        if (start && msgDate < new Date(start)) return false
+        if (end && msgDate > new Date(end)) return false
+        return true
+      })
+    }
+
+    // Anonymize users if requested
+    if (config.options.anonymizeUsers) {
+      const userIdMap = new Map(users.map((u, index) => [u.id, `user_${index + 1}`]))
+      users = users.map((u, index) => ({
+        ...u,
+        username: `user_${index + 1}`,
+        display_name: `User ${index + 1}`,
+        email: `user${index + 1}@anonymized.local`,
+      }))
+      messages = messages.map((m) => ({
+        ...m,
+        user_id: userIdMap.get(m.user_id) || m.user_id,
+      }))
+    }
+
+    // Generate export content
+    let content: string
+    let contentType: string
+    let filename: string
+
+    if (config.format === 'csv') {
+      content = generateExportCsv(users, channels, messages, config.options)
+      contentType = 'text/csv'
+      filename = `nchat-export-${Date.now()}.csv`
+    } else {
+      content = JSON.stringify(
+        {
+          metadata: {
+            exportedAt: new Date().toISOString(),
+            format: 'json',
+            version: '1.0.0',
+            filters: config.filters,
+            stats: {
+              usersExported: users.length,
+              channelsExported: channels.length,
+              messagesExported: messages.length,
+            },
           },
+          ...(config.options.includeUsers && { users }),
+          ...(config.options.includeChannels && { channels }),
+          ...(config.options.includeMessages && { messages }),
         },
-        ...(config.options.includeUsers && { users }),
-        ...(config.options.includeChannels && { channels }),
-        ...(config.options.includeMessages && { messages }),
-      },
-      null,
-      2
-    )
-    contentType = 'application/json'
-    filename = `nchat-export-${Date.now()}.json`
-  }
+        null,
+        2
+      )
+      contentType = 'application/json'
+      filename = `nchat-export-${Date.now()}.json`
+    }
 
-  return new NextResponse(content, {
-    status: 200,
-    headers: {
-      'Content-Type': contentType,
-      'Content-Disposition': `attachment; filename="${filename}"`,
-    },
-  })
+    return new NextResponse(content, {
+      status: 200,
+      headers: {
+        'Content-Type': contentType,
+        'Content-Disposition': `attachment; filename="${filename}"`,
+      },
+    })
+  } catch (error) {
+    logger.error('Export failed:', error)
+    return internalErrorResponse('Failed to export data')
+  }
 }
 
 function generateExportCsv(
-  users: typeof MOCK_EXPORT_USERS,
-  channels: typeof MOCK_EXPORT_CHANNELS,
-  messages: typeof MOCK_EXPORT_MESSAGES,
+  users: ExportUser[],
+  channels: ExportChannel[],
+  messages: ExportMessage[],
   options: ExportConfig['options']
 ): string {
   const sections: string[] = []

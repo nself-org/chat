@@ -158,8 +158,13 @@ describe('SlowModeManager Class', () => {
   let manager: SlowModeManager
 
   beforeEach(() => {
+    jest.useFakeTimers()
     manager = new SlowModeManager()
     manager.clearAll()
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
   })
 
   describe('constructor', () => {
@@ -482,11 +487,11 @@ describe('SlowModeManager Class', () => {
       expect(result.allowed).toBe(false)
     })
 
-    it('should allow after cooldown expires', async () => {
+    it('should allow after cooldown expires', () => {
       manager.setSlowMode('channel-1', 50) // 50ms for testing
 
       manager.recordMessage('user-1', 'channel-1')
-      await new Promise((resolve) => setTimeout(resolve, 60))
+      jest.advanceTimersByTime(60)
 
       const result = manager.recordMessage('user-1', 'channel-1')
       expect(result.allowed).toBe(true)
@@ -610,11 +615,11 @@ describe('SlowModeManager Class', () => {
   })
 
   describe('cleanup', () => {
-    it('should clean expired cooldowns', async () => {
+    it('should clean expired cooldowns', () => {
       manager.setSlowMode('channel-1', 50) // 50ms
       manager.recordMessage('user-1', 'channel-1')
 
-      await new Promise((resolve) => setTimeout(resolve, 60))
+      jest.advanceTimersByTime(60)
 
       const cleaned = manager.cleanup()
       // Cleanup should return a number (may be 0 if already expired or different implementation)

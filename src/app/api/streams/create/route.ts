@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
             stream_key
             ingest_url
             hls_manifest_url
+            dash_manifest_url
             max_resolution
             bitrate_kbps
             fps

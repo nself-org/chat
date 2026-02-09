@@ -143,3 +143,44 @@ export {
   type ReceiptSummary,
   type ReceiptStatus,
 } from './receipt.service'
+
+// Message Semantics Service (Edit/Delete/Undo)
+export {
+  MessageSemanticsService,
+  getMessageSemanticsService,
+  createMessageSemanticsService,
+  type EditMessageInput,
+  type EditMessageResult,
+  type DeleteMessageInput,
+  type DeleteMessageResult,
+  type UndoResult,
+  type BulkDeleteInput,
+  type BulkDeleteResult,
+} from './semantics.service'
+
+// Message Linkage Service (Reply/Quote/Thread Consistency)
+export {
+  MessageLinkageService,
+  getLinkageService,
+  createLinkageService,
+  type ReplyReference,
+  type QuoteSnapshot,
+  type QuoteMediaSnapshot,
+  type ThreadLinkage,
+  type LinkageValidationResult,
+  type LinkageRepairOptions,
+  type ExportedLinkage,
+  type ImportLinkageMapping,
+  type LinkageEditConfig,
+  type LinkageServiceConfig,
+} from './linkage.service'
+
+// Message Export Service
+export {
+  MessageExportService,
+  getMessageExportService,
+  createMessageExportService,
+  type ExportJob,
+  type ExportJobStatus,
+  type ExportProgressCallback,
+} from './export.service'

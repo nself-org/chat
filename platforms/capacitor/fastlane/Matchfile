@@ -1,0 +1,29 @@
+# Matchfile for nChat - Certificate and Provisioning Profile Management
+
+# Git repository for storing certificates and profiles
+git_url(ENV["MATCH_GIT_URL"] || "git@github.com:your-org/certificates.git")
+
+# Storage mode (git, google_cloud, s3, gitlab_secure_files)
+storage_mode("git")
+
+# App identifier
+app_identifier(["io.nself.chat"])
+
+# Your Apple Developer Portal username
+username(ENV["APPLE_ID"])
+
+# Team ID (Developer Portal)
+team_id(ENV["DEVELOPER_PORTAL_TEAM_ID"])
+
+# Type of provisioning profile (appstore, adhoc, development, enterprise)
+# This will be overridden in Fastfile lanes
+type("development")
+
+# Shallow clone for faster downloads
+shallow_clone(true)
+
+# Generate Apple Silicon and Intel compatible profiles
+platform("ios")
+
+# For more information about the Matchfile, see:
+#     https://docs.fastlane.tools/actions/match/

@@ -23,3 +23,20 @@ export {
   type InviteListResult,
   type WorkspaceStats,
 } from './workspace.service'
+
+// Extended Workspace Service
+export {
+  ExtendedWorkspaceService,
+  getExtendedWorkspaceService,
+  createExtendedWorkspaceService,
+  type OwnershipTransferRequest,
+  type OwnershipTransferResult,
+  type EmergencyAccess,
+  type WorkspaceAnalytics,
+  type MessageRetentionPolicy,
+  type StorageQuota,
+  type WorkspaceNotificationPrefs,
+  type WorkspaceOnboardingStep,
+  type OnboardingConfig,
+  type DeactivatedMember,
+} from './workspace-extended.service'

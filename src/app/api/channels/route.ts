@@ -12,6 +12,7 @@ import { logger } from '@/lib/logger'
 import { z } from 'zod'
 import { apolloClient } from '@/lib/apollo-client'
 import { createChannelService, createMembershipService } from '@/services/channels'
+import { getAuthenticatedUser } from '@/lib/api/middleware'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -67,33 +68,28 @@ const SearchQuerySchema = z.object({
 // ============================================================================
 
 /**
- * Get user ID from request headers (set by auth middleware)
+ * Get authenticated user from request using verified JWT/session tokens
+ *
+ * This replaces the previous placeholder JWT decode that could be spoofed via headers.
+ * Now uses proper verification through the auth middleware which:
+ * - Validates JWT tokens with Nhost/Hasura backend in production
+ * - Uses development test tokens in dev mode
+ * - Falls back to session cookie validation
+ * - Returns null if no valid authentication found
  */
-function getUserIdFromRequest(request: NextRequest): string | null {
-  const userId = request.headers.get('x-user-id')
-  if (userId) return userId
+async function getVerifiedUserFromRequest(
+  request: NextRequest
+): Promise<{ id: string; role: string } | null> {
+  const user = await getAuthenticatedUser(request)
 
-  // Try to get from auth token (simplified - in production use proper JWT validation)
-  const authHeader = request.headers.get('authorization')
-  if (authHeader?.startsWith('Bearer ')) {
-    try {
-      // This is a placeholder - implement proper JWT decoding
-      const token = authHeader.slice(7)
-      // For now, return null to trigger anonymous access
-      if (token) return null
-    } catch {
-      return null
-    }
+  if (!user) {
+    return null
   }
 
-  return null
-}
-
-/**
- * Get user role from request headers
- */
-function getUserRoleFromRequest(request: NextRequest): string {
-  return request.headers.get('x-user-role') || 'guest'
+  return {
+    id: user.id,
+    role: user.role,
+  }
 }
 
 // ============================================================================
@@ -207,14 +203,16 @@ export async function POST(request: NextRequest) {
   try {
     logger.info('POST /api/channels - Create channel request')
 
-    // Get user from auth
-    const userId = getUserIdFromRequest(request)
-    if (!userId) {
+    // Get verified user from JWT/session token (not spoofable via headers)
+    const verifiedUser = await getVerifiedUserFromRequest(request)
+    if (!verifiedUser) {
       return NextResponse.json(
         { success: false, error: 'Authentication required' },
         { status: 401 }
       )
     }
+
+    const userId = verifiedUser.id
 
     const body = await request.json()
 

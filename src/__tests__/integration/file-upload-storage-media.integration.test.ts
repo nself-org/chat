@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: File Upload + Storage + Media Processing
  *
  * Tests the complete flow of file uploads through storage to media processing.

@@ -1,0 +1,165 @@
+name: Deploy iOS to TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - testflight
+          - app-store
+        default: 'testflight'
+      notify_testers:
+        description: 'Notify external testers'
+        required: false
+        type: boolean
+        default: false
+  push:
+    tags:
+      - 'mobile-ios-v*'
+
+env:
+  NODE_VERSION: '20'
+  RUBY_VERSION: '3.2'
+
+jobs:
+  deploy-ios:
+    name: Deploy iOS
+    runs-on: macos-14
+    environment: ${{ inputs.environment || 'testflight' }}
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: false
+
+      - name: Install Fastlane
+        run: |
+          gem install fastlane -v '~> 2.220.0'
+          fastlane --version
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
+      - name: Get version info
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          BUILD_NUMBER=${{ github.run_number }}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
+          echo "Deploying version $VERSION build $BUILD_NUMBER"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web assets
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_USE_DEV_AUTH: 'false'
+          NODE_ENV: production
+
+      - name: Sync Capacitor
+        working-directory: platforms/capacitor
+        run: npx cap sync ios
+
+      - name: Install CocoaPods dependencies
+        working-directory: platforms/capacitor/ios/App
+        run: |
+          pod install --repo-update
+          pod update
+
+      - name: Setup signing certificates
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
+        working-directory: platforms/capacitor
+        run: |
+          fastlane match appstore --readonly
+
+      - name: Build and archive iOS app
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APP_STORE_CONNECT_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
+          DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
+          APP_STORE_CONNECT_API_KEY_PATH: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        working-directory: platforms/capacitor
+        run: |
+          fastlane ios release
+
+      - name: Upload to TestFlight
+        if: inputs.environment == 'testflight' || contains(github.ref, 'testflight')
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APP_STORE_CONNECT_API_KEY_PATH: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
+        working-directory: platforms/capacitor
+        run: |
+          fastlane ios beta
+
+      - name: Upload to App Store
+        if: inputs.environment == 'app-store'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APP_STORE_CONNECT_API_KEY_PATH: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
+        working-directory: platforms/capacitor
+        run: |
+          fastlane ios deploy
+
+      - name: Upload IPA artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa-${{ steps.version.outputs.version }}-${{ steps.version.outputs.build_number }}
+          path: |
+            platforms/capacitor/dist/ios/*.ipa
+            platforms/capacitor/dist/ios/*.dSYM.zip
+          retention-days: 30
+
+      - name: Upload build logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-logs-${{ github.run_number }}
+          path: |
+            platforms/capacitor/fastlane/report.xml
+            platforms/capacitor/ios/App/build/Logs
+          retention-days: 7
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "🎉 iOS app successfully deployed to ${{ inputs.environment }}!"
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo "Build: ${{ steps.version.outputs.build_number }}"
+          echo "Check App Store Connect: https://appstoreconnect.apple.com"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ iOS deployment failed"
+          echo "Check the logs for details"

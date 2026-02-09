@@ -45,6 +45,7 @@ import {
   type AuthenticatedRequest,
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
+import { logger } from '@/lib/logger'
 
 /**
  * Wraps an AuthenticatedRequest handler for use with withCsrfProtection.
@@ -56,6 +57,173 @@ function csrfWrapped(
   handler: (request: AuthenticatedRequest) => Promise<NextResponse>
 ): (request: NextRequest, context: unknown) => Promise<NextResponse> {
   return (request, context) => handler(request as AuthenticatedRequest)
+}
+
+// ============================================================================
+// GraphQL Queries & Mutations
+// ============================================================================
+
+const GET_REMINDERS_QUERY = `
+  query GetReminders(
+    $userId: uuid!
+    $status: String
+    $channelId: uuid
+    $type: String
+    $limit: Int!
+    $offset: Int!
+  ) {
+    nchat_reminders(
+      where: {
+        user_id: { _eq: $userId }
+        status: { _eq: $status }
+        channel_id: { _eq: $channelId }
+        type: { _eq: $type }
+      }
+      order_by: { remind_at: asc }
+      limit: $limit
+      offset: $offset
+    ) {
+      id
+      user_id
+      message_id
+      channel_id
+      channel {
+        id
+        name
+      }
+      content
+      note
+      remind_at
+      timezone
+      status
+      type
+      is_recurring
+      recurrence_rule
+      snooze_count
+      snoozed_until
+      completed_at
+      created_at
+      updated_at
+    }
+    nchat_reminders_aggregate(
+      where: {
+        user_id: { _eq: $userId }
+        status: { _eq: $status }
+        channel_id: { _eq: $channelId }
+        type: { _eq: $type }
+      }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`
+
+const CREATE_REMINDER_MUTATION = `
+  mutation CreateReminder($reminder: nchat_reminders_insert_input!) {
+    insert_nchat_reminders_one(object: $reminder) {
+      id
+      user_id
+      message_id
+      channel_id
+      content
+      note
+      remind_at
+      timezone
+      status
+      type
+      is_recurring
+      recurrence_rule
+      snooze_count
+      created_at
+      updated_at
+    }
+  }
+`
+
+const UPDATE_REMINDER_MUTATION = `
+  mutation UpdateReminder(
+    $id: uuid!
+    $userId: uuid!
+    $updates: nchat_reminders_set_input!
+  ) {
+    update_nchat_reminders(
+      where: { id: { _eq: $id }, user_id: { _eq: $userId } }
+      _set: $updates
+    ) {
+      affected_rows
+      returning {
+        id
+        user_id
+        message_id
+        channel_id
+        content
+        note
+        remind_at
+        timezone
+        status
+        type
+        is_recurring
+        recurrence_rule
+        snooze_count
+        snoozed_until
+        completed_at
+        updated_at
+      }
+    }
+  }
+`
+
+const DELETE_REMINDER_MUTATION = `
+  mutation DeleteReminder($id: uuid!, $userId: uuid!) {
+    delete_nchat_reminders(where: { id: { _eq: $id }, user_id: { _eq: $userId } }) {
+      affected_rows
+    }
+  }
+`
+
+// ============================================================================
+// GraphQL Helper
+// ============================================================================
+
+async function executeGraphQL<T = unknown>(
+  query: string,
+  variables: Record<string, unknown> = {},
+  authToken?: string
+): Promise<{ data?: T; errors?: Array<{ message: string }> }> {
+  const hasuraUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/v1/graphql'
+  const hasuraAdminSecret = process.env.HASURA_ADMIN_SECRET
+
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  }
+
+  if (hasuraAdminSecret) {
+    headers['x-hasura-admin-secret'] = hasuraAdminSecret
+  } else if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`
+  }
+
+  const response = await fetch(hasuraUrl, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ query, variables }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`GraphQL request failed: ${response.statusText}`)
+  }
+
+  return response.json()
+}
+
+function getAuthToken(request: AuthenticatedRequest): string | undefined {
+  const authHeader = request.headers.get('Authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.substring(7)
+  }
+  return undefined
 }
 
 // ============================================================================
@@ -266,20 +434,65 @@ async function handleGetReminders(request: AuthenticatedRequest): Promise<NextRe
     return unauthorizedResponse('Authentication required')
   }
 
+  const authToken = getAuthToken(request)
   const { searchParams } = new URL(request.url)
   const params = parseQueryParams(searchParams)
 
-  // In a real implementation, this would query the database via GraphQL or REST
-  // For now, we'll return a mock response structure
-  // The actual implementation would use the Apollo Client or Hasura directly
+  try {
+    const result = await executeGraphQL<{
+      nchat_reminders: Array<{
+        id: string
+        user_id: string
+        message_id: string | null
+        channel_id: string | null
+        channel: { id: string; name: string } | null
+        content: string
+        note: string | null
+        remind_at: string
+        timezone: string
+        status: string
+        type: string
+        is_recurring: boolean
+        recurrence_rule: Record<string, unknown> | null
+        snooze_count: number
+        snoozed_until: string | null
+        completed_at: string | null
+        created_at: string
+        updated_at: string
+      }>
+      nchat_reminders_aggregate: { aggregate: { count: number } }
+    }>(
+      GET_REMINDERS_QUERY,
+      {
+        userId: user.id,
+        status: params.status || null,
+        channelId: params.channelId || null,
+        type: params.type || null,
+        limit: params.limit || 50,
+        offset: params.offset || 0,
+      },
+      authToken
+    )
 
-  return successResponse({
-    reminders: [],
-    total: 0,
-    limit: params.limit || 50,
-    offset: params.offset || 0,
-    filters: params,
-  })
+    if (result.errors) {
+      logger.error('Failed to fetch reminders:', result.errors)
+      return internalErrorResponse('Failed to fetch reminders')
+    }
+
+    const reminders = result.data?.nchat_reminders || []
+    const total = result.data?.nchat_reminders_aggregate?.aggregate?.count || 0
+
+    return successResponse({
+      reminders,
+      total,
+      limit: params.limit || 50,
+      offset: params.offset || 0,
+      filters: params,
+    })
+  } catch (error) {
+    logger.error('GET /api/reminders error:', error)
+    return internalErrorResponse('Failed to fetch reminders')
+  }
 }
 
 // ============================================================================
@@ -317,11 +530,12 @@ async function handlePostReminders(request: AuthenticatedRequest): Promise<NextR
     return unauthorizedResponse('Authentication required')
   }
 
+  const authToken = getAuthToken(request)
   const body = await request.json()
 
   // Check if this is an action request
   if (body.action) {
-    return handleReminderAction(user.id, body as ReminderAction)
+    return handleReminderAction(user.id, body as ReminderAction, authToken)
   }
 
   // Otherwise, treat as create request
@@ -332,56 +546,95 @@ async function handlePostReminders(request: AuthenticatedRequest): Promise<NextR
 
   const input = validation.data!
 
-  // In a real implementation, this would create the reminder via GraphQL mutation
-  // For now, we'll return a mock response
-  const newReminder = {
-    id: crypto.randomUUID(),
-    user_id: user.id,
-    message_id: input.messageId,
-    channel_id: input.channelId,
-    content: input.content,
-    note: input.note,
-    remind_at: input.remindAt,
-    timezone: input.timezone,
-    status: 'pending',
-    type: input.type || 'custom',
-    is_recurring: input.isRecurring || false,
-    recurrence_rule: input.recurrenceRule,
-    snooze_count: 0,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  }
+  try {
+    const result = await executeGraphQL<{
+      insert_nchat_reminders_one: {
+        id: string
+        user_id: string
+        message_id: string | null
+        channel_id: string | null
+        content: string
+        note: string | null
+        remind_at: string
+        timezone: string
+        status: string
+        type: string
+        is_recurring: boolean
+        recurrence_rule: Record<string, unknown> | null
+        snooze_count: number
+        created_at: string
+        updated_at: string
+      }
+    }>(
+      CREATE_REMINDER_MUTATION,
+      {
+        reminder: {
+          user_id: user.id,
+          message_id: input.messageId || null,
+          channel_id: input.channelId || null,
+          content: input.content,
+          note: input.note || null,
+          remind_at: input.remindAt,
+          timezone: input.timezone,
+          status: 'pending',
+          type: input.type || 'custom',
+          is_recurring: input.isRecurring || false,
+          recurrence_rule: input.recurrenceRule || null,
+          snooze_count: 0,
+        },
+      },
+      authToken
+    )
 
-  return successResponse({
-    reminder: newReminder,
-    message: 'Reminder created successfully',
-  })
+    if (result.errors) {
+      logger.error('Failed to create reminder:', result.errors)
+      return internalErrorResponse('Failed to create reminder')
+    }
+
+    return successResponse({
+      reminder: result.data?.insert_nchat_reminders_one,
+      message: 'Reminder created successfully',
+    })
+  } catch (error) {
+    logger.error('POST /api/reminders error:', error)
+    return internalErrorResponse('Failed to create reminder')
+  }
 }
 
 /**
  * Handle reminder actions (complete, dismiss, snooze, unsnooze)
  */
-async function handleReminderAction(userId: string, action: ReminderAction): Promise<NextResponse> {
+async function handleReminderAction(
+  userId: string,
+  action: ReminderAction,
+  authToken?: string
+): Promise<NextResponse> {
   const { action: actionType, id, snoozeDuration } = action
 
   if (!id) {
     return badRequestResponse('Reminder ID is required')
   }
 
+  let updates: Record<string, unknown> = {}
+  let message = ''
+
   switch (actionType) {
     case 'complete':
-      // Mark reminder as completed
-      return successResponse({
-        reminder: { id, status: 'completed', completed_at: new Date().toISOString() },
-        message: 'Reminder marked as completed',
-      })
+      updates = {
+        status: 'completed',
+        completed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }
+      message = 'Reminder marked as completed'
+      break
 
     case 'dismiss':
-      // Dismiss reminder
-      return successResponse({
-        reminder: { id, status: 'dismissed' },
-        message: 'Reminder dismissed',
-      })
+      updates = {
+        status: 'dismissed',
+        updated_at: new Date().toISOString(),
+      }
+      message = 'Reminder dismissed'
+      break
 
     case 'snooze':
       if (!snoozeDuration || snoozeDuration <= 0) {
@@ -389,25 +642,67 @@ async function handleReminderAction(userId: string, action: ReminderAction): Pro
       }
 
       const snoozedUntil = new Date(Date.now() + snoozeDuration).toISOString()
-      return successResponse({
-        reminder: {
-          id,
-          status: 'snoozed',
-          snoozed_until: snoozedUntil,
-          remind_at: snoozedUntil,
-        },
-        message: 'Reminder snoozed',
-      })
+      updates = {
+        status: 'snoozed',
+        snoozed_until: snoozedUntil,
+        remind_at: snoozedUntil,
+        snooze_count: { _inc: 1 }, // Increment snooze count
+        updated_at: new Date().toISOString(),
+      }
+      message = 'Reminder snoozed'
+      break
 
     case 'unsnooze':
-      // Resume snoozed reminder
-      return successResponse({
-        reminder: { id, status: 'pending', snoozed_until: null },
-        message: 'Reminder resumed',
-      })
+      updates = {
+        status: 'pending',
+        snoozed_until: null,
+        updated_at: new Date().toISOString(),
+      }
+      message = 'Reminder resumed'
+      break
 
     default:
       return badRequestResponse('Invalid action')
+  }
+
+  try {
+    const result = await executeGraphQL<{
+      update_nchat_reminders: {
+        affected_rows: number
+        returning: Array<{
+          id: string
+          status: string
+          snoozed_until: string | null
+          completed_at: string | null
+          updated_at: string
+        }>
+      }
+    }>(
+      UPDATE_REMINDER_MUTATION,
+      {
+        id,
+        userId,
+        updates,
+      },
+      authToken
+    )
+
+    if (result.errors) {
+      logger.error('Failed to update reminder:', result.errors)
+      return internalErrorResponse('Failed to update reminder')
+    }
+
+    if (!result.data?.update_nchat_reminders?.affected_rows) {
+      return notFoundResponse('Reminder not found or not owned by user')
+    }
+
+    return successResponse({
+      reminder: result.data.update_nchat_reminders.returning[0],
+      message,
+    })
+  } catch (error) {
+    logger.error('Reminder action error:', error)
+    return internalErrorResponse('Failed to perform action')
   }
 }
 
@@ -437,6 +732,7 @@ async function handlePutReminders(request: AuthenticatedRequest): Promise<NextRe
     return unauthorizedResponse('Authentication required')
   }
 
+  const authToken = getAuthToken(request)
   const body = await request.json()
   const validation = validateUpdateInput(body)
 
@@ -446,20 +742,63 @@ async function handlePutReminders(request: AuthenticatedRequest): Promise<NextRe
 
   const input = validation.data!
 
-  // In a real implementation, verify the reminder belongs to the user
-  // and update via GraphQL mutation
-
-  const { id: _id, ...inputWithoutId } = input
-  const updatedReminder = {
-    id: input.id,
-    ...inputWithoutId,
+  // Build update object
+  const updates: Record<string, unknown> = {
     updated_at: new Date().toISOString(),
   }
 
-  return successResponse({
-    reminder: updatedReminder,
-    message: 'Reminder updated successfully',
-  })
+  if (input.content !== undefined) updates.content = input.content
+  if (input.note !== undefined) updates.note = input.note
+  if (input.remindAt !== undefined) updates.remind_at = input.remindAt
+  if (input.timezone !== undefined) updates.timezone = input.timezone
+  if (input.isRecurring !== undefined) updates.is_recurring = input.isRecurring
+  if (input.recurrenceRule !== undefined) updates.recurrence_rule = input.recurrenceRule
+
+  try {
+    const result = await executeGraphQL<{
+      update_nchat_reminders: {
+        affected_rows: number
+        returning: Array<{
+          id: string
+          user_id: string
+          content: string
+          note: string | null
+          remind_at: string
+          timezone: string
+          status: string
+          type: string
+          is_recurring: boolean
+          recurrence_rule: Record<string, unknown> | null
+          updated_at: string
+        }>
+      }
+    }>(
+      UPDATE_REMINDER_MUTATION,
+      {
+        id: input.id,
+        userId: user.id,
+        updates,
+      },
+      authToken
+    )
+
+    if (result.errors) {
+      logger.error('Failed to update reminder:', result.errors)
+      return internalErrorResponse('Failed to update reminder')
+    }
+
+    if (!result.data?.update_nchat_reminders?.affected_rows) {
+      return notFoundResponse('Reminder not found or not owned by user')
+    }
+
+    return successResponse({
+      reminder: result.data.update_nchat_reminders.returning[0],
+      message: 'Reminder updated successfully',
+    })
+  } catch (error) {
+    logger.error('PUT /api/reminders error:', error)
+    return internalErrorResponse('Failed to update reminder')
+  }
 }
 
 // ============================================================================
@@ -477,6 +816,7 @@ async function handleDeleteReminders(request: AuthenticatedRequest): Promise<Nex
     return unauthorizedResponse('Authentication required')
   }
 
+  const authToken = getAuthToken(request)
   const { searchParams } = new URL(request.url)
   const id = searchParams.get('id')
 
@@ -484,13 +824,35 @@ async function handleDeleteReminders(request: AuthenticatedRequest): Promise<Nex
     return badRequestResponse('Reminder ID is required')
   }
 
-  // In a real implementation, verify the reminder belongs to the user
-  // and delete via GraphQL mutation
+  try {
+    const result = await executeGraphQL<{
+      delete_nchat_reminders: { affected_rows: number }
+    }>(
+      DELETE_REMINDER_MUTATION,
+      {
+        id,
+        userId: user.id,
+      },
+      authToken
+    )
 
-  return successResponse({
-    id,
-    message: 'Reminder deleted successfully',
-  })
+    if (result.errors) {
+      logger.error('Failed to delete reminder:', result.errors)
+      return internalErrorResponse('Failed to delete reminder')
+    }
+
+    if (!result.data?.delete_nchat_reminders?.affected_rows) {
+      return notFoundResponse('Reminder not found or not owned by user')
+    }
+
+    return successResponse({
+      id,
+      message: 'Reminder deleted successfully',
+    })
+  } catch (error) {
+    logger.error('DELETE /api/reminders error:', error)
+    return internalErrorResponse('Failed to delete reminder')
+  }
 }
 
 // ============================================================================

@@ -9,8 +9,33 @@ import Stripe from 'stripe'
 import { DEFAULT_PLANS } from '../tenants/types'
 import type { Tenant, BillingPlan, BillingInterval, SubscriptionPlan } from '../tenants/types'
 import { getTenantService } from '../tenants/tenant-service'
+import { PLAN_LIMITS, PLAN_FEATURES, comparePlans, STRIPE_PRICE_IDS } from './plan-config'
+import type { PlanTier } from '@/types/subscription.types'
 
 import { logger } from '@/lib/logger'
+
+// ============================================================================
+// Plan Transition Types
+// ============================================================================
+
+export interface PlanTransitionValidation {
+  isValid: boolean
+  error?: string
+  isUpgrade: boolean
+  isDowngrade: boolean
+  requiresProration: boolean
+  effectiveDate: 'immediate' | 'period_end'
+  creditAmount?: number
+  additionalCharge?: number
+}
+
+export interface PlanTransitionResult {
+  success: boolean
+  subscription?: Stripe.Subscription
+  error?: string
+  transitionType: 'upgrade' | 'downgrade' | 'interval_change'
+  prorationAmount?: number
+}
 
 /**
  * Initialize Stripe client
@@ -107,48 +132,253 @@ export class StripeBillingService {
   }
 
   /**
-   * Update subscription (change plan or interval)
+   * Validate a plan transition before executing
+   */
+  async validatePlanTransition(
+    tenant: Tenant,
+    newPlan: PlanTier,
+    newInterval: BillingInterval
+  ): Promise<PlanTransitionValidation> {
+    const currentPlan = tenant.billing.plan as PlanTier
+    const currentInterval = tenant.billing.interval
+
+    // Check if any change is being made
+    if (currentPlan === newPlan && currentInterval === newInterval) {
+      return {
+        isValid: false,
+        error: 'No change in plan or billing interval',
+        isUpgrade: false,
+        isDowngrade: false,
+        requiresProration: false,
+        effectiveDate: 'immediate',
+      }
+    }
+
+    // Determine if upgrade or downgrade
+    const planComparison = comparePlans(newPlan, currentPlan)
+    const isUpgrade = planComparison > 0
+    const isDowngrade = planComparison < 0
+    const isIntervalChangeOnly = currentPlan === newPlan
+
+    // Get Stripe price ID for new plan
+    const stripePrices = STRIPE_PRICE_IDS[newPlan]
+    const newPriceId = newInterval === 'monthly' ? stripePrices?.monthly : stripePrices?.yearly
+
+    if (!newPriceId && newPlan !== 'free' && newPlan !== 'custom') {
+      return {
+        isValid: false,
+        error: `Stripe price not configured for ${newPlan}/${newInterval}`,
+        isUpgrade,
+        isDowngrade,
+        requiresProration: false,
+        effectiveDate: 'immediate',
+      }
+    }
+
+    // Check if downgrade would exceed new plan's limits
+    if (isDowngrade) {
+      const newLimits = PLAN_LIMITS[newPlan]
+      const currentUsage = tenant.billing.usageTracking
+
+      // Check member limit
+      if (newLimits.maxMembers !== null && currentUsage.users > newLimits.maxMembers) {
+        return {
+          isValid: false,
+          error: `Cannot downgrade: Current users (${currentUsage.users}) exceeds ${newPlan} plan limit (${newLimits.maxMembers})`,
+          isUpgrade,
+          isDowngrade,
+          requiresProration: false,
+          effectiveDate: 'period_end',
+        }
+      }
+
+      // Check storage limit
+      if (
+        newLimits.maxStorageBytes !== null &&
+        currentUsage.storageBytes > newLimits.maxStorageBytes
+      ) {
+        const currentGB = (currentUsage.storageBytes / (1024 * 1024 * 1024)).toFixed(1)
+        const limitGB = (newLimits.maxStorageBytes / (1024 * 1024 * 1024)).toFixed(1)
+        return {
+          isValid: false,
+          error: `Cannot downgrade: Current storage (${currentGB} GB) exceeds ${newPlan} plan limit (${limitGB} GB)`,
+          isUpgrade,
+          isDowngrade,
+          requiresProration: false,
+          effectiveDate: 'period_end',
+        }
+      }
+    }
+
+    // Check for custom plan restrictions
+    if (newPlan === 'custom') {
+      return {
+        isValid: false,
+        error: 'Custom plans require sales contact',
+        isUpgrade,
+        isDowngrade,
+        requiresProration: false,
+        effectiveDate: 'immediate',
+      }
+    }
+
+    return {
+      isValid: true,
+      isUpgrade,
+      isDowngrade,
+      requiresProration: isUpgrade, // Prorate on upgrades
+      effectiveDate: isDowngrade ? 'period_end' : 'immediate',
+    }
+  }
+
+  /**
+   * Update subscription with proper plan transition handling
    */
   async updateSubscription(
     tenant: Tenant,
     newPlan: BillingPlan,
     newInterval: BillingInterval
-  ): Promise<Stripe.Subscription> {
+  ): Promise<PlanTransitionResult> {
     if (!tenant.billing.stripeSubscriptionId) {
-      throw new Error('No active subscription found')
+      return {
+        success: false,
+        error: 'No active subscription found',
+        transitionType: 'upgrade',
+      }
     }
 
-    // Get current subscription
-    const subscription = await this.stripe.subscriptions.retrieve(
-      tenant.billing.stripeSubscriptionId
+    // Validate the transition first
+    const validation = await this.validatePlanTransition(
+      tenant,
+      newPlan as PlanTier,
+      newInterval
     )
 
-    // Get new price ID
-    const planConfig: SubscriptionPlan = (DEFAULT_PLANS as any)[newPlan]
-    const newPriceId =
-      newInterval === 'monthly' ? planConfig.stripePriceIdMonthly : planConfig.stripePriceIdYearly
-
-    if (!newPriceId) {
-      throw new Error(`Price ID not configured for plan: ${newPlan}/${newInterval}`)
+    if (!validation.isValid) {
+      return {
+        success: false,
+        error: validation.error,
+        transitionType: validation.isUpgrade ? 'upgrade' : 'downgrade',
+      }
     }
 
-    // Update subscription
-    const updatedSubscription = await this.stripe.subscriptions.update(subscription.id, {
-      items: [
-        {
-          id: subscription.items.data[0].id,
-          price: newPriceId,
-        },
-      ],
-      proration_behavior: 'create_prorations',
-      metadata: {
-        ...subscription.metadata,
-        plan: newPlan,
-        interval: newInterval,
-      },
-    })
+    try {
+      // Get current subscription
+      const subscription = await this.stripe.subscriptions.retrieve(
+        tenant.billing.stripeSubscriptionId
+      )
 
-    return updatedSubscription
+      // Get new price ID
+      const stripePrices = STRIPE_PRICE_IDS[newPlan as PlanTier]
+      const newPriceId = newInterval === 'monthly' ? stripePrices?.monthly : stripePrices?.yearly
+
+      if (!newPriceId) {
+        // Fallback to DEFAULT_PLANS for backward compatibility
+        const planConfig: SubscriptionPlan = (DEFAULT_PLANS as any)[newPlan]
+        const fallbackPriceId =
+          newInterval === 'monthly' ? planConfig.stripePriceIdMonthly : planConfig.stripePriceIdYearly
+
+        if (!fallbackPriceId) {
+          return {
+            success: false,
+            error: `Price ID not configured for plan: ${newPlan}/${newInterval}`,
+            transitionType: validation.isUpgrade ? 'upgrade' : 'downgrade',
+          }
+        }
+      }
+
+      // Determine proration behavior
+      let prorationBehavior: 'create_prorations' | 'none' | 'always_invoice' = 'none'
+      if (validation.isUpgrade) {
+        // Upgrades: prorate immediately
+        prorationBehavior = 'create_prorations'
+      } else if (validation.isDowngrade) {
+        // Downgrades: take effect at period end, no proration
+        prorationBehavior = 'none'
+      }
+
+      // Update subscription
+      const updatedSubscription = await this.stripe.subscriptions.update(subscription.id, {
+        items: [
+          {
+            id: subscription.items.data[0].id,
+            price: newPriceId || (DEFAULT_PLANS as any)[newPlan][
+              newInterval === 'monthly' ? 'stripePriceIdMonthly' : 'stripePriceIdYearly'
+            ],
+          },
+        ],
+        proration_behavior: prorationBehavior,
+        // For downgrades, schedule the change at period end
+        ...(validation.isDowngrade && {
+          billing_cycle_anchor: 'unchanged',
+        }),
+        metadata: {
+          ...subscription.metadata,
+          plan: newPlan,
+          interval: newInterval,
+          previous_plan: tenant.billing.plan,
+          transition_type: validation.isUpgrade ? 'upgrade' : 'downgrade',
+          transition_date: new Date().toISOString(),
+        },
+      })
+
+      // Update tenant billing info
+      await this.tenantService.updateTenant(tenant.id, {
+        metadata: {
+          ...tenant.metadata,
+          stripePriceId: newPriceId,
+          billingPlan: newPlan,
+          billingInterval: newInterval,
+        },
+      })
+
+      // Calculate proration amount if applicable
+      let prorationAmount: number | undefined
+      if (validation.isUpgrade && updatedSubscription.latest_invoice) {
+        const invoiceId =
+          typeof updatedSubscription.latest_invoice === 'string'
+            ? updatedSubscription.latest_invoice
+            : updatedSubscription.latest_invoice.id
+        if (invoiceId) {
+          const invoice = await this.stripe.invoices.retrieve(invoiceId)
+          prorationAmount = invoice.amount_due
+        }
+      }
+
+      return {
+        success: true,
+        subscription: updatedSubscription,
+        transitionType: validation.isUpgrade
+          ? 'upgrade'
+          : validation.isDowngrade
+            ? 'downgrade'
+            : 'interval_change',
+        prorationAmount,
+      }
+    } catch (error) {
+      logger.error('Error updating subscription:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to update subscription',
+        transitionType: validation.isUpgrade ? 'upgrade' : 'downgrade',
+      }
+    }
+  }
+
+  /**
+   * Legacy update subscription method (returns Stripe.Subscription directly)
+   * @deprecated Use updateSubscription instead which returns PlanTransitionResult
+   */
+  async updateSubscriptionLegacy(
+    tenant: Tenant,
+    newPlan: BillingPlan,
+    newInterval: BillingInterval
+  ): Promise<Stripe.Subscription> {
+    const result = await this.updateSubscription(tenant, newPlan, newInterval)
+    if (!result.success || !result.subscription) {
+      throw new Error(result.error || 'Failed to update subscription')
+    }
+    return result.subscription
   }
 
   /**

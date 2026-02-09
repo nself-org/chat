@@ -116,7 +116,7 @@ function generateQRCodeCanvas(
   ctx.fillRect(0, 0, size, size)
 
   // Generate a simple pattern based on the value hash
-  // This is a placeholder - real QR code generation requires the qrcode library
+  // This is a fallback canvas implementation when the qrcode library is not available
   const moduleCount = 25 // Standard QR code size
   const moduleSize = (size - margin * 2) / moduleCount
 

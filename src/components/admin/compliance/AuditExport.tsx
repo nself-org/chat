@@ -14,6 +14,7 @@
 
 import * as React from 'react'
 import { useState } from 'react'
+import { useAuth } from '@/contexts/auth-context'
 import { cn } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -102,6 +103,7 @@ interface ExportRequest {
 // ============================================================================
 
 export function AuditExport() {
+  const { user } = useAuth()
   const [exports, setExports] = useState<ExportRequest[]>([])
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -118,7 +120,7 @@ export function AuditExport() {
         status: 'pending',
         progress: 0,
         filters: request.filters || {},
-        requestedBy: 'current-user', // TODO: Get from auth context
+        requestedBy: user?.id || 'unknown',
         createdAt: new Date(),
       }
 

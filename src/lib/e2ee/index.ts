@@ -40,11 +40,13 @@ export class E2EEManager {
   private apolloClient: ApolloClient<any>
   private keyManager: KeyManager
   private sessionManager: SessionManager | null = null
+  private userId: string
   private deviceId: string | null = null
   private initialized: boolean = false
 
-  constructor(apolloClient: ApolloClient<any>) {
+  constructor(apolloClient: ApolloClient<any>, userId: string) {
     this.apolloClient = apolloClient
+    this.userId = userId
     this.keyManager = new KeyManager(apolloClient)
   }
 
@@ -71,7 +73,12 @@ export class E2EEManager {
     }
 
     // Initialize session manager
-    this.sessionManager = new SessionManager(this.apolloClient, this.keyManager, this.deviceId)
+    this.sessionManager = new SessionManager(
+      this.apolloClient,
+      this.keyManager,
+      this.userId,
+      this.deviceId
+    )
 
     this.initialized = true
 
@@ -94,7 +101,12 @@ export class E2EEManager {
     await this.keyManager.uploadDeviceKeys(deviceKeys)
 
     // Initialize session manager
-    this.sessionManager = new SessionManager(this.apolloClient, this.keyManager, this.deviceId)
+    this.sessionManager = new SessionManager(
+      this.apolloClient,
+      this.keyManager,
+      this.userId,
+      this.deviceId
+    )
 
     this.initialized = true
   }
@@ -326,9 +338,9 @@ let e2eeManagerInstance: E2EEManager | null = null
 /**
  * Get or create E2EE manager instance
  */
-export function getE2EEManager(apolloClient: ApolloClient<any>): E2EEManager {
+export function getE2EEManager(apolloClient: ApolloClient<any>, userId: string): E2EEManager {
   if (!e2eeManagerInstance) {
-    e2eeManagerInstance = new E2EEManager(apolloClient)
+    e2eeManagerInstance = new E2EEManager(apolloClient, userId)
   }
   return e2eeManagerInstance
 }
@@ -351,5 +363,277 @@ export { crypto } from './crypto'
 export { KeyManager } from './key-manager'
 export { SessionManager } from './session-manager'
 export { signalClient } from './signal-client'
+
+// Attachment E2EE exports
+export {
+  attachmentEncryption,
+  generateAttachmentKey,
+  encryptAttachment,
+  decryptAttachment,
+  encryptSmallAttachment,
+  decryptSmallAttachment,
+  validateAttachmentKey,
+  wipeAttachmentKey,
+  type AttachmentKey,
+  type EncryptedAttachment,
+  type DecryptedAttachment,
+} from './attachment-encryption'
+
+export {
+  attachmentKeyManager,
+  AttachmentKeyManager,
+  createAttachmentKeyManager,
+  deriveAttachmentKey,
+  createContextHash,
+  encryptAttachmentKey,
+  decryptAttachmentKey,
+  type KeyDerivationContext,
+  type EncryptedAttachmentKey,
+} from './attachment-key-manager'
+
+export {
+  secureMetadata,
+  encryptMetadata,
+  decryptMetadata,
+  validateMetadata,
+  sanitizeMetadata,
+  createMinimalMetadata,
+  type AttachmentMetadata,
+  type EncryptedMetadata,
+  type ThumbnailData,
+} from './secure-metadata'
+
+export {
+  streamingCrypto,
+  createEncryptionStream,
+  createDecryptionStream,
+  encryptStream,
+  decryptStream,
+  encryptFileStream,
+  decryptBlobStream,
+  type StreamProgress,
+  type StreamingEncryptionResult,
+  type StreamingDecryptionResult,
+} from './streaming-crypto'
+
+// Sealed Sender exports (Task 86)
+export {
+  sealedSender,
+  sealMessageSimple,
+  unsealMessage,
+  serializeCertificate,
+  deserializeCertificate,
+  serializeEnvelope,
+  deserializeEnvelope,
+  envelopeToBase64,
+  envelopeFromBase64,
+  validateCertificateStructure,
+  validateEnvelopeStructure,
+  SealedSenderMessageType,
+  SEALED_SENDER_VERSION,
+  type SenderCertificate,
+  type SealedSenderEnvelope,
+  type SealedSenderContent,
+  type UnsealedMessage,
+  type SealOptions,
+  type UnsealOptions,
+} from './sealed-sender'
+
+export {
+  senderCertificate,
+  generateServerSigningKeyPair,
+  exportServerPublicKey,
+  importServerPublicKey,
+  issueCertificate,
+  verifyCertificateSignature,
+  validateCertificate,
+  shouldRenewCertificate,
+  SenderCertificateManager,
+  createSenderCertificateManager,
+  certificateToBase64,
+  certificateFromBase64,
+  DEFAULT_CERTIFICATE_VALIDITY_MS,
+  MAX_CERTIFICATE_VALIDITY_MS,
+  MIN_CERTIFICATE_VALIDITY_MS,
+  CERTIFICATE_RENEWAL_THRESHOLD_MS,
+  type ServerSigningKeyPair,
+  type CertificateRequest,
+  type CertificateResponse,
+  type CertificateValidationResult,
+  type CertificateStore,
+} from './sender-certificate'
+
+export {
+  unidentifiedSender,
+  deriveAccessKey,
+  generateAccessKey,
+  validateAccessKey,
+  generateDeliveryToken,
+  validateDeliveryToken,
+  useDeliveryToken,
+  UnidentifiedSender,
+  UnidentifiedRecipient,
+  UnidentifiedDeliveryRateLimiter,
+  createUnidentifiedSender,
+  createUnidentifiedRecipient,
+  createDefaultAccessConfig,
+  verifyThreatModel,
+  UNIDENTIFIED_TOKEN_VALIDITY_MS,
+  MAX_MESSAGES_PER_TOKEN,
+  RATE_LIMIT_WINDOW_MS,
+  MAX_MESSAGES_PER_WINDOW,
+  type UnidentifiedAccessConfig,
+  type UnidentifiedDeliveryToken,
+  type UnidentifiedMessage,
+  type DeliveryResult,
+  type UnidentifiedSenderContext,
+  type UnidentifiedRecipientContext,
+  type ThreatModelVerification,
+} from './unidentified-sender'
+
+// Backup and Recovery exports (Task 78)
+export {
+  backupKeyDerivation,
+  deriveBackupKey,
+  verifyAndDeriveKey,
+  toStorableParams,
+  assessPassphraseStrength,
+  isValidPassphrase,
+  generateSuggestedPassphrase,
+  stretchKey,
+  deriveMultipleKeys,
+  SecurityLevel,
+  ITERATION_COUNTS,
+  MIN_PASSPHRASE_LENGTH,
+  type DerivedKeyResult,
+  type DerivedKeyParams,
+  type PassphraseStrength,
+} from './backup-key-derivation'
+
+export {
+  backupEncryption,
+  createEncryptedBackup,
+  restoreBackup,
+  validateBackup,
+  parseBackup,
+  parseBackupFromBytes,
+  serializeBackup,
+  serializeBackupToBytes,
+  createKeyEntry,
+  createSessionEntry,
+  createDeviceInfo,
+  extractKeyFromEntry,
+  extractSessionState,
+  compareBackups,
+  BackupKeyType,
+  BACKUP_FORMAT_VERSION,
+  type EncryptedBackup,
+  type BackupPayload,
+  type BackupKeyEntry,
+  type BackupSessionEntry,
+  type BackupDeviceInfo,
+  type RestoreResult,
+  type BackupValidation,
+  type BackupHeader,
+} from './backup-encryption'
+
+export {
+  recoveryKey,
+  generateRecoveryKey,
+  formatRecoveryKey,
+  normalizeRecoveryKey,
+  validateRecoveryKey,
+  looksLikeRecoveryKey,
+  encryptMasterKeyWithRecovery,
+  decryptMasterKeyWithRecovery,
+  createRecoveryKeyHash,
+  verifyRecoveryKeyHash,
+  checkRateLimit,
+  recordVerificationAttempt,
+  getRecoveryKeyGroups,
+  getRecoveryPhraseStrength,
+  maskRecoveryKey,
+  createRecoveryKeyQR,
+  parseRecoveryKeyQR,
+  MAX_VERIFICATION_ATTEMPTS,
+  LOCKOUT_DURATION_SECONDS,
+  ATTEMPT_WINDOW_SECONDS,
+  type RecoveryKeyResult,
+  type ValidatedRecoveryKey,
+  type EncryptedMasterKey,
+  type VerificationAttempt,
+  type RateLimitResult,
+} from './recovery-key'
+
+// Safety Number Verification exports (Task 79)
+export {
+  safetyNumber,
+  generateSafetyNumber,
+  generateSafetyNumberSimple,
+  generateFingerprint,
+  generateScannableFingerprint,
+  formatSafetyNumber,
+  createDisplayGrid,
+  parseSafetyNumber,
+  validateSafetyNumberFormat,
+  compareSafetyNumbers,
+  verifySafetyNumber,
+  verifyFingerprint,
+  detectKeyChange,
+  createKeyChangeEvent,
+  createVerificationRecord,
+  invalidateVerification,
+  createVerificationState,
+  updateVerificationState,
+  handleKeyChangeInState,
+  serializeVerificationRecord,
+  deserializeVerificationRecord,
+  serializeVerificationState,
+  deserializeVerificationState,
+  formatFingerprintHex,
+  getShortFingerprint,
+  SAFETY_NUMBER_VERSION,
+  SAFETY_NUMBER_LENGTH,
+  SAFETY_NUMBER_GROUP_SIZE,
+  SAFETY_NUMBER_GROUP_COUNT,
+  FINGERPRINT_ITERATIONS,
+  FINGERPRINT_SIZE,
+  type SafetyNumberResult,
+  type SafetyNumberInput,
+  type IdentityKeyChange,
+  type VerificationRecord,
+  type VerificationMethod,
+  type TrustLevel,
+  type VerificationState,
+  type MismatchResult,
+} from './safety-number'
+
+export {
+  verificationQR,
+  generateQRCode,
+  generateScannableData,
+  parseQRCode,
+  parseScannableData,
+  verifyQRCode,
+  verifyScannedFingerprint,
+  performMutualVerification,
+  isValidQRCodeData,
+  getQRCodeAge,
+  isQRCodeExpired,
+  createCompactSafetyNumber,
+  generateQRCodeDataUrl,
+  parseQRCodeDataUrl,
+  QR_FORMAT_VERSION,
+  MAX_QR_DATA_SIZE,
+  QR_PREFIX,
+  DEFAULT_ERROR_CORRECTION,
+  type QRCodePayload,
+  type QRGenerationResult,
+  type QRScanResult,
+  type QRVerificationResult,
+  type ScannableFingerprintData,
+  type QRGenerationOptions,
+  type QRErrorCorrectionLevel,
+} from './verification-qr'
 
 export default E2EEManager

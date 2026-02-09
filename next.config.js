@@ -72,58 +72,152 @@ const nextConfig = {
   //   return config;
   // },
   async headers() {
+    const isDev = process.env.NODE_ENV === 'development'
+
+    // Production-grade Content Security Policy
+    // Uses strict CSP with report-uri for monitoring
+    const productionCSP = [
+      "default-src 'self'",
+      "script-src 'self' 'strict-dynamic' https://cdn.jsdelivr.net",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' data: blob: https:",
+      "media-src 'self' blob: data:",
+      "connect-src 'self' https://*.nself.io wss://*.nself.io",
+      "frame-src 'self'",
+      "worker-src 'self' blob:",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'none'",
+      "upgrade-insecure-requests",
+      "report-uri /api/security/csp-report",
+    ].join('; ')
+
+    // Development CSP (more permissive for hot reload, etc.)
+    const developmentCSP = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' data: blob: https: http://localhost:* http://storage.localhost",
+      "media-src 'self' blob: data:",
+      "connect-src 'self' http://localhost:* http://api.localhost http://auth.localhost http://storage.localhost ws://localhost:* wss://*",
+      "frame-src 'self' https:",
+      "worker-src 'self' blob:",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'self'",
+    ].join('; ')
+
+    // Permissions Policy - restrict access to sensitive browser features
+    // Note: camera/microphone enabled for video/voice calling features
+    const permissionsPolicy = [
+      'accelerometer=()',
+      'ambient-light-sensor=()',
+      'autoplay=(self)',
+      'battery=()',
+      'bluetooth=()',
+      'browsing-topics=()',
+      'camera=(self)',  // Enabled for video calls
+      'display-capture=(self)',  // Enabled for screen sharing
+      'document-domain=()',
+      'encrypted-media=(self)',
+      'fullscreen=(self)',
+      'geolocation=()',
+      'gyroscope=()',
+      'hid=()',
+      'idle-detection=()',
+      'local-fonts=(self)',
+      'magnetometer=()',
+      'microphone=(self)',  // Enabled for voice calls
+      'midi=()',
+      'payment=()',
+      'picture-in-picture=(self)',
+      'publickey-credentials-create=(self)',
+      'publickey-credentials-get=(self)',
+      'screen-wake-lock=(self)',
+      'serial=()',
+      'speaker-selection=(self)',
+      'storage-access=(self)',
+      'usb=()',
+      'web-share=(self)',
+      'xr-spatial-tracking=()',
+    ].join(', ')
+
     return [
+      // Main application routes
       {
         source: '/:path*',
         headers: [
+          // DNS and Transport
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
           },
+          // HSTS - Strict Transport Security (2 years, include subdomains, preload ready)
+          // Only applied in production to avoid issues with local development
+          ...(isDev ? [] : [{
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          }]),
+          // Content Security Policy
+          {
+            key: 'Content-Security-Policy',
+            value: isDev ? developmentCSP : productionCSP,
+          },
+          // Frame Options - Prevent clickjacking
           {
             key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            value: 'DENY',
           },
+          // Content Type Options - Prevent MIME sniffing
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
           },
+          // Referrer Policy - Control referrer information
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
+          // Permissions Policy - Browser feature permissions
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
+            value: permissionsPolicy,
+          },
+          // Cross-Origin Policies
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
           },
           {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains',
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'credentialless',
           },
           {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "font-src 'self' https://fonts.gstatic.com data:",
-              "img-src 'self' data: blob: https: http://localhost:* http://storage.localhost",
-              "media-src 'self' blob: data:",
-              "connect-src 'self' http://localhost:* http://api.localhost http://auth.localhost http://storage.localhost ws://localhost:* wss://*",
-              "frame-src 'self' https:",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "frame-ancestors 'self'",
-              'upgrade-insecure-requests',
-            ].join('; '),
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin',
           },
+          // Cross-Domain Policies (Flash/PDF)
+          {
+            key: 'X-Permitted-Cross-Domain-Policies',
+            value: 'none',
+          },
+          // XSS Protection (legacy, but still useful for older browsers)
           {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
+          // Expect-CT - Certificate Transparency (production only)
+          ...(isDev ? [] : [{
+            key: 'Expect-CT',
+            value: 'max-age=86400, enforce',
+          }]),
         ],
       },
+      // Static assets - long cache, cross-origin allowed
       {
         source: '/static/:path*',
         headers: [
@@ -131,14 +225,57 @@ const nextConfig = {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
           },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
         ],
       },
+      // Next.js static assets
       {
         source: '/_next/static/:path*',
         headers: [
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+        ],
+      },
+      // API routes - stricter headers
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache',
+          },
+          {
+            key: 'Expires',
+            value: '0',
           },
         ],
       },

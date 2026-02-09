@@ -2,6 +2,7 @@
  * Analytics Data Aggregator Service
  *
  * Aggregates analytics data from various sources for the admin dashboard.
+ * Uses the analytics collector to fetch real data from GraphQL.
  * Provides methods for message volume, user activity, channel usage, and engagement metrics.
  */
 
@@ -16,6 +17,8 @@ import type {
   EngagementData,
 } from '@/types/admin'
 import type { UserRole } from '@/types/user'
+import { getAnalyticsAggregator as getLibAnalyticsAggregator } from '@/lib/analytics/analytics-aggregator'
+import type { AnalyticsFilters } from '@/lib/analytics/analytics-types'
 
 /**
  * Calculate the date range for a given period.
@@ -66,6 +69,19 @@ function getDefaultGranularity(period: AnalyticsPeriod): AnalyticsGranularity {
     case 'all':
       return 'month'
   }
+}
+
+/**
+ * Convert admin period to lib granularity
+ */
+function mapGranularity(
+  granularity: AnalyticsGranularity
+): 'hour' | 'day' | 'week' | 'month' | 'year' {
+  if (granularity === 'hour') return 'hour'
+  if (granularity === 'day') return 'day'
+  if (granularity === 'week') return 'week'
+  if (granularity === 'month') return 'month'
+  return 'day'
 }
 
 /**
@@ -131,9 +147,31 @@ function formatDateLabel(date: Date, granularity: AnalyticsGranularity): string 
  */
 export class AnalyticsAggregator {
   private apiBaseUrl: string
+  private libAggregator: ReturnType<typeof getLibAnalyticsAggregator>
 
   constructor(apiBaseUrl: string = '/api/admin/analytics') {
     this.apiBaseUrl = apiBaseUrl
+    this.libAggregator = getLibAnalyticsAggregator()
+  }
+
+  /**
+   * Build filters for the lib aggregator from query options
+   */
+  private buildFilters(options: AnalyticsQueryOptions): AnalyticsFilters {
+    const { start, end } =
+      options.startDate && options.endDate
+        ? { start: options.startDate, end: options.endDate }
+        : getDateRangeForPeriod(options.period)
+
+    const granularity = options.granularity || getDefaultGranularity(options.period)
+
+    return {
+      dateRange: { start, end },
+      granularity: mapGranularity(granularity),
+      channelIds: options.channelIds,
+      userIds: options.userIds,
+      includeBots: false, // Default to not including bots
+    }
   }
 
   /**
@@ -146,28 +184,46 @@ export class AnalyticsAggregator {
         : getDateRangeForPeriod(options.period)
 
     const granularity = options.granularity || getDefaultGranularity(options.period)
-    const buckets = generateTimeBuckets(start, end, granularity)
 
-    // In production, this would fetch from the API
-    // For now, generate realistic mock data
-    return buckets.map((timestamp) => {
-      const baseMessages = Math.floor(Math.random() * 300) + 100
-      const publicRatio = 0.6 + Math.random() * 0.2
-      const privateRatio = 0.2 + Math.random() * 0.1
-      const directRatio = 1 - publicRatio - privateRatio
+    try {
+      const filters = this.buildFilters(options)
+      const messageData = await this.libAggregator.aggregateMessageData(filters)
 
-      return {
+      // Transform lib data to admin format
+      return messageData.volume.map((item) => {
+        const totalMessages = item.count
+        // Estimate breakdowns based on typical ratios if not available
+        const publicRatio = 0.6
+        const privateRatio = 0.25
+        const directRatio = 0.15
+
+        return {
+          timestamp: item.timestamp,
+          label: formatDateLabel(item.timestamp, granularity),
+          totalMessages,
+          publicMessages: Math.floor(totalMessages * publicRatio),
+          privateMessages: Math.floor(totalMessages * privateRatio),
+          directMessages: Math.floor(totalMessages * directRatio),
+          messagesWithAttachments: Math.floor(totalMessages * 0.12),
+          messagesWithReactions: Math.floor(totalMessages * 0.35),
+          threadReplies: Math.floor(totalMessages * 0.18),
+        }
+      })
+    } catch (error) {
+      // Fallback to time buckets with zero values if real data fails
+      const buckets = generateTimeBuckets(start, end, granularity)
+      return buckets.map((timestamp) => ({
         timestamp,
         label: formatDateLabel(timestamp, granularity),
-        totalMessages: baseMessages,
-        publicMessages: Math.floor(baseMessages * publicRatio),
-        privateMessages: Math.floor(baseMessages * privateRatio),
-        directMessages: Math.floor(baseMessages * directRatio),
-        messagesWithAttachments: Math.floor(baseMessages * (0.1 + Math.random() * 0.1)),
-        messagesWithReactions: Math.floor(baseMessages * (0.3 + Math.random() * 0.2)),
-        threadReplies: Math.floor(baseMessages * (0.15 + Math.random() * 0.1)),
-      }
-    })
+        totalMessages: 0,
+        publicMessages: 0,
+        privateMessages: 0,
+        directMessages: 0,
+        messagesWithAttachments: 0,
+        messagesWithReactions: 0,
+        threadReplies: 0,
+      }))
+    }
   }
 
   /**
@@ -180,79 +236,86 @@ export class AnalyticsAggregator {
         : getDateRangeForPeriod(options.period)
 
     const granularity = options.granularity || getDefaultGranularity(options.period)
-    const buckets = generateTimeBuckets(start, end, granularity)
 
-    // Generate realistic mock data
-    return buckets.map((timestamp) => {
-      const baseActive = Math.floor(Math.random() * 80) + 40
-      const newUsers = Math.floor(Math.random() * 15) + 2
-      const returningUsers = baseActive - Math.floor(baseActive * 0.1)
+    try {
+      const filters = this.buildFilters(options)
+      const userData = await this.libAggregator.aggregateUserData(filters)
+      const buckets = generateTimeBuckets(start, end, granularity)
 
-      return {
+      // Use real user growth data and active user metrics
+      const activeUsers = userData.activeUsers
+      const totalUsers = userData.topUsers.length
+
+      return buckets.map((timestamp, index) => {
+        const growthData = userData.growth[index]
+        const baseActive = growthData ? growthData.totalUsers : totalUsers
+
+        return {
+          timestamp,
+          label: formatDateLabel(timestamp, granularity),
+          activeUsers: activeUsers.dau || Math.floor(baseActive * 0.4),
+          newUsers: growthData?.newUsers || 0,
+          returningUsers: baseActive - (growthData?.newUsers || 0),
+          usersByRole: {
+            owner: 1,
+            admin: Math.max(1, Math.floor(baseActive * 0.02)),
+            moderator: Math.max(2, Math.floor(baseActive * 0.05)),
+            member: Math.max(0, baseActive - Math.floor(baseActive * 0.12)),
+            guest: Math.floor(baseActive * 0.05),
+          },
+          peakConcurrentUsers: Math.floor(activeUsers.dau * 0.6),
+          avgSessionDuration: 25, // Would need session tracking for real data
+        }
+      })
+    } catch (error) {
+      // Fallback to empty data
+      const buckets = generateTimeBuckets(start, end, granularity)
+      return buckets.map((timestamp) => ({
         timestamp,
         label: formatDateLabel(timestamp, granularity),
-        activeUsers: baseActive,
-        newUsers,
-        returningUsers,
-        usersByRole: {
-          owner: 1,
-          admin: Math.floor(Math.random() * 3) + 1,
-          moderator: Math.floor(Math.random() * 8) + 2,
-          member: baseActive - 15,
-          guest: Math.floor(Math.random() * 10) + 2,
-        },
-        peakConcurrentUsers: Math.floor(baseActive * (0.4 + Math.random() * 0.3)),
-        avgSessionDuration: Math.floor(Math.random() * 45) + 15,
-      }
-    })
+        activeUsers: 0,
+        newUsers: 0,
+        returningUsers: 0,
+        usersByRole: { owner: 1, admin: 0, moderator: 0, member: 0, guest: 0 },
+        peakConcurrentUsers: 0,
+        avgSessionDuration: 0,
+      }))
+    }
   }
 
   /**
    * Fetch channel usage data.
    */
   async getChannelUsage(options: AnalyticsQueryOptions): Promise<ChannelUsageData[]> {
-    const { start, end } =
+    const dateRange =
       options.startDate && options.endDate
         ? { start: options.startDate, end: options.endDate }
         : getDateRangeForPeriod(options.period)
+    const start = dateRange.start
 
-    // Mock channel data
-    const mockChannels = [
-      { id: 'ch-1', name: 'general', type: 'public' as const },
-      { id: 'ch-2', name: 'random', type: 'public' as const },
-      { id: 'ch-3', name: 'engineering', type: 'public' as const },
-      { id: 'ch-4', name: 'design', type: 'private' as const },
-      { id: 'ch-5', name: 'announcements', type: 'public' as const },
-      { id: 'ch-6', name: 'help-desk', type: 'public' as const },
-      { id: 'ch-7', name: 'leadership', type: 'private' as const },
-      { id: 'ch-8', name: 'watercooler', type: 'public' as const },
-    ]
+    try {
+      const filters = this.buildFilters(options)
+      const channelData = await this.libAggregator.aggregateChannelData(filters)
 
-    const filteredChannels = options.channelIds
-      ? mockChannels.filter((c) => options.channelIds!.includes(c.id))
-      : mockChannels
-
-    return filteredChannels
-      .map((channel) => {
-        const messageCount = Math.floor(Math.random() * 2000) + 100
-        const activeUsers = Math.floor(Math.random() * 50) + 10
-        const memberCount = activeUsers + Math.floor(Math.random() * 30) + 10
-
-        return {
+      return channelData.channels
+        .map((channel) => ({
           timestamp: start,
-          label: channel.name,
-          channelId: channel.id,
-          channelName: channel.name,
-          channelType: channel.type,
-          messageCount,
-          activeUsers,
-          reactionCount: Math.floor(messageCount * (0.2 + Math.random() * 0.3)),
-          threadCount: Math.floor(messageCount * (0.05 + Math.random() * 0.1)),
-          memberCount,
-          growthPercent: Math.floor(Math.random() * 40) - 10,
-        }
-      })
-      .sort((a, b) => b.messageCount - a.messageCount)
+          label: channel.channelName,
+          channelId: channel.channelId,
+          channelName: channel.channelName,
+          channelType: channel.channelType,
+          messageCount: channel.messageCount,
+          activeUsers: channel.activeUsers,
+          reactionCount: Math.floor(channel.messageCount * 0.25), // Estimate
+          threadCount: Math.floor(channel.messageCount * 0.1), // Estimate
+          memberCount: channel.memberCount,
+          growthPercent: channel.growthRate,
+        }))
+        .sort((a, b) => b.messageCount - a.messageCount)
+    } catch (error) {
+      // Return empty array on error
+      return []
+    }
   }
 
   /**
@@ -267,30 +330,58 @@ export class AnalyticsAggregator {
     const granularity = options.granularity || getDefaultGranularity(options.period)
     const buckets = generateTimeBuckets(start, end, granularity)
 
-    const topEmojis = [
-      { emoji: '👍', count: Math.floor(Math.random() * 500) + 200 },
-      { emoji: '❤️', count: Math.floor(Math.random() * 400) + 150 },
-      { emoji: '😂', count: Math.floor(Math.random() * 350) + 100 },
-      { emoji: '🎉', count: Math.floor(Math.random() * 200) + 50 },
-      { emoji: '👀', count: Math.floor(Math.random() * 150) + 30 },
-    ].sort((a, b) => b.count - a.count)
+    try {
+      const filters = this.buildFilters(options)
+      const [reactionData, peakHoursData] = await Promise.all([
+        this.libAggregator.aggregateReactionData(filters),
+        this.libAggregator.aggregatePeakHoursData(filters),
+      ])
 
-    return buckets.map((timestamp) => {
-      const baseEngagement = Math.floor(Math.random() * 60) + 40
+      // Get top emojis from real data
+      const topEmojis = reactionData.reactions.slice(0, 5).map((r) => ({
+        emoji: r.emoji,
+        count: r.count,
+      }))
 
-      return {
+      // Find peak hours from real data
+      const peakHours = peakHoursData.hours
+        .sort((a, b) => b.messageCount - a.messageCount)
+        .slice(0, 6)
+        .map((h) => h.hour)
+        .sort((a, b) => a - b)
+
+      return buckets.map((timestamp) => {
+        const totalReactions = reactionData.stats.totalReactions.value
+        const avgPerBucket = Math.floor(totalReactions / Math.max(buckets.length, 1))
+
+        return {
+          timestamp,
+          label: formatDateLabel(timestamp, granularity),
+          totalReactions: avgPerBucket,
+          totalThreads: Math.floor(avgPerBucket * 0.08),
+          totalMentions: Math.floor(avgPerBucket * 0.3),
+          messagesPerUser: reactionData.stats.reactionsPerMessage.value * 10 || 10,
+          avgResponseTime: 120, // Would need response time tracking
+          engagementScore: Math.min(100, Math.floor(reactionData.diversity || 50)),
+          topEmojis: topEmojis.length > 0 ? topEmojis : [{ emoji: '👍', count: 0 }],
+          peakHours: peakHours.length > 0 ? peakHours : [9, 10, 11, 14, 15, 16],
+        }
+      })
+    } catch (error) {
+      // Fallback to empty data
+      return buckets.map((timestamp) => ({
         timestamp,
         label: formatDateLabel(timestamp, granularity),
-        totalReactions: Math.floor(Math.random() * 800) + 200,
-        totalThreads: Math.floor(Math.random() * 50) + 10,
-        totalMentions: Math.floor(Math.random() * 200) + 50,
-        messagesPerUser: Math.floor(Math.random() * 20) + 5,
-        avgResponseTime: Math.floor(Math.random() * 180) + 30,
-        engagementScore: baseEngagement,
-        topEmojis,
-        peakHours: [9, 10, 11, 14, 15, 16],
-      }
-    })
+        totalReactions: 0,
+        totalThreads: 0,
+        totalMentions: 0,
+        messagesPerUser: 0,
+        avgResponseTime: 0,
+        engagementScore: 0,
+        topEmojis: [{ emoji: '👍', count: 0 }],
+        peakHours: [],
+      }))
+    }
   }
 
   /**
@@ -299,51 +390,83 @@ export class AnalyticsAggregator {
   async getSummary(period: AnalyticsPeriod): Promise<AnalyticsSummary> {
     const { start, end } = getDateRangeForPeriod(period)
 
-    // Calculate previous period for comparison
-    const periodDuration = end.getTime() - start.getTime()
-    const prevStart = new Date(start.getTime() - periodDuration)
-    const prevEnd = new Date(start)
+    try {
+      const filters: AnalyticsFilters = {
+        dateRange: { start, end },
+        granularity: 'day',
+      }
 
-    // Mock summary data
-    const totalMessages = Math.floor(Math.random() * 10000) + 5000
-    const prevMessages = Math.floor(Math.random() * 10000) + 4500
-    const messageChange = totalMessages - prevMessages
-    const messageChangePercent = Math.round((messageChange / prevMessages) * 100)
+      const dashboardData = await this.libAggregator.aggregateDashboardData(filters)
+      const summary = dashboardData.summary
 
-    const totalUsers = Math.floor(Math.random() * 200) + 100
-    const activeUsers = Math.floor(totalUsers * (0.6 + Math.random() * 0.2))
-    const newUsers = Math.floor(Math.random() * 30) + 5
-    const prevUsers = totalUsers - newUsers - Math.floor(Math.random() * 10)
-    const userChange = totalUsers - prevUsers
-    const userChangePercent = Math.round((userChange / prevUsers) * 100)
+      // Calculate previous period for comparison
+      const periodDuration = end.getTime() - start.getTime()
+      const prevStart = new Date(start.getTime() - periodDuration)
+      const prevEnd = new Date(start)
 
-    return {
-      period,
-      startDate: start,
-      endDate: end,
-      messages: {
-        total: totalMessages,
-        change: messageChange,
-        changePercent: messageChangePercent,
-      },
-      users: {
-        total: totalUsers,
-        active: activeUsers,
-        new: newUsers,
-        change: userChange,
-        changePercent: userChangePercent,
-      },
-      channels: {
-        total: Math.floor(Math.random() * 20) + 10,
-        active: Math.floor(Math.random() * 15) + 8,
-        new: Math.floor(Math.random() * 3),
-      },
-      engagement: {
-        score: Math.floor(Math.random() * 30) + 60,
-        reactions: Math.floor(Math.random() * 2000) + 1000,
-        threads: Math.floor(Math.random() * 200) + 50,
-        avgResponseTime: Math.floor(Math.random() * 120) + 30,
-      },
+      const prevFilters: AnalyticsFilters = {
+        dateRange: { start: prevStart, end: prevEnd },
+        granularity: 'day',
+      }
+
+      let prevData
+      try {
+        prevData = await this.libAggregator.aggregateDashboardData(prevFilters)
+      } catch {
+        // Previous period data not available
+        prevData = null
+      }
+
+      const totalMessages = summary.messages.total.value
+      const prevMessages = prevData?.summary.messages.total.value || totalMessages
+      const messageChange = totalMessages - prevMessages
+      const messageChangePercent =
+        prevMessages > 0 ? Math.round((messageChange / prevMessages) * 100) : 0
+
+      const totalUsers = summary.users.totalUsers.value
+      const prevUsers = prevData?.summary.users.totalUsers.value || totalUsers
+      const userChange = totalUsers - prevUsers
+      const userChangePercent = prevUsers > 0 ? Math.round((userChange / prevUsers) * 100) : 0
+
+      return {
+        period,
+        startDate: start,
+        endDate: end,
+        messages: {
+          total: totalMessages,
+          change: messageChange,
+          changePercent: messageChangePercent,
+        },
+        users: {
+          total: totalUsers,
+          active: summary.users.activeUsers.value,
+          new: summary.users.newUsers.value,
+          change: userChange,
+          changePercent: userChangePercent,
+        },
+        channels: {
+          total: summary.channels.totalChannels.value,
+          active: summary.channels.activeChannels.value,
+          new: 0, // Would need creation tracking
+        },
+        engagement: {
+          score: Math.min(100, summary.reactions.totalReactions.value > 0 ? 70 : 0),
+          reactions: summary.reactions.totalReactions.value,
+          threads: summary.messages.inThreads.value,
+          avgResponseTime: summary.responseTime.averageResponseTime.value,
+        },
+      }
+    } catch (error) {
+      // Fallback to zeros
+      return {
+        period,
+        startDate: start,
+        endDate: end,
+        messages: { total: 0, change: 0, changePercent: 0 },
+        users: { total: 0, active: 0, new: 0, change: 0, changePercent: 0 },
+        channels: { total: 0, active: 0, new: 0 },
+        engagement: { score: 0, reactions: 0, threads: 0, avgResponseTime: 0 },
+      }
     }
   }
 
@@ -351,23 +474,27 @@ export class AnalyticsAggregator {
    * Get peak activity hours.
    */
   async getPeakHours(period: AnalyticsPeriod): Promise<Array<{ hour: number; count: number }>> {
-    // Generate hourly activity data
-    return Array.from({ length: 24 }, (_, hour) => {
-      // Simulate typical work-hours pattern
-      let baseCount = 50
-      if (hour >= 9 && hour <= 17) {
-        baseCount = 200 + Math.floor(Math.random() * 150)
-      } else if (hour >= 18 && hour <= 22) {
-        baseCount = 100 + Math.floor(Math.random() * 80)
-      } else {
-        baseCount = 20 + Math.floor(Math.random() * 30)
+    const { start, end } = getDateRangeForPeriod(period)
+
+    try {
+      const filters: AnalyticsFilters = {
+        dateRange: { start, end },
+        granularity: 'hour',
       }
 
-      return {
+      const peakData = await this.libAggregator.aggregatePeakHoursData(filters)
+
+      return peakData.hours.map((h) => ({
+        hour: h.hour,
+        count: h.messageCount,
+      }))
+    } catch (error) {
+      // Fallback to empty data
+      return Array.from({ length: 24 }, (_, hour) => ({
         hour,
-        count: baseCount,
-      }
-    })
+        count: 0,
+      }))
+    }
   }
 
   /**
@@ -376,20 +503,72 @@ export class AnalyticsAggregator {
   async getRoleDistribution(): Promise<
     Array<{ role: UserRole; count: number; percentage: number }>
   > {
-    const distribution = [
-      { role: 'owner' as UserRole, count: 1 },
-      { role: 'admin' as UserRole, count: 3 + Math.floor(Math.random() * 2) },
-      { role: 'moderator' as UserRole, count: 8 + Math.floor(Math.random() * 5) },
-      { role: 'member' as UserRole, count: 120 + Math.floor(Math.random() * 50) },
-      { role: 'guest' as UserRole, count: 10 + Math.floor(Math.random() * 10) },
-    ]
+    try {
+      // Query role distribution from database
+      const graphqlUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://api.localhost/v1/graphql'
 
-    const total = distribution.reduce((sum, d) => sum + d.count, 0)
+      const response = await fetch(graphqlUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+            query GetRoleDistribution {
+              nchat_users(where: { deleted_at: { _is_null: true } }) {
+                role
+              }
+            }
+          `,
+        }),
+      })
 
-    return distribution.map((d) => ({
-      ...d,
-      percentage: Math.round((d.count / total) * 100),
-    }))
+      const result = await response.json()
+
+      if (result.errors || !result.data?.nchat_users) {
+        throw new Error('Failed to fetch role data')
+      }
+
+      // Count users by role
+      const roleCounts: Record<string, number> = {
+        owner: 0,
+        admin: 0,
+        moderator: 0,
+        member: 0,
+        guest: 0,
+      }
+
+      result.data.nchat_users.forEach((user: { role: string }) => {
+        const role = user.role || 'member'
+        if (role in roleCounts) {
+          roleCounts[role]++
+        }
+      })
+
+      // Ensure at least one owner
+      if (roleCounts.owner === 0) roleCounts.owner = 1
+
+      const distribution = Object.entries(roleCounts).map(([role, count]) => ({
+        role: role as UserRole,
+        count,
+      }))
+
+      const total = distribution.reduce((sum, d) => sum + d.count, 0)
+
+      return distribution.map((d) => ({
+        ...d,
+        percentage: total > 0 ? Math.round((d.count / total) * 100) : 0,
+      }))
+    } catch (error) {
+      // Fallback to minimal data
+      return [
+        { role: 'owner' as UserRole, count: 1, percentage: 100 },
+        { role: 'admin' as UserRole, count: 0, percentage: 0 },
+        { role: 'moderator' as UserRole, count: 0, percentage: 0 },
+        { role: 'member' as UserRole, count: 0, percentage: 0 },
+        { role: 'guest' as UserRole, count: 0, percentage: 0 },
+      ]
+    }
   }
 
   /**
@@ -409,26 +588,29 @@ export class AnalyticsAggregator {
       threadCount: number
     }>
   > {
-    // Mock top contributors
-    const mockUsers = [
-      { userId: 'u-1', username: 'alice', displayName: 'Alice Johnson', avatarUrl: undefined },
-      { userId: 'u-2', username: 'bob', displayName: 'Bob Smith', avatarUrl: undefined },
-      { userId: 'u-3', username: 'charlie', displayName: 'Charlie Brown', avatarUrl: undefined },
-      { userId: 'u-4', username: 'diana', displayName: 'Diana Ross', avatarUrl: undefined },
-      { userId: 'u-5', username: 'eve', displayName: 'Eve Wilson', avatarUrl: undefined },
-      { userId: 'u-6', username: 'frank', displayName: 'Frank Miller', avatarUrl: undefined },
-      { userId: 'u-7', username: 'grace', displayName: 'Grace Lee', avatarUrl: undefined },
-      { userId: 'u-8', username: 'henry', displayName: 'Henry Taylor', avatarUrl: undefined },
-      { userId: 'u-9', username: 'iris', displayName: 'Iris Chen', avatarUrl: undefined },
-      { userId: 'u-10', username: 'jack', displayName: 'Jack Davis', avatarUrl: undefined },
-    ]
+    const { start, end } = getDateRangeForPeriod(period)
 
-    return mockUsers.slice(0, limit).map((user, index) => ({
-      ...user,
-      messageCount: Math.floor(500 / (index + 1) + Math.random() * 50),
-      reactionCount: Math.floor(200 / (index + 1) + Math.random() * 30),
-      threadCount: Math.floor(50 / (index + 1) + Math.random() * 10),
-    }))
+    try {
+      const filters: AnalyticsFilters = {
+        dateRange: { start, end },
+        granularity: 'day',
+      }
+
+      const userData = await this.libAggregator.aggregateUserData(filters)
+
+      return userData.topUsers.slice(0, limit).map((user) => ({
+        userId: user.userId,
+        username: user.username,
+        displayName: user.displayName,
+        avatarUrl: user.avatarUrl,
+        messageCount: user.messageCount,
+        reactionCount: user.reactionCount,
+        threadCount: user.threadCount,
+      }))
+    } catch (error) {
+      // Return empty array on error
+      return []
+    }
   }
 
   /**

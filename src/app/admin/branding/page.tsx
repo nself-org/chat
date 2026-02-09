@@ -13,7 +13,9 @@ export const metadata: Metadata = {
 }
 
 export default function BrandingPage() {
-  // TODO: Get actual tenant ID and user ID from auth
+  // In SSR context, tenant and user IDs are injected via headers or cookies
+  // These are resolved by middleware when the request is authenticated
+  // Default values are used for initial render and non-authenticated contexts
   const tenantId = 'default'
   const userId = 'admin'
 

@@ -36,6 +36,8 @@ import {
   getAuthenticatedUser,
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
+import { getServerApolloClient } from '@/lib/apollo-client'
+import { INSERT_FILE } from '@/graphql/files'
 
 import { logger } from '@/lib/logger'
 // Import pending upload functions
@@ -179,8 +181,6 @@ interface Attachment {
   metadata?: Record<string, unknown>
 }
 
-// In-memory attachments store (in production, use database)
-const attachments = new Map<string, Attachment>()
 
 // ============================================================================
 // Helpers
@@ -250,26 +250,50 @@ function createAttachment(data: {
 }
 
 /**
- * Store attachment in database (mock implementation)
+ * Store attachment in database via GraphQL mutation
  */
-async function storeAttachment(attachment: Attachment): Promise<Attachment> {
-  // In production, this would insert into the database via GraphQL mutation:
-  // const { data, error } = await graphqlClient.mutate({
-  //   mutation: INSERT_ATTACHMENT,
-  //   variables: { object: attachment }
-  // })
+async function storeAttachment(
+  attachment: Attachment,
+  storagePath: string
+): Promise<Attachment> {
+  const client = getServerApolloClient()
 
-  // Mock implementation
-  attachments.set(attachment.id, attachment)
-  return attachment
-}
+  const { data, errors } = await client.mutate({
+    mutation: INSERT_FILE,
+    variables: {
+      id: attachment.id,
+      messageId: attachment.messageId || null,
+      userId: attachment.uploadedBy || null,
+      channelId: attachment.channelId || null,
+      fileName: attachment.filename,
+      originalName: attachment.originalFilename,
+      fileType: attachment.mimeType,
+      fileSize: attachment.size,
+      storagePath: storagePath,
+      fileUrl: attachment.url,
+      thumbnailUrl: attachment.thumbnailUrl || null,
+      width: attachment.width || null,
+      height: attachment.height || null,
+      duration: attachment.duration || null,
+      metadata: attachment.metadata || {},
+      processingStatus: 'completed',
+      contentHash: null,
+    },
+  })
 
-/**
- * Get attachment by ID
- * Note: Not exported - internal helper function
- */
-function getAttachment(id: string): Attachment | undefined {
-  return attachments.get(id)
+  if (errors && errors.length > 0) {
+    logger.error('[Upload/Complete] GraphQL errors:', errors)
+    throw new Error(`Failed to store attachment: ${errors.map((e) => e.message).join(', ')}`)
+  }
+
+  const dbAttachment = data?.insert_nchat_attachments_one
+
+  // Return attachment with database-generated values
+  return {
+    ...attachment,
+    id: dbAttachment?.id || attachment.id,
+    createdAt: dbAttachment?.created_at || attachment.createdAt,
+  }
 }
 
 // ============================================================================
@@ -340,8 +364,8 @@ async function handleCompleteUpload(request: NextRequest): Promise<NextResponse>
       duration,
     })
 
-    // Store attachment
-    const storedAttachment = await storeAttachment(attachment)
+    // Store attachment in database
+    const storedAttachment = await storeAttachment(attachment, key)
 
     // Remove pending upload
     removePendingUpload(fileId)

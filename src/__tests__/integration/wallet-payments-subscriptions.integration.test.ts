@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Wallet + Payments + Subscriptions
  *
  * Tests the integration between crypto wallet, payment processing,
@@ -35,11 +37,14 @@ describe('Wallet + Payments + Subscriptions Integration', () => {
   const mockWalletAddress = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEbb'
 
   beforeEach(() => {
+    jest.useFakeTimers()
     localStorage.clear()
     jest.clearAllMocks()
   })
 
   afterEach(() => {
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
     localStorage.clear()
   })
 
@@ -500,7 +505,12 @@ describe('Wallet + Payments + Subscriptions Integration', () => {
         setTimeout(() => resolve({ status: 'timeout' }), TIMEOUT_MS)
       })
 
-      const result = await Promise.race([paymentPromise, timeoutPromise])
+      const resultPromise = Promise.race([paymentPromise, timeoutPromise])
+
+      // Advance timers by timeout duration
+      jest.advanceTimersByTime(TIMEOUT_MS)
+
+      const result = await resultPromise
 
       expect((result as { status: string }).status).toBe('timeout')
     }, 40000)

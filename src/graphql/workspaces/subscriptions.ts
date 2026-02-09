@@ -23,6 +23,9 @@ export const WORKSPACE_UPDATED = gql`
   ${WORKSPACE_FULL_FRAGMENT}
 `
 
+// Alias for backwards compatibility
+export const WORKSPACE_SUBSCRIPTION = WORKSPACE_UPDATED
+
 /**
  * Subscribe to workspace member changes
  */

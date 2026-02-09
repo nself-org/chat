@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { SettingsSection } from './settings-section'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Shield, Smartphone, Key, Check, AlertCircle, Copy } from 'lucide-react'
+import { Shield, Smartphone, Key, Check, AlertCircle, Copy, Loader2 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Dialog,
@@ -16,6 +17,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
+import { useSecurity } from '@/lib/security/use-security'
 
 interface TwoFactorSettingsProps {
   className?: string
@@ -23,78 +25,102 @@ interface TwoFactorSettingsProps {
 
 /**
  * TwoFactorSettings - 2FA setup and management
+ * Uses real QR code generation via the qrcode library
  */
 export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
-  const [enabled, setEnabled] = useState(false)
+  const {
+    twoFactorEnabled,
+    twoFactorSetupData,
+    isSettingUp2FA,
+    isVerifying2FA,
+    isDisabling2FA,
+    twoFactorError,
+    setup2FA,
+    verify2FA,
+    disable2FA,
+    cancel2FASetup,
+  } = useSecurity()
+
   const [setupOpen, setSetupOpen] = useState(false)
   const [disableOpen, setDisableOpen] = useState(false)
   const [step, setStep] = useState<'qr' | 'verify' | 'backup'>('qr')
   const [verifyCode, setVerifyCode] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [disablePassword, setDisablePassword] = useState('')
+  const [localError, setLocalError] = useState<string | null>(null)
   const [backupCodes, setBackupCodes] = useState<string[]>([])
   const [copied, setCopied] = useState(false)
 
-  // Mock QR code secret
-  const mockSecret = 'JBSWY3DPEHPK3PXP'
-  const mockBackupCodes = [
-    'A1B2C3D4',
-    'E5F6G7H8',
-    'I9J0K1L2',
-    'M3N4O5P6',
-    'Q7R8S9T0',
-    'U1V2W3X4',
-    'Y5Z6A7B8',
-    'C9D0E1F2',
-  ]
+  // Combined error state
+  const error = localError || twoFactorError
+
+  // Reset state when dialog closes
+  useEffect(() => {
+    if (!setupOpen) {
+      setStep('qr')
+      setVerifyCode('')
+      setLocalError(null)
+      setBackupCodes([])
+    }
+  }, [setupOpen])
 
   const handleEnable = async () => {
     setSetupOpen(true)
     setStep('qr')
     setVerifyCode('')
-    setError(null)
+    setLocalError(null)
+
+    // Start 2FA setup to generate QR code
+    const result = await setup2FA()
+    if (!result.success) {
+      setLocalError(result.error || 'Failed to start 2FA setup')
+    }
   }
 
   const handleVerify = async () => {
-    setLoading(true)
-    setError(null)
+    setLocalError(null)
 
-    try {
-      // Validate code format
-      if (!/^\d{6}$/.test(verifyCode)) {
-        throw new Error('Please enter a valid 6-digit code')
+    // Validate code format
+    if (!/^\d{6}$/.test(verifyCode)) {
+      setLocalError('Please enter a valid 6-digit code')
+      return
+    }
+
+    const result = await verify2FA(verifyCode)
+    if (result.success) {
+      // Store backup codes from setup data
+      if (twoFactorSetupData?.backupCodes) {
+        setBackupCodes(twoFactorSetupData.backupCodes)
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      setBackupCodes(mockBackupCodes)
       setStep('backup')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Verification failed')
-    } finally {
-      setLoading(false)
+    } else {
+      setLocalError(result.error || 'Verification failed')
     }
   }
 
   const handleComplete = () => {
-    setEnabled(true)
     setSetupOpen(false)
   }
 
   const handleDisable = async () => {
-    setLoading(true)
-    setError(null)
+    setLocalError(null)
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      setEnabled(false)
-      setDisableOpen(false)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to disable 2FA')
-    } finally {
-      setLoading(false)
+    if (!disablePassword) {
+      setLocalError('Please enter your password')
+      return
     }
+
+    const result = await disable2FA(disablePassword)
+    if (result.success) {
+      setDisableOpen(false)
+      setDisablePassword('')
+    } else {
+      setLocalError(result.error || 'Failed to disable 2FA')
+    }
+  }
+
+  const handleCancelSetup = () => {
+    cancel2FASetup()
+    setSetupOpen(false)
   }
 
   const copyBackupCodes = async () => {
@@ -114,17 +140,17 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
         <div
           className={cn(
             'flex items-center justify-between rounded-lg border p-4',
-            enabled && 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950'
+            twoFactorEnabled && 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950'
           )}
         >
           <div className="flex items-center gap-3">
             <div
               className={cn(
                 'flex h-10 w-10 items-center justify-center rounded-lg',
-                enabled ? 'bg-green-100 dark:bg-green-900' : 'bg-muted'
+                twoFactorEnabled ? 'bg-green-100 dark:bg-green-900' : 'bg-muted'
               )}
             >
-              {enabled ? (
+              {twoFactorEnabled ? (
                 <Shield className="h-5 w-5 text-green-600 dark:text-green-400" />
               ) : (
                 <Smartphone className="h-5 w-5 text-muted-foreground" />
@@ -132,25 +158,35 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
             </div>
             <div>
               <p className="font-medium">
-                {enabled ? 'Two-factor authentication is enabled' : 'Authenticator App'}
+                {twoFactorEnabled ? 'Two-factor authentication is enabled' : 'Authenticator App'}
               </p>
               <p className="text-sm text-muted-foreground">
-                {enabled
+                {twoFactorEnabled
                   ? 'Your account is protected with 2FA'
                   : 'Use an authenticator app to generate verification codes'}
               </p>
             </div>
           </div>
           <Button
-            variant={enabled ? 'outline' : 'default'}
-            onClick={enabled ? () => setDisableOpen(true) : handleEnable}
+            variant={twoFactorEnabled ? 'outline' : 'default'}
+            onClick={twoFactorEnabled ? () => setDisableOpen(true) : handleEnable}
+            disabled={isSettingUp2FA}
           >
-            {enabled ? 'Disable' : 'Enable'}
+            {isSettingUp2FA ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Setting up...
+              </>
+            ) : twoFactorEnabled ? (
+              'Disable'
+            ) : (
+              'Enable'
+            )}
           </Button>
         </div>
 
         {/* Info about 2FA */}
-        {!enabled && (
+        {!twoFactorEnabled && (
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950">
             <p className="text-sm text-blue-800 dark:text-blue-200">
               <strong>Why use 2FA?</strong> Two-factor authentication adds an extra layer of
@@ -162,7 +198,7 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
       </div>
 
       {/* Setup Dialog */}
-      <Dialog open={setupOpen} onOpenChange={setSetupOpen}>
+      <Dialog open={setupOpen} onOpenChange={(open) => !open && handleCancelSetup()}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
@@ -188,24 +224,41 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
 
           {step === 'qr' && (
             <div className="space-y-4 py-4">
-              {/* Mock QR Code */}
+              {/* QR Code - Generated using qrcode library */}
               <div className="mx-auto h-48 w-48 rounded-lg border bg-white p-4">
-                <div className="flex h-full items-center justify-center">
-                  <p className="text-center text-sm text-muted-foreground">
-                    [QR Code Placeholder]
-                    <br />
-                    Scan with authenticator app
-                  </p>
-                </div>
+                {isSettingUp2FA ? (
+                  <div className="flex h-full items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                  </div>
+                ) : twoFactorSetupData?.qrCodeDataUrl ? (
+                  <Image
+                    src={twoFactorSetupData.qrCodeDataUrl}
+                    alt="2FA QR Code - Scan with your authenticator app"
+                    width={160}
+                    height={160}
+                    className="h-full w-full"
+                    unoptimized
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <p className="text-center text-sm text-muted-foreground">
+                      Failed to generate QR code
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Manual entry */}
-              <div className="space-y-2 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Can&apos;t scan? Enter this code manually:
-                </p>
-                <code className="rounded bg-muted px-3 py-1.5 font-mono text-sm">{mockSecret}</code>
-              </div>
+              {twoFactorSetupData?.secret && (
+                <div className="space-y-2 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Can&apos;t scan? Enter this code manually:
+                  </p>
+                  <code className="rounded bg-muted px-3 py-1.5 font-mono text-sm">
+                    {twoFactorSetupData.secret}
+                  </code>
+                </div>
+              )}
             </div>
           )}
 
@@ -265,14 +318,33 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
           )}
 
           <DialogFooter>
-            {step === 'qr' && <Button onClick={() => setStep('verify')}>Continue</Button>}
+            {step === 'qr' && (
+              <>
+                <Button variant="outline" onClick={handleCancelSetup}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => setStep('verify')}
+                  disabled={!twoFactorSetupData?.qrCodeDataUrl}
+                >
+                  Continue
+                </Button>
+              </>
+            )}
             {step === 'verify' && (
               <>
                 <Button variant="outline" onClick={() => setStep('qr')}>
                   Back
                 </Button>
-                <Button onClick={handleVerify} disabled={loading || verifyCode.length !== 6}>
-                  {loading ? 'Verifying...' : 'Verify'}
+                <Button onClick={handleVerify} disabled={isVerifying2FA || verifyCode.length !== 6}>
+                  {isVerifying2FA ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Verifying...
+                    </>
+                  ) : (
+                    'Verify'
+                  )}
                 </Button>
               </>
             )}
@@ -298,12 +370,41 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
             </Alert>
           )}
 
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="disable-password">Confirm Password</Label>
+              <Input
+                id="disable-password"
+                type="password"
+                value={disablePassword}
+                onChange={(e) => setDisablePassword(e.target.value)}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+              />
+            </div>
+          </div>
+
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDisableOpen(false)}>
+            <Button variant="outline" onClick={() => {
+              setDisableOpen(false)
+              setDisablePassword('')
+              setLocalError(null)
+            }}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDisable} disabled={loading}>
-              {loading ? 'Disabling...' : 'Disable 2FA'}
+            <Button
+              variant="destructive"
+              onClick={handleDisable}
+              disabled={isDisabling2FA || !disablePassword}
+            >
+              {isDisabling2FA ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Disabling...
+                </>
+              ) : (
+                'Disable 2FA'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

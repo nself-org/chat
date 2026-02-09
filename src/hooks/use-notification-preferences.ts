@@ -98,6 +98,11 @@ export interface UseNotificationPreferencesReturn {
   setDigest: (enabled: boolean, frequency?: 'daily' | 'weekly', time?: string) => Promise<void>
 
   /**
+   * Trigger a digest email immediately
+   */
+  triggerDigest: () => Promise<boolean>
+
+  /**
    * Reset preferences to defaults
    */
   resetPreferences: () => Promise<void>
@@ -270,16 +275,85 @@ export function useNotificationPreferences(
   // Set digest settings
   const setDigest = useCallback(
     async (enabled: boolean, frequency?: 'daily' | 'weekly', time?: string) => {
-      await updatePreferences({
-        digest: {
-          enabled,
-          frequency: frequency || preferences.digest.frequency,
-          time: time || preferences.digest.time,
-        },
-      })
+      if (!user?.id) {
+        handleError('User not authenticated')
+        return
+      }
+
+      setIsLoading(true)
+      setError(null)
+
+      try {
+        // Use the dedicated digest API endpoint
+        const response = await fetch('/api/notifications/digest', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user.id,
+            settings: {
+              enabled,
+              frequency: frequency || preferences.digest.frequency,
+              time: time || preferences.digest.time,
+            },
+          }),
+        })
+
+        const data = await response.json()
+
+        if (data.success) {
+          const updatedDigest = {
+            enabled,
+            frequency: frequency || preferences.digest.frequency,
+            time: time || preferences.digest.time,
+          }
+          setPreferences((prev) => ({ ...prev, digest: updatedDigest }))
+          onUpdate?.({ ...preferences, digest: updatedDigest })
+        } else {
+          throw new Error(data.error || 'Failed to update digest settings')
+        }
+      } catch (err) {
+        handleError(err instanceof Error ? err : new Error('Failed to update digest settings'))
+      } finally {
+        setIsLoading(false)
+      }
     },
-    [preferences.digest, updatePreferences]
+    [user?.id, preferences, handleError, onUpdate]
   )
+
+  // Trigger a digest email immediately
+  const triggerDigest = useCallback(async (): Promise<boolean> => {
+    if (!user?.id) {
+      handleError('User not authenticated')
+      return false
+    }
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/notifications/digest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          force: true,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to send digest')
+      }
+
+      return true
+    } catch (err) {
+      handleError(err instanceof Error ? err : new Error('Failed to send digest'))
+      return false
+    } finally {
+      setIsLoading(false)
+    }
+  }, [user?.id, handleError])
 
   // Reset to defaults
   const resetPreferences = useCallback(async () => {
@@ -347,6 +421,7 @@ export function useNotificationPreferences(
     toggleCategory,
     setQuietHours,
     setDigest,
+    triggerDigest,
     resetPreferences,
     isEnabled,
   }

@@ -202,7 +202,7 @@ export { SavedSearches, type SavedSearchesProps } from './SavedSearches'
 export { SmartSearch, type SmartSearchProps } from './SmartSearch'
 
 // ============================================================================
-// Global Search (v0.9.0) - Command Palette Style
+// Global Search (v0.9.1) - Command Palette Style
 // ============================================================================
 
 export {

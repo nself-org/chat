@@ -19,6 +19,18 @@
 - [ ] 🔧 Build configuration change
 - [ ] 🔒 Security fix
 
+## v0.9.1 Scope Compliance
+
+<!-- REQUIRED: Reference the canonical task ID from .claude/TODO.md -->
+
+**Task ID from `.claude/TODO.md`**: #___
+
+<!-- Evidence that acceptance criteria are met (file refs, commands, test output) -->
+
+**Evidence logged in `.claude/TRACK.md`**: [ ] Yes
+
+> See [.claude/SCOPE-LOCK.md](/.claude/SCOPE-LOCK.md) for scope rules.
+
 ## Related Issues
 
 <!-- Link related issues here. Use 'Fixes #123' to auto-close issues when PR is merged -->

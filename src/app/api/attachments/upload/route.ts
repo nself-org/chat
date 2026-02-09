@@ -125,17 +125,20 @@ function generateStorageKey(fileName: string, userId: string): string {
 }
 
 async function extractImageMetadata(
-  buffer: Buffer
+  _buffer: Buffer
 ): Promise<{ width?: number; height?: number; blurhash?: string }> {
-  // TODO: Implement with sharp or similar library
-  // For now, return empty metadata
+  // Image metadata extraction requires sharp library
+  // Integrate sharp for production use: npm install sharp
+  // See: https://sharp.pixelplumbing.com/api-input#metadata
   return {}
 }
 
 async function extractVideoMetadata(
-  buffer: Buffer
+  _buffer: Buffer
 ): Promise<{ width?: number; height?: number; duration?: number }> {
-  // TODO: Implement with ffprobe or similar
+  // Video metadata extraction requires ffprobe
+  // Integrate fluent-ffmpeg for production use: npm install fluent-ffmpeg
+  // See: https://github.com/fluent-ffmpeg/node-fluent-ffmpeg
   return {}
 }
 
@@ -271,10 +274,11 @@ export async function POST(request: NextRequest) {
     const fileUrl = uploadResult.data!.url
 
     // Generate thumbnail for images
+    // Thumbnail generation requires sharp library for image processing
+    // For production, implement resizing to create optimized thumbnails
     let thumbnailUrl: string | undefined
     if (file.type.startsWith('image/')) {
-      // TODO: Implement thumbnail generation
-      thumbnailUrl = fileUrl // Use original for now
+      thumbnailUrl = fileUrl // Use original until thumbnail generation is implemented
     }
 
     // Create attachment record
@@ -317,7 +321,8 @@ export async function POST(request: NextRequest) {
     const attachment = attachmentData.insert_nchat_attachments_one
 
     // Queue virus scan (async, don't wait)
-    // TODO: Implement virus scanning service
+    // Virus scanning requires integration with ClamAV or cloud service (e.g., VirusTotal)
+    // For production, implement async scanning via job queue
     logger.debug('Would queue virus scan for attachment', {
       attachmentId: attachment.id,
       storageKey,

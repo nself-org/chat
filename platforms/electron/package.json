@@ -22,11 +22,11 @@
     "watch:main": "tsc -p tsconfig.main.json --watch",
     "watch:preload": "tsc -p tsconfig.preload.json --watch",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "dist:mac": "electron-builder --mac",
-    "dist:win": "electron-builder --win",
-    "dist:linux": "electron-builder --linux",
-    "dist:all": "electron-builder -mwl",
+    "dist": "electron-builder --config electron-builder.yml",
+    "dist:mac": "electron-builder --mac --config electron-builder.yml",
+    "dist:win": "electron-builder --win --config electron-builder.yml",
+    "dist:linux": "electron-builder --linux --config electron-builder.yml",
+    "dist:all": "electron-builder -mwl --config electron-builder.yml",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {

@@ -15,7 +15,7 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals'
 const JOBS_URL = process.env.NEXT_PUBLIC_JOBS_URL || 'http://jobs.localhost:3105'
 const BULLMQ_DASHBOARD_URL =
   process.env.NEXT_PUBLIC_BULLMQ_DASHBOARD_URL || 'http://queues.localhost:4200'
-const PLUGINS_ENABLED = process.env.PLUGINS_ENABLED !== 'false'
+const PLUGINS_ENABLED = process.env.PLUGINS_ENABLED === 'true'
 const TEST_TIMEOUT = 30000
 
 // Test data

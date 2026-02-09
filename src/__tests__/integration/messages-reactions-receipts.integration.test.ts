@@ -1,4 +1,6 @@
 /**
+ * @jest-environment jsdom
+ *
  * Integration Test: Messages + Reactions + Read Receipts
  *
  * Tests the integration between messages, reactions, and read receipts.

@@ -82,7 +82,7 @@ export function E2EEProvider({ children }: E2EEProviderProps) {
     deviceKeysGenerated: false,
   })
 
-  const e2eeManager = getE2EEManager(apolloClient)
+  const e2eeManager = getE2EEManager(apolloClient, user?.id || '')
   const isEnabled = config?.encryption?.enabled || config?.features?.endToEndEncryption || false
 
   // Update status

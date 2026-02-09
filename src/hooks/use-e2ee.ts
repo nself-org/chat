@@ -6,6 +6,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { getE2EEManager, type E2EEStatus } from '@/lib/e2ee'
+import { useAuth } from '@/contexts/auth-context'
 import { useToast } from './use-toast'
 
 export interface UseE2EEReturn {
@@ -45,6 +46,7 @@ export interface UseE2EEReturn {
 
 export function useE2EE(): UseE2EEReturn {
   const apolloClient = useApolloClient()
+  const { user } = useAuth()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -54,7 +56,7 @@ export function useE2EE(): UseE2EEReturn {
     deviceKeysGenerated: false,
   })
 
-  const e2eeManager = getE2EEManager(apolloClient)
+  const e2eeManager = getE2EEManager(apolloClient, user?.id || '')
 
   // Update status
   const updateStatus = useCallback(() => {

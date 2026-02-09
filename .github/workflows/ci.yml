@@ -11,6 +11,15 @@ concurrency:
 env:
   NODE_VERSION: '20'
 
+# Test Policy Reference: docs/TEST-POLICY.md
+# All tests must comply with:
+# 1. Deterministic seeding - no Math.random() without mocks
+# 2. Wall-clock race prevention - jest.useFakeTimers() required for time-dependent tests
+# 3. External network isolation - all HTTP/GraphQL/WebSocket calls must be mocked in unit tests
+# 4. Database isolation - in-memory or Docker containers for test databases
+# 5. Timeout limits - 5s for unit tests, 30s for integration tests, 60s for E2E tests
+# Failing tests are triaged against policy violations before declaring "flaky"
+
 jobs:
   lint:
     name: Lint
@@ -62,6 +71,9 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    # Policy: docs/TEST-POLICY.md - All unit/integration tests must be deterministic
+    # and comply with: seeding, timing, network isolation, and database isolation rules
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -87,6 +99,16 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
           fail_ci_if_error: false
+
+  hygiene:
+    name: Production Hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check production code hygiene
+        run: bash scripts/check-production-hygiene.sh
 
   security:
     name: Security Scan
@@ -164,7 +186,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     continue-on-error: true # E2E tests are optional for now
-    if: false # Skip E2E tests until backend is available
+    # Run E2E tests on main branch or when explicitly requested
+    if: github.ref == 'refs/heads/main' || contains(github.event.head_commit.message, '[run-e2e]')
     steps:
       - name: Checkout
         uses: actions/checkout@v4

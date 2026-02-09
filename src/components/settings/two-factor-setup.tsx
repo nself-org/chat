@@ -376,11 +376,22 @@ export function TwoFactorSetup() {
               Use your authenticator app to scan this QR code
             </p>
 
-            {/* QR Code Placeholder - In production, use a QR code library */}
+            {/* QR Code - Generated using qrcode library */}
             <div className="inline-flex items-center justify-center rounded-lg border bg-white p-4">
-              <div className="flex h-48 w-48 items-center justify-center rounded bg-muted">
-                <QrCode className="h-24 w-24 text-muted-foreground" />
-              </div>
+              {twoFactorSetupData.qrCodeDataUrl ? (
+                <Image
+                  src={twoFactorSetupData.qrCodeDataUrl}
+                  alt="2FA QR Code - Scan with your authenticator app"
+                  width={192}
+                  height={192}
+                  className="h-48 w-48"
+                  unoptimized
+                />
+              ) : (
+                <div className="flex h-48 w-48 items-center justify-center rounded bg-muted">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              )}
             </div>
           </div>
 

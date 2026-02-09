@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useAuth } from '@/contexts/auth-context'
 
 import { CommandInfo } from './CommandInfo'
 import { CommandTrigger } from './CommandTrigger'
@@ -60,6 +61,7 @@ export function SlashCommandBuilder({
   onCancel,
   className,
 }: SlashCommandBuilderProps) {
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<BuilderTab>('info')
   const [isSaving, setIsSaving] = useState(false)
   const [validation, setValidation] = useState<CommandValidation | null>(null)
@@ -97,7 +99,7 @@ export function SlashCommandBuilder({
 
     setIsSaving(true)
     try {
-      const saved = saveDraft('current-user-id') // TODO: Get from auth context
+      const saved = saveDraft(user?.id || 'anonymous')
       if (saved) {
         onSave?.(editingCommand)
       }

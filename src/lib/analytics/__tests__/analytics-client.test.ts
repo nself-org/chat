@@ -91,6 +91,7 @@ const createTestConfig = (
 
 describe('Analytics Client', () => {
   beforeEach(() => {
+    jest.useFakeTimers()
     localStorageMock.clear()
     sessionStorageMock.clear()
     jest.clearAllMocks()
@@ -99,6 +100,7 @@ describe('Analytics Client', () => {
 
   afterEach(() => {
     resetAnalyticsClient()
+    jest.useRealTimers()
   })
 
   // ==========================================================================

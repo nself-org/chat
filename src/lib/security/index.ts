@@ -254,3 +254,282 @@ export {
   type BiometricSetupResult,
   type BiometricVerifyResult,
 } from './biometric'
+
+// SAST Scanner
+export {
+  // Scanner
+  SASTScanner,
+  createSASTScanner,
+  createCISASTScanner,
+  createFullSASTScanner,
+  DEFAULT_SAST_RULES,
+  // Utilities
+  formatFinding,
+  formatScanReport,
+  groupFindingsBySeverity,
+  groupFindingsByCategory,
+  groupFindingsByFile,
+  filterFindingsBySeverity,
+  deduplicateFindings,
+  shouldBlockDeployment as shouldBlockDeploymentSAST,
+  getSeverityColor as getSASTSeverityColor,
+  // Types
+  type Severity,
+  type VulnerabilityCategory,
+  type SASTRule,
+  type SASTFinding,
+  type SASTScannerConfig,
+  type SASTScanResult,
+} from './sast-scanner'
+
+// Dependency Scanner (SCA)
+export {
+  // Scanner
+  DependencyScanner,
+  createDependencyScanner,
+  createCIDependencyScanner,
+  createStrictDependencyScanner,
+  // License Lists
+  DEFAULT_ALLOWED_LICENSES,
+  DEFAULT_RESTRICTED_LICENSES,
+  COPYLEFT_LICENSES,
+  KNOWN_VULNERABILITIES,
+  // Utilities
+  formatVulnerability,
+  formatLicenseFinding,
+  formatDependencyScanReport,
+  groupVulnerabilitiesBySeverity,
+  groupVulnerabilitiesByPackage,
+  shouldBlockDeployment as shouldBlockDeploymentSCA,
+  getSeverityColor as getSCASeverityColor,
+  getLicenseStatusColor,
+  // Types
+  type VulnerabilitySeverity,
+  type PackageEcosystem,
+  type DependencyVulnerability,
+  type Dependency,
+  type LicenseStatus,
+  type LicenseFinding,
+  type DependencyScannerConfig,
+  type DependencyScanResult,
+  type PackageJson,
+  type PackageLock,
+  type VulnerabilityDbEntry,
+} from './dependency-scanner'
+
+// Vulnerability Tracker
+export {
+  // Tracker
+  VulnerabilityTracker,
+  createVulnerabilityTracker,
+  createCIVulnerabilityTracker,
+  createStrictVulnerabilityTracker,
+  // Policy
+  DEFAULT_REMEDIATION_POLICY,
+  // Utilities
+  formatTrackedVulnerability,
+  formatVulnerabilityStats,
+  generateRemediationReport,
+  // Types
+  type UnifiedSeverity,
+  type VulnerabilitySource,
+  type VulnerabilityStatus,
+  type RemediationPriority,
+  type TrackedVulnerability,
+  type VulnerabilityHistoryEntry,
+  type VulnerabilityAction,
+  type VulnerabilityQuery,
+  type VulnerabilityQueryResult,
+  type VulnerabilityStats,
+  type RemediationPolicy,
+  type VulnerabilityTrackerConfig,
+} from './vulnerability-tracker'
+
+// Transport Security
+export {
+  // TLS Configuration
+  TLSVersion,
+  DEFAULT_TLS_CONFIG,
+  WEAK_CIPHER_SUITES,
+  getTLSConfig,
+  validateTLSVersion,
+  isSecureCipher,
+  filterSecureCiphers,
+  getRecommendedCipherString,
+  // HSTS
+  DEFAULT_HSTS_CONFIG,
+  HSTS_PRELOAD_MIN_AGE,
+  generateHSTSHeader,
+  validateHSTSPreload,
+  parseHSTSHeader,
+  // Secure Cookies
+  DEFAULT_SECURE_COOKIE_CONFIG,
+  SESSION_COOKIE_CONFIG,
+  CSRF_COOKIE_CONFIG,
+  getSecureCookieOptions,
+  getPrefixedCookieName,
+  validateCookieSecurity,
+  createSecureSessionCookie,
+  // Audit
+  generateAuditId,
+  auditTransportSecurity,
+  // Logging
+  logTransportSecurityEvent,
+  createTransportSecurityEvent,
+  // Fingerprinting
+  generateTLSConfigHash,
+  detectJA3Mismatch,
+  // Constants
+  TRANSPORT_SECURITY_CONSTANTS,
+  // Types
+  type TLSConfig,
+  type HSTSConfig,
+  type SecureCookieConfig,
+  type TransportSecurityEvent,
+  type TransportSecurityAudit,
+  type TransportSecurityFinding,
+} from './transport-security'
+
+// Certificate Pinning
+export {
+  // SPKI Hash Generation
+  generateSPKIHash,
+  generateSPKIHashFromPublicKey,
+  generateChainSPKIHashes,
+  // Pin Management
+  createCertificatePin,
+  isPinExpired,
+  getValidPinsForDomain,
+  matchDomain,
+  validatePinSet,
+  // Pin Validation
+  validateCertificatePin,
+  validateCertificateChain,
+  // Platform Configurations
+  generateIOSPinConfig,
+  generateAndroidPinConfig,
+  generateElectronPinConfig,
+  generateTauriPinConfig,
+  generateReactNativePinConfig,
+  generateAllPlatformConfigs,
+  // HTTP Headers
+  generateExpectCTHeader,
+  generateHPKPHeader,
+  // Violation Reporting
+  createPinViolationReport,
+  logPinViolation,
+  // Utilities
+  extractCertificatesFromPEM,
+  getCertificateInfo,
+  isCertificateExpiringSoon,
+  // Constants
+  DEFAULT_PINNING_CONFIG,
+  COMMON_CA_PINS,
+  CERTIFICATE_PINNING_CONSTANTS,
+  // Types
+  type PinFormat,
+  type PlatformType,
+  type CertificatePin,
+  type CertificatePinningConfig,
+  type PinValidationResult,
+  type PlatformPinConfig,
+  type PinViolationReport,
+} from './certificate-pinning'
+
+// Security Headers
+export {
+  // CSP
+  DEFAULT_CSP_CONFIG,
+  DEVELOPMENT_CSP_CONFIG,
+  generateNonce,
+  createNonceSource,
+  buildCSPHeader,
+  mergeCSPConfig,
+  addCSPSources,
+  validateCSPHeader,
+  // Permissions Policy
+  DEFAULT_PERMISSIONS_POLICY,
+  CALLING_PERMISSIONS_POLICY,
+  buildPermissionsPolicyHeader,
+  mergePermissionsPolicyConfig,
+  // CORS
+  DEFAULT_CORS_CONFIG,
+  buildCORSHeaders,
+  // Report-To
+  buildReportToHeader,
+  // Complete Header Generation
+  DEFAULT_SECURITY_HEADERS_CONFIG,
+  generateSecurityHeaders,
+  getStaticAssetHeaders,
+  getAPISecurityHeaders,
+  // Validation
+  validateSecurityHeaders,
+  // Configuration Helpers
+  createSecurityHeadersConfig,
+  createCallingSecurityConfig,
+  // Constants
+  SECURITY_HEADERS_CONSTANTS,
+  // Types
+  type CSPDirective,
+  type CSPSource,
+  type CSPConfig,
+  type PermissionsPolicyFeature,
+  type PermissionsPolicyAllowlist,
+  type PermissionsPolicyConfig,
+  type CORSConfig,
+  type SecurityHeadersConfig,
+  type ReportToConfig,
+  type GeneratedSecurityHeaders,
+} from './security-headers'
+
+// Session Wipe
+export {
+  // Manager
+  SessionWipeManager,
+  getSessionWipeManager,
+  resetSessionWipeManager,
+  initializeSessionWipeManager,
+  createSessionWipeManager,
+  // Config
+  DEFAULT_WIPE_CONFIG,
+  // Types
+  type WipeType,
+  type WipeState,
+  type WipeResult,
+  type WipeConfig,
+  type WipeToken,
+  type WipeEvidence,
+  type KeyDestructionProof,
+  type SessionWipeRequest,
+  type DeviceWipeRequest,
+  type RemoteWipeRequest,
+  type WipeEventType,
+  type WipeEvent,
+  type WipeEventListener,
+} from './session-wipe'
+
+// Panic Mode
+export {
+  // Manager
+  PanicModeManager,
+  getPanicModeManager,
+  resetPanicModeManager,
+  initializePanicModeManager,
+  createPanicModeManager,
+  // Config
+  DEFAULT_PANIC_CONFIG,
+  DEFAULT_DECOY_CONFIG,
+  DEFAULT_DEAD_MAN_CONFIG,
+  // Types
+  type PanicState,
+  type PanicActivationMethod,
+  type PanicModeConfig,
+  type DecoyConfig,
+  type DeadManSwitchConfig,
+  type PanicActivation,
+  type PanicStatus,
+  type DeadManStatus,
+  type PanicEventType,
+  type PanicEvent,
+  type PanicEventListener,
+} from './panic-mode'

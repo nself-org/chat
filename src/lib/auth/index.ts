@@ -45,3 +45,28 @@ export {
   getMinimumRoleForPermission,
   getPermissionDescription,
 } from './permissions'
+
+// Session management
+export {
+  sessionManager,
+  SessionManager,
+  type SessionConfig,
+  type DeviceFingerprint,
+  type SessionCreateOptions,
+  type SessionValidationResult,
+  type SuspiciousActivityResult,
+  type SessionNotification,
+  DEFAULT_SESSION_CONFIG,
+} from './session-manager'
+
+// Unified session service (cross-platform)
+export {
+  UnifiedSessionService,
+  getUnifiedSessionService,
+  type PlatformType,
+  type UnifiedSessionConfig,
+  type SessionCreationResult,
+  type SessionRefreshResult,
+  type DeviceInfo,
+  type SessionRevocationResult,
+} from './unified-session.service'

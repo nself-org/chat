@@ -118,14 +118,16 @@ export function withPlanRestrictions(
 
 /**
  * Get plan context from request
- * This should be implemented based on your auth system
+ * Extracts user ID and plan tier from request headers set by auth middleware
  */
 export async function getPlanContext(request: NextRequest): Promise<PlanContext> {
-  // TODO: Get user from auth token
-  // For now, return mock data
+  // Auth middleware sets these headers after validating the session
+  const userId = request.headers.get('x-user-id') || 'anonymous'
+  const planTier = (request.headers.get('x-plan-tier') as PlanTier) || 'free'
+
   return {
-    userId: 'user-1',
-    planTier: 'free',
+    userId,
+    planTier,
   }
 }
 

@@ -33,18 +33,20 @@ export interface SsrfConfig {
 const DEFAULT_CONFIG: SsrfConfig = {
   allowedProtocols: ['http:', 'https:'],
   blockedDomains: [
-    // AWS metadata
-    'metadata.google.internal',
-    '169.254.169.254',
-    // Azure metadata
-    'metadata.azure.internal',
-    '169.254.169.254',
-    // Oracle Cloud
-    '169.254.169.254',
-    // DigitalOcean
-    '169.254.169.254',
-    // Alibaba Cloud
-    '100.100.100.200',
+    // Cloud metadata IPs (link-local)
+    '169.254.169.254', // AWS, Azure, GCP, DigitalOcean, Oracle, OpenStack
+    '100.100.100.200', // Alibaba Cloud
+    // Cloud metadata hostnames
+    'metadata.google.internal', // GCP
+    'metadata.azure.internal', // Azure (rare)
+    'metadata.goog', // GCP alternate
+    'instance-data', // Common internal name
+    // Kubernetes
+    'kubernetes.default.svc',
+    'kubernetes.default',
+    // Docker
+    'host.docker.internal',
+    'gateway.docker.internal',
   ],
   allowPrivateIPs: false,
   allowLocalhost: false,
@@ -58,8 +60,15 @@ const DEFAULT_CONFIG: SsrfConfig = {
 
 /**
  * Check if hostname is localhost
+ * Handles both plain hostnames and bracketed IPv6 addresses
  */
 function isLocalhost(hostname: string): boolean {
+  // Remove brackets from IPv6 addresses (URLs use [::1] format)
+  let normalized = hostname.toLowerCase().trim()
+  if (normalized.startsWith('[') && normalized.endsWith(']')) {
+    normalized = normalized.slice(1, -1)
+  }
+
   const localhostPatterns = [
     'localhost',
     '127.0.0.1',
@@ -70,14 +79,20 @@ function isLocalhost(hostname: string): boolean {
     '0:0:0:0:0:0:0:1',
   ]
 
-  const normalized = hostname.toLowerCase().trim()
   return localhostPatterns.some((pattern) => normalized === pattern)
 }
 
 /**
  * Check if IP address is private/internal
+ * Handles IPv4, IPv6, and IPv4-mapped IPv6 addresses
  */
 function isPrivateIP(ip: string): boolean {
+  // Remove brackets from IPv6 addresses (URLs use [::1] format)
+  let normalized = ip.toLowerCase().trim()
+  if (normalized.startsWith('[') && normalized.endsWith(']')) {
+    normalized = normalized.slice(1, -1)
+  }
+
   // IPv4 private ranges
   const ipv4Private = [
     /^10\./, // 10.0.0.0/8
@@ -89,36 +104,78 @@ function isPrivateIP(ip: string): boolean {
     /^100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\./, // 100.64.0.0/10 (CGNAT)
   ]
 
+  // Check direct IPv4
+  if (ipv4Private.some((pattern) => pattern.test(normalized))) {
+    return true
+  }
+
+  // Check for IPv4-mapped IPv6 addresses (::ffff:x.x.x.x)
+  if (normalized.startsWith('::ffff:')) {
+    const ipv4Part = normalized.slice(7)
+    if (ipv4Private.some((pattern) => pattern.test(ipv4Part))) {
+      return true
+    }
+  }
+
   // IPv6 private ranges
   const ipv6Private = [
     /^::1$/, // Loopback
     /^::$/, // Unspecified
     /^::ffff:127\./i, // IPv4-mapped loopback
-    /^fc00:/i, // Unique local
-    /^fd00:/i, // Unique local
+    /^::ffff:10\./i, // IPv4-mapped 10.x
+    /^::ffff:172\.(1[6-9]|2[0-9]|3[0-1])\./i, // IPv4-mapped 172.16-31.x
+    /^::ffff:192\.168\./i, // IPv4-mapped 192.168.x
+    /^::ffff:169\.254\./i, // IPv4-mapped link-local
+    /^::ffff:0\./i, // IPv4-mapped 0.x
+    /^fc00:/i, // Unique local (ULA)
+    /^fd[0-9a-f]{2}:/i, // Unique local (ULA) - fd00::/8
     /^fe80:/i, // Link-local
-    /^ff0[0-9a-f]:/i, // Multicast
+    /^ff0[0-9a-f]:/i, // Multicast (local scope)
+    /^ff[0-9a-f][12345]:/i, // Multicast (node/link/site/org scope)
+    /^::ffff:100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\./i, // IPv4-mapped CGNAT
   ]
 
-  const normalized = ip.toLowerCase().trim()
-
-  return (
-    ipv4Private.some((pattern) => pattern.test(normalized)) ||
-    ipv6Private.some((pattern) => pattern.test(normalized))
-  )
+  return ipv6Private.some((pattern) => pattern.test(normalized))
 }
 
 /**
  * Check if IP is a cloud metadata endpoint
+ * Handles various IP formats including IPv4-mapped IPv6
  */
 function isCloudMetadata(ip: string): boolean {
+  // Remove brackets from IPv6 addresses (URLs use [::1] format)
+  let normalized = ip.toLowerCase().trim()
+  if (normalized.startsWith('[') && normalized.endsWith(']')) {
+    normalized = normalized.slice(1, -1)
+  }
+
+  // Direct cloud metadata IPs
   const cloudMetadataIPs = [
-    '169.254.169.254', // AWS, Azure, GCP, DigitalOcean, Oracle
+    '169.254.169.254', // AWS, Azure, GCP, DigitalOcean, Oracle, OpenStack
     '100.100.100.200', // Alibaba Cloud
-    'fd00:ec2::254', // AWS IPv6
+    'fd00:ec2::254', // AWS IPv6 metadata
   ]
 
-  return cloudMetadataIPs.includes(ip.toLowerCase().trim())
+  if (cloudMetadataIPs.includes(normalized)) {
+    return true
+  }
+
+  // Check for IPv4-mapped IPv6 addresses (::ffff:169.254.169.254)
+  if (normalized.startsWith('::ffff:')) {
+    const ipv4Part = normalized.slice(7)
+    if (cloudMetadataIPs.includes(ipv4Part)) {
+      return true
+    }
+  }
+
+  // Check for other IPv6 representations of metadata IPs
+  // e.g., 0:0:0:0:0:ffff:a9fe:a9fe (169.254.169.254 in hex)
+  const metadataHexPatterns = [
+    /^(0:){5}ffff:a9fe:a9fe$/i, // 169.254.169.254
+    /^(0:){5}ffff:6464:64c8$/i, // 100.100.100.200
+  ]
+
+  return metadataHexPatterns.some((pattern) => pattern.test(normalized))
 }
 
 // ============================================================================
@@ -154,29 +211,143 @@ function isAllowedDomain(hostname: string, allowedDomains?: string[]): boolean {
 }
 
 // ============================================================================
-// DNS Resolution (Node.js only, not available in Edge)
+// DNS Resolution with Rebind Protection
 // ============================================================================
 
 /**
- * Resolve hostname to IP addresses
- * NOTE: This is a placeholder. In production, use dns.promises.resolve4/resolve6
- * or implement DNS-over-HTTPS for edge environments.
+ * IPv4 regex pattern
+ */
+const IPV4_PATTERN = /^(\d{1,3}\.){3}\d{1,3}$/
+
+/**
+ * IPv6 regex pattern (simplified - covers common formats)
+ */
+const IPV6_PATTERN = /^([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$/
+
+/**
+ * Check if a string is an IP address (v4 or v6)
+ */
+function isIPAddress(hostname: string): boolean {
+  return IPV4_PATTERN.test(hostname) || IPV6_PATTERN.test(hostname)
+}
+
+/**
+ * DNS resolution cache to prevent DNS rebinding attacks
+ * Caches resolved IPs for a short TTL to ensure consistency between validation and fetch
+ */
+const dnsCache = new Map<string, { ips: string[]; expiresAt: number }>()
+const DNS_CACHE_TTL_MS = 30000 // 30 seconds cache
+
+/**
+ * Clean expired DNS cache entries
+ */
+function cleanDnsCache(): void {
+  const now = Date.now()
+  const entries = Array.from(dnsCache.entries())
+  for (const [key, value] of entries) {
+    if (value.expiresAt < now) {
+      dnsCache.delete(key)
+    }
+  }
+}
+
+// Run cache cleanup every minute
+if (typeof setInterval !== 'undefined') {
+  setInterval(cleanDnsCache, 60000)
+}
+
+/**
+ * Resolve hostname to IP addresses with DNS rebinding protection
+ *
+ * Features:
+ * - Uses Node.js dns.promises for server-side resolution
+ * - Caches results to prevent DNS rebinding (where DNS returns different IPs on subsequent requests)
+ * - Handles both IPv4 and IPv6
+ * - Falls back gracefully in edge/browser environments
  */
 async function resolveHostname(hostname: string): Promise<string[]> {
-  // In browser/edge environment, we can't do DNS resolution
-  // This would need to be done server-side
+  // If hostname is already an IP address, return it directly
+  if (isIPAddress(hostname)) {
+    return [hostname]
+  }
+
+  // Check cache first (DNS rebinding protection)
+  const cached = dnsCache.get(hostname)
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.ips
+  }
+
+  // Attempt DNS resolution
   try {
-    // Check if hostname is already an IP
-    if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
-      return [hostname]
+    // Dynamic import to support both Node.js and edge environments
+    // In edge/browser, this will fail gracefully
+    const dns = await import('dns')
+    const dnsPromises = dns.promises
+
+    const resolvedIPs: string[] = []
+
+    // Resolve IPv4 addresses
+    try {
+      const ipv4Results = await dnsPromises.resolve4(hostname)
+      resolvedIPs.push(...ipv4Results)
+    } catch {
+      // IPv4 resolution failed, continue with IPv6
     }
 
-    // For edge compatibility, we skip DNS resolution
-    // In Node.js server routes, use dns.promises
-    return []
+    // Resolve IPv6 addresses
+    try {
+      const ipv6Results = await dnsPromises.resolve6(hostname)
+      resolvedIPs.push(...ipv6Results)
+    } catch {
+      // IPv6 resolution failed
+    }
+
+    // If no results from A/AAAA records, try general lookup
+    if (resolvedIPs.length === 0) {
+      try {
+        const lookupResults = await dnsPromises.lookup(hostname, { all: true })
+        for (const result of lookupResults) {
+          resolvedIPs.push(result.address)
+        }
+      } catch {
+        // Lookup also failed
+      }
+    }
+
+    // Cache the results to prevent DNS rebinding
+    if (resolvedIPs.length > 0) {
+      dnsCache.set(hostname, {
+        ips: resolvedIPs,
+        expiresAt: Date.now() + DNS_CACHE_TTL_MS,
+      })
+    }
+
+    return resolvedIPs
   } catch {
+    // DNS module not available (edge/browser environment)
+    // In this case, we cannot perform DNS resolution
+    // The validation will rely on other checks (blocked domains, direct IP checks)
     return []
   }
+}
+
+/**
+ * Get cached DNS resolution result (for use during actual fetch)
+ * This ensures the same IPs validated are the ones used for connection
+ */
+export function getCachedDnsResult(hostname: string): string[] | null {
+  const cached = dnsCache.get(hostname)
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.ips
+  }
+  return null
+}
+
+/**
+ * Clear DNS cache (useful for testing)
+ */
+export function clearDnsCache(): void {
+  dnsCache.clear()
 }
 
 // ============================================================================
@@ -238,7 +409,9 @@ export class SsrfProtection {
       }
 
       // 6. Private IP check (hostname itself might be IP)
-      if (!this.config.allowPrivateIPs && isPrivateIP(parsed.hostname)) {
+      // Skip this check if allowLocalhost is true and this is a localhost address
+      const isLocalhostAddress = isLocalhost(parsed.hostname)
+      if (!this.config.allowPrivateIPs && !isLocalhostAddress && isPrivateIP(parsed.hostname)) {
         return {
           valid: false,
           reason: `Private IP address detected: ${parsed.hostname}`,
@@ -246,6 +419,11 @@ export class SsrfProtection {
       }
 
       // 7. DNS resolution check (if available)
+      // Skip DNS resolution for localhost when allowLocalhost is true
+      if (this.config.allowLocalhost && isLocalhostAddress) {
+        return { valid: true }
+      }
+
       const resolvedIPs = await resolveHostname(parsed.hostname)
       for (const ip of resolvedIPs) {
         if (isCloudMetadata(ip)) {
@@ -255,6 +433,7 @@ export class SsrfProtection {
           }
         }
 
+        // Skip private IP check for localhost when allowLocalhost is true
         if (!this.config.allowPrivateIPs && isPrivateIP(ip)) {
           return {
             valid: false,

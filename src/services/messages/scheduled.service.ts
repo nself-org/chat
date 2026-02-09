@@ -31,6 +31,11 @@ import {
   type ScheduledMessageStatus,
 } from '@/graphql/messages/scheduled'
 
+// Response data key - using singular to match table name
+const SCHEDULED_MESSAGE_KEY = 'nchat_scheduled_message'
+const SCHEDULED_MESSAGE_PK_KEY = 'nchat_scheduled_message_by_pk'
+const SCHEDULED_MESSAGE_AGGREGATE_KEY = 'nchat_scheduled_message_aggregate'
+
 import { SEND_MESSAGE } from '@/graphql/messages/mutations'
 import { getFormatterService } from './formatter.service'
 
@@ -173,7 +178,7 @@ export class ScheduledMessageService {
         throw new Error(errors[0].message)
       }
 
-      const scheduledMessage = transformScheduledMessage(data.insert_nchat_scheduled_messages_one)
+      const scheduledMessage = transformScheduledMessage(data.insert_nchat_scheduled_message_one)
 
       // Queue the job for processing at the scheduled time
       const delay = scheduledAt.getTime() - Date.now()
@@ -248,8 +253,8 @@ export class ScheduledMessageService {
         throw error
       }
 
-      const messages = transformScheduledMessages(data.nchat_scheduled_messages)
-      const totalCount = data.nchat_scheduled_messages_aggregate?.aggregate?.count || 0
+      const messages = transformScheduledMessages(data[SCHEDULED_MESSAGE_KEY] || [])
+      const totalCount = data[SCHEDULED_MESSAGE_AGGREGATE_KEY]?.aggregate?.count || 0
 
       return {
         success: true,
@@ -282,8 +287,8 @@ export class ScheduledMessageService {
         throw error
       }
 
-      const message = data.nchat_scheduled_messages_by_pk
-        ? transformScheduledMessage(data.nchat_scheduled_messages_by_pk)
+      const message = data[SCHEDULED_MESSAGE_PK_KEY]
+        ? transformScheduledMessage(data[SCHEDULED_MESSAGE_PK_KEY])
         : null
 
       return {
@@ -348,7 +353,7 @@ export class ScheduledMessageService {
         throw error
       }
 
-      const messages = transformScheduledMessages(data.nchat_scheduled_messages)
+      const messages = transformScheduledMessages(data[SCHEDULED_MESSAGE_KEY] || [])
 
       return {
         success: true,
@@ -470,7 +475,7 @@ export class ScheduledMessageService {
         throw new Error(errors[0].message)
       }
 
-      const updatedMessage = transformScheduledMessage(data.update_nchat_scheduled_messages_by_pk)
+      const updatedMessage = transformScheduledMessage(data.update_nchat_scheduled_message_by_pk)
 
       // If schedule time changed, update the job
       if (updates.scheduledAt) {

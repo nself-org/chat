@@ -6,6 +6,7 @@
  */
 
 import { createHmac, randomBytes } from 'crypto'
+import * as QRCodeLib from 'qrcode'
 
 // ============================================================================
 // Types
@@ -240,26 +241,33 @@ export function verifyBackupCode(code: string, hash: string): boolean {
 // ============================================================================
 
 /**
- * Generate QR code data URL using a simple implementation
- * In production, use a library like 'qrcode' on the server or client
+ * Generate QR code data URL from otpauth URL
+ * Uses the 'qrcode' library for server-side generation
+ * Returns a data URL suitable for rendering in <img> tags (CSP-safe)
  */
 export async function generateQRCodeDataUrl(
   otpauthUrl: string,
   options: { width?: number; margin?: number } = {}
 ): Promise<string> {
-  const { width = 200, margin = 4 } = options
+  try {
+    const { width = 200, margin = 4 } = options
 
-  // This is a placeholder that returns the URL
-  // In production, you would use:
-  // - Server-side: qrcode package
-  // - Client-side: qrcode.react or similar
-  //
-  // Example with qrcode package:
-  // const QRCode = require('qrcode')
-  // return await QRCode.toDataURL(otpauthUrl, { width, margin })
+    // Generate QR code as data URL using qrcode library
+    // This produces a PNG data URL that can be safely rendered in img tags
+    const qrCodeDataUrl = await QRCodeLib.toDataURL(otpauthUrl, {
+      errorCorrectionLevel: 'M', // Medium error correction (handles ~7.5% data loss)
+      margin: margin, // Quiet zone around QR code
+      width: width, // Size in pixels
+      color: {
+        dark: '#000000', // QR code modules
+        light: '#FFFFFF', // Background
+      },
+    })
 
-  // For now, return a placeholder that indicates QR generation is needed
-  return `data:text/plain;base64,${Buffer.from(otpauthUrl).toString('base64')}`
+    return qrCodeDataUrl
+  } catch (error) {
+    throw new Error(`Failed to generate QR code: ${error instanceof Error ? error.message : String(error)}`)
+  }
 }
 
 // ============================================================================
