@@ -339,7 +339,7 @@
     "jest-html-reporter": "^3.10.2",
     "jest-junit": "^16.0.0",
     "k6": "^0.0.0",
-    "ora": "^5.4.1",
+    "ora": "^9.3.0",
     "postcss": "^8.5.1",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.10",
