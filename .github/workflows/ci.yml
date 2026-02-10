@@ -149,7 +149,7 @@ jobs:
       needs.detect-changes.outputs.frontend == 'true' ||
       needs.detect-changes.outputs.packages == 'true' ||
       needs.detect-changes.outputs.config == 'true'
-    timeout-minutes: 45
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: frontend
@@ -175,7 +175,7 @@ jobs:
       - name: Run tests
         run: |
           cd apps/web
-          NODE_OPTIONS='--max-old-space-size=3072' npx jest --coverage --forceExit --maxWorkers=2
+          NODE_OPTIONS='--max-old-space-size=4096' npx jest --coverage --forceExit --maxWorkers=1
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4

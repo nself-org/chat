@@ -23,7 +23,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: frontend
@@ -49,7 +49,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           cd apps/web
-          NODE_OPTIONS='--max-old-space-size=3072' npx jest --coverage --forceExit --maxWorkers=2
+          NODE_OPTIONS='--max-old-space-size=4096' npx jest --coverage --forceExit --maxWorkers=1
         env:
           CI: true
           NEXT_PUBLIC_USE_DEV_AUTH: 'true'
