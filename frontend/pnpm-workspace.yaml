@@ -6,9 +6,9 @@
 # Backend services are managed separately via nself CLI in .backend/
 #
 # Structure:
-#   frontend/apps/*       - Platform-specific applications (web, mobile, desktop)
-#   frontend/packages/*   - Shared packages (@nself-chat/core, api, state, ui, etc.)
-#   frontend/tooling/*    - Development and build tools
+#   apps/*       - Platform-specific applications (web, mobile, desktop)
+#   packages/*   - Shared packages (@nself-chat/core, api, state, ui, etc.)
+#   tooling/*    - Development and build tools
 #
 # Usage:
 #   pnpm install                          - Install all dependencies
@@ -20,10 +20,10 @@
 
 packages:
   # Frontend applications
-  - 'frontend/apps/*'
+  - 'apps/*'
 
   # Shared packages
-  - 'frontend/packages/*'
+  - 'packages/*'
 
   # Development tooling
-  - 'frontend/tooling/*'
+  - 'tooling/*'
