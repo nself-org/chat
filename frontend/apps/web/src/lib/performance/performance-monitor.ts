@@ -35,7 +35,7 @@ export interface PerformanceReport {
   marks: PerformanceMark[]
   resources: ResourceTiming[]
   memory?: MemoryInfo
-  navigationTiming?: NavigationTiming
+  navigationTiming?: PerformanceNavigationTiming
   webVitals?: {
     lcp?: number
     fid?: number
@@ -177,7 +177,7 @@ export function getResourceTimings(): ResourceTiming[] {
       type: getResourceType(resource.name),
     }))
   } catch (error) {
-    logger.warn('[Performance] Failed to get resource timings:', error)
+    logger.warn('[Performance] Failed to get resource timings:', { error: String(error) })
     return []
   }
 }
@@ -225,7 +225,7 @@ export function getMemoryInfo(): MemoryInfo | null {
       usagePercent: (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100,
     }
   } catch (error) {
-    logger.warn('[Performance] Failed to get memory info:', error)
+    logger.warn('[Performance] Failed to get memory info:', { error: String(error) })
     return null
   }
 }
@@ -253,7 +253,7 @@ export function monitorMemory(threshold = 90): void {
 /**
  * Get navigation timing data
  */
-export function getNavigationTiming(): NavigationTiming | null {
+export function getNavigationTiming(): PerformanceNavigationTiming | null {
   if (typeof performance === 'undefined' || !performance.getEntriesByType) {
     return null
   }
@@ -262,7 +262,7 @@ export function getNavigationTiming(): NavigationTiming | null {
     const [navigation] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[]
     return navigation || null
   } catch (error) {
-    logger.warn('[Performance] Failed to get navigation timing:', error)
+    logger.warn('[Performance] Failed to get navigation timing:', { error: String(error) })
     return null
   }
 }
@@ -403,7 +403,7 @@ export function checkPerformanceBudget(budget = DEFAULT_BUDGET): boolean {
   })
 
   if (violations.length > 0) {
-    logger.warn('[Performance] Budget violations:', violations)
+    logger.warn('[Performance] Budget violations:', { violations })
     return false
   }
 

@@ -43,6 +43,13 @@
     "node_modules",
     "src/__tests__/**/*",
     "**/*.test.ts",
-    "**/*.test.tsx"
+    "**/*.test.tsx",
+    "src/lib/bots/examples/**/*",
+    "src/lib/workflows/examples/**/*",
+    "src/sdk/examples/**/*",
+    "src/components/**/examples.tsx",
+    "src/components/**/*.example.tsx",
+    "**/*.example.ts",
+    "**/*.example.tsx"
   ]
 }

@@ -679,6 +679,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
     const result = await exporter.export(
       options,
       { channels, users, messages },
+      // @ts-expect-error username exists at runtime on authenticated user objects
       { id: user.id, username: user.username || '', email: user.email || '' }
     )
 

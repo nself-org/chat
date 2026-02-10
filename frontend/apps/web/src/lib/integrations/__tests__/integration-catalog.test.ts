@@ -797,8 +797,8 @@ describe('CalendarConnector', () => {
       interval: 1,
       daysOfWeek: [0], // Sunday
     }
-    // Jan 1 2024 is Sunday (day 0), Jan 8 is also Sunday
-    expect(connector.isRecurringOnDate(recurrence, '2024-01-01', '2024-01-08')).toBe(true)
+    // Jan 7 2024 is Sunday (day 0), Jan 14 is also Sunday
+    expect(connector.isRecurringOnDate(recurrence, '2024-01-07', '2024-01-14')).toBe(true)
   })
 
   it('checks recurring monthly events', () => {

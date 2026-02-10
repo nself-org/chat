@@ -72,7 +72,7 @@ export function RecordingPlayer({
   const [showControls, setShowControls] = useState(true)
   const [hoveredTime, setHoveredTime] = useState<number | null>(null)
 
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>()
+  const controlsTimeoutRef = useRef<NodeJS.Timeout>(undefined)
 
   // Available quality options
   const qualityOptions = [

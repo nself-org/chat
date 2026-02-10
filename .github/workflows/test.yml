@@ -23,6 +23,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: frontend
@@ -46,7 +47,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run tests with coverage
-        run: pnpm test:coverage
+        run: |
+          cd apps/web
+          NODE_OPTIONS='--max-old-space-size=4096' npx jest --coverage --forceExit --maxWorkers=1
         env:
           CI: true
           NEXT_PUBLIC_USE_DEV_AUTH: 'true'
@@ -173,10 +176,11 @@ jobs:
     name: Test Report
     runs-on: ubuntu-latest
     needs: unit-tests
-    if: always()
+    if: always() && needs.unit-tests.result == 'success'
     steps:
       - name: Download test results
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: coverage-report
           path: coverage
@@ -184,6 +188,7 @@ jobs:
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
+        continue-on-error: true
         with:
           files: coverage/junit.xml
           comment_mode: off

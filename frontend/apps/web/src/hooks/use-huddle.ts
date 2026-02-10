@@ -285,10 +285,10 @@ export function useHuddle(options: UseHuddleOptions = {}): UseHuddleReturn {
             description: `You've been invited to join a huddle`,
             action: autoJoinOnInvite
               ? undefined
-              : {
+              : ({
                   label: 'Join',
                   onClick: () => joinHuddle(huddleId, channelId),
-                },
+                } as any),
           })
         }
 

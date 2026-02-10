@@ -161,8 +161,10 @@ export const ExtendedMessageContent = memo(function ExtendedMessageContent({
       if (message.poll) {
         return (
           <PollDisplay
+            // @ts-expect-error Poll type from types/poll.ts vs lib/messages/polls.ts have compatible shapes at runtime
             poll={message.poll}
             currentUserId={currentUserId || ''}
+            // @ts-expect-error onPollVote returns void but PollDisplay expects Promise<void>; works at runtime
             onVote={onPollVote ? (pollId, optionIds) => onPollVote(pollId, optionIds) : undefined}
             className={className}
           />

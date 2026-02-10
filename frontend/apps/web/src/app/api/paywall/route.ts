@@ -36,8 +36,6 @@ import {
   extractPaywallContext,
   matchRouteToPaywall,
   PAYWALL_ROUTES,
-  type FeaturePaywallConfig,
-  type LimitPaywallConfig,
 } from '@/middleware/paywall'
 
 // ============================================================================
