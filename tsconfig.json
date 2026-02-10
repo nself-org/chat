@@ -19,21 +19,38 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/types/*": ["./src/types/*"],
-      "@/utils/*": ["./src/utils/*"],
-      "@/config/*": ["./src/config/*"],
-      "@/graphql/*": ["./src/graphql/*"],
-      "@/styles/*": ["./src/styles/*"]
+      // New v0.9.2 monorepo paths (PRIMARY)
+      "@nself-chat/core": ["./frontend/packages/core/src"],
+      "@nself-chat/core/*": ["./frontend/packages/core/src/*"],
+      "@nself-chat/api": ["./frontend/packages/api/src"],
+      "@nself-chat/api/*": ["./frontend/packages/api/src/*"],
+      "@nself-chat/state": ["./frontend/packages/state/src"],
+      "@nself-chat/state/*": ["./frontend/packages/state/src/*"],
+      "@nself-chat/ui": ["./frontend/packages/ui/src"],
+      "@nself-chat/ui/*": ["./frontend/packages/ui/src/*"],
+      "@nself-chat/config": ["./frontend/packages/config/src"],
+      "@nself-chat/config/*": ["./frontend/packages/config/src/*"],
+      "@nself-chat/testing": ["./frontend/packages/testing/src"],
+      "@nself-chat/testing/*": ["./frontend/packages/testing/src/*"],
+
+      // Legacy v0.9.0-v0.9.1 paths (DEPRECATED - use @nself-chat/* instead)
+      // These now point to web app location (migrated in C092-008)
+      // Will be removed in v0.10.0
+      "@/*": ["./frontend/apps/web/src/*"],
+      "@/components/*": ["./frontend/apps/web/src/components/*"],
+      "@/lib/*": ["./frontend/apps/web/src/lib/*"],
+      "@/hooks/*": ["./frontend/apps/web/src/hooks/*"],
+      "@/types/*": ["./frontend/apps/web/src/types/*"],
+      "@/utils/*": ["./frontend/apps/web/src/utils/*"],
+      "@/config/*": ["./frontend/apps/web/src/config/*"],
+      "@/graphql/*": ["./frontend/apps/web/src/graphql/*"],
+      "@/styles/*": ["./frontend/apps/web/src/styles/*"]
     }
   },
-  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["frontend/**/*.ts", "frontend/**/*.tsx", ".next/types/**/*.ts"],
   "exclude": [
     "node_modules",
-    "src/__tests__/**/*",
+    "frontend/**/__tests__/**/*",
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.spec.ts",
@@ -43,9 +60,9 @@
     "**/examples/**/*",
     "**/*.example.tsx",
     "**/*.example.ts",
-    "src/lib/bots/examples/**/*",
-    "src/lib/workflows/examples/**/*",
-    "src/components/**/examples.tsx",
-    "src/components/**/*.example.tsx"
+    "frontend/apps/web/src/lib/bots/examples/**/*",
+    "frontend/apps/web/src/lib/workflows/examples/**/*",
+    "frontend/apps/web/src/components/**/examples.tsx",
+    "frontend/apps/web/src/components/**/*.example.tsx"
   ]
 }

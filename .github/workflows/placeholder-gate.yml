@@ -1,0 +1,144 @@
+name: 'GATE-C092-002: Placeholder Detection'
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  scan-placeholders:
+    name: Scan for Placeholders and Mocks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install ripgrep (for fast scanning)
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+
+      - name: Run placeholder scanner
+        id: scan
+        run: |
+          pnpm scan:placeholders --strict --json > scan-results.json || echo "VIOLATIONS_FOUND=true" >> $GITHUB_OUTPUT
+          cat scan-results.json
+
+      - name: Upload scan results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: placeholder-scan-results
+          path: scan-results.json
+          retention-days: 30
+
+      - name: Parse results and comment on PR
+        if: github.event_name == 'pull_request' && steps.scan.outputs.VIOLATIONS_FOUND == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('scan-results.json', 'utf8'));
+
+            if (results.violations.length === 0) {
+              return;
+            }
+
+            const errors = results.violations.filter(v => v.severity === 'error');
+            const warnings = results.violations.filter(v => v.severity === 'warning');
+
+            let comment = '## 🚨 Placeholder Detection Gate Failed\n\n';
+            comment += `Found **${results.violations.length}** violation(s) in production code:\n\n`;
+            comment += `- ❌ Errors: ${errors.length}\n`;
+            comment += `- ⚠️ Warnings: ${warnings.length}\n\n`;
+
+            if (errors.length > 0) {
+              comment += '### ❌ Errors (must be fixed)\n\n';
+              const errorsByFile = errors.reduce((acc, v) => {
+                if (!acc[v.file]) acc[v.file] = [];
+                acc[v.file].push(v);
+                return acc;
+              }, {});
+
+              for (const [file, violations] of Object.entries(errorsByFile)) {
+                comment += `**${file}**\n`;
+                violations.forEach(v => {
+                  comment += `- Line ${v.line}: ${v.description}\n`;
+                  comment += `  \`\`\`\n  ${v.content}\n  \`\`\`\n`;
+                });
+                comment += '\n';
+              }
+            }
+
+            if (warnings.length > 0 && warnings.length <= 10) {
+              comment += '### ⚠️ Warnings\n\n';
+              const warningsByFile = warnings.reduce((acc, v) => {
+                if (!acc[v.file]) acc[v.file] = [];
+                acc[v.file].push(v);
+                return acc;
+              }, {});
+
+              for (const [file, violations] of Object.entries(warningsByFile)) {
+                comment += `**${file}**\n`;
+                violations.forEach(v => {
+                  comment += `- Line ${v.line}: ${v.description}\n`;
+                });
+                comment += '\n';
+              }
+            }
+
+            comment += '\n---\n';
+            comment += '**Next Steps:**\n';
+            comment += '1. Remove or fix violations in production code\n';
+            comment += '2. If the code is intentionally using these patterns, add it to `APPROVED_EXCEPTIONS` in `.github/scripts/scan-placeholders.ts`\n';
+            comment += '3. Document the exception in `.claude/v092/PLACEHOLDER-EXCEPTIONS.md`\n';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Fail if violations found
+        if: steps.scan.outputs.VIOLATIONS_FOUND == 'true'
+        run: |
+          echo "❌ Placeholder detection gate failed - violations found in production code"
+          echo "See scan results above for details"
+          exit 1
+
+      - name: Success
+        if: steps.scan.outputs.VIOLATIONS_FOUND != 'true'
+        run: |
+          echo "✅ Placeholder detection gate passed - no violations found"

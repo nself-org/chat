@@ -201,11 +201,14 @@ next-env.d.ts
 *.backup
 *.bak
 *.orig
-# AI assistant directories
+# AI assistant directories (private context)
 .ai-assistant/
 .*aude/
-# .claude/ - Keep this directory for AI-assisted development context and project documentation
 .claude/
+.codex/
+
+# nSelf CLI feedback (private)
+CLI.md
 
 # Analytics & Monitoring
 google-services.json

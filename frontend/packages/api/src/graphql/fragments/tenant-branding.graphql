@@ -1,0 +1,902 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Tenant Branding & White-Label GraphQL Schema
+# Phase 15: Complete White-Label Platform Implementation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Core Types
+# ───────────────────────────────────────────────────────────────────────────────
+
+type Tenant {
+  id: ID!
+  slug: String!
+  name: String!
+  ownerId: ID!
+  owner: User!
+
+  # Template
+  templateId: String!
+  templateVersion: String
+
+  # Status
+  status: TenantStatus!
+  isWhiteLabeled: Boolean!
+
+  # Subscription
+  plan: TenantPlan!
+  trialEndsAt: DateTime
+
+  # Relations
+  branding: TenantBranding
+  theme: TenantTheme
+  features: TenantFeatures
+  terminology: TenantTerminology
+  assets: [BrandingAsset!]!
+  domains: [CustomDomain!]!
+
+  # Timestamps
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TenantBranding {
+  id: ID!
+  tenantId: ID!
+  tenant: Tenant!
+
+  # App Identity
+  appName: String
+  tagline: String
+  companyName: String
+  websiteUrl: String
+
+  # Logo Assets
+  logoUrl: String
+  logoDarkUrl: String
+  logoScale: Float!
+  logoSvg: String
+
+  # Favicon
+  faviconUrl: String
+  faviconSvg: String
+
+  # Email Assets
+  emailHeaderUrl: String
+  emailFooterHtml: String
+
+  # Fonts
+  primaryFont: String!
+  headingFont: String!
+  monoFont: String!
+  fontUrls: FontUrls
+
+  # Custom Domain
+  customDomain: String
+  domainVerified: Boolean!
+  domainVerifiedAt: DateTime
+  sslEnabled: Boolean!
+
+  # SEO
+  metaTitle: String
+  metaDescription: String
+  metaKeywords: String
+  ogImageUrl: String
+
+  # Social Links
+  socialLinks: SocialLinks
+
+  # Legal
+  privacyPolicyUrl: String
+  termsOfServiceUrl: String
+  supportEmail: String
+  contactEmail: String
+
+  # Timestamps
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TenantTheme {
+  id: ID!
+  tenantId: ID!
+  tenant: Tenant!
+
+  # Theme Mode
+  defaultMode: ThemeMode!
+
+  # Light Mode Colors
+  lightColors: ThemeColors!
+
+  # Dark Mode Colors
+  darkColors: ThemeColors!
+
+  # Platform-specific colors
+  lightMessageBubbleOwn: String
+  lightMessageBubbleOther: String
+  darkMessageBubbleOwn: String
+  darkMessageBubbleOther: String
+
+  # Custom CSS
+  customCss: String
+  customCssEnabled: Boolean!
+
+  # Timestamps
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ThemeColors {
+  # Primary colors
+  primaryColor: String!
+  secondaryColor: String!
+  accentColor: String!
+
+  # Background colors
+  backgroundColor: String!
+  surfaceColor: String!
+  cardColor: String!
+  popoverColor: String!
+
+  # Text colors
+  textColor: String!
+  textMutedColor: String!
+  textInverseColor: String!
+
+  # Border colors
+  borderColor: String!
+  borderMutedColor: String!
+
+  # Button colors
+  buttonPrimaryBg: String!
+  buttonPrimaryText: String!
+  buttonSecondaryBg: String!
+  buttonSecondaryText: String!
+  buttonGhostHover: String!
+
+  # Status colors
+  successColor: String!
+  warningColor: String!
+  errorColor: String!
+  infoColor: String!
+
+  # Special colors
+  linkColor: String!
+  focusRingColor: String!
+  selectionBg: String!
+  highlightBg: String!
+}
+
+type TenantFeatures {
+  id: ID!
+  tenantId: ID!
+  tenant: Tenant!
+
+  # Core Features
+  publicChannels: Boolean!
+  privateChannels: Boolean!
+  directMessages: Boolean!
+  groupMessages: Boolean!
+
+  # Messaging Features
+  threads: Boolean!
+  threadStyle: ThreadStyle!
+  reactions: Boolean!
+  reactionStyle: ReactionStyle!
+  messageEditing: Boolean!
+  messageDeletion: Boolean!
+  messagePinning: Boolean!
+  messageBookmarking: Boolean!
+  messageStarring: Boolean!
+  messageForwarding: Boolean!
+  messageScheduling: Boolean!
+
+  # Rich Content
+  fileUploads: Boolean!
+  voiceMessages: Boolean!
+  codeBlocks: Boolean!
+  markdown: Boolean!
+  linkPreviews: Boolean!
+  emojiPicker: EmojiPickerType!
+  gifPicker: Boolean!
+  stickerPicker: Boolean!
+
+  # Real-time Features
+  typingIndicators: Boolean!
+  typingStyle: TypingStyle!
+  userPresence: Boolean!
+  readReceipts: Boolean!
+  readReceiptStyle: ReadReceiptStyle!
+
+  # Communication
+  voiceCalls: Boolean!
+  videoCalls: Boolean!
+  screenSharing: Boolean!
+  liveStreaming: Boolean!
+
+  # Collaboration
+  polls: Boolean!
+  reminders: Boolean!
+  tasks: Boolean!
+  calendar: Boolean!
+
+  # Search & Discovery
+  search: Boolean!
+  semanticSearch: Boolean!
+  channelDiscovery: Boolean!
+
+  # Security & Privacy
+  e2ee: Boolean!
+  disappearingMessages: Boolean!
+  viewOnceMedia: Boolean!
+  screenshotProtection: Boolean!
+
+  # Integrations
+  webhooks: Boolean!
+  bots: Boolean!
+  slackIntegration: Boolean!
+  githubIntegration: Boolean!
+  jiraIntegration: Boolean!
+
+  # Moderation
+  autoModeration: Boolean!
+  profanityFilter: Boolean!
+  spamDetection: Boolean!
+
+  # Layout Configuration
+  sidebarPosition: SidebarPosition!
+  sidebarWidth: Int!
+  sidebarCollapsible: Boolean!
+  headerHeight: Int!
+  showHeaderBorder: Boolean!
+
+  # Message Layout
+  messageDensity: MessageDensity!
+  messageGrouping: Boolean!
+  messageGroupingTimeout: Int!
+
+  # Avatar Configuration
+  avatarStyle: AvatarStyle!
+  avatarSize: AvatarSize!
+  showAvatarInGroup: ShowAvatarInGroup!
+
+  # Channel Layout
+  showChannelIcons: Boolean!
+  showChannelDescription: Boolean!
+  showMemberCount: Boolean!
+  channelListDensity: ChannelListDensity!
+
+  # User Layout
+  showUserStatus: Boolean!
+  showPresenceDots: Boolean!
+  presenceDotPosition: PresenceDotPosition!
+
+  # Animation
+  enableAnimations: Boolean!
+  reducedMotion: Boolean!
+  transitionDuration: TransitionDuration!
+  messageAppear: MessageAppear!
+  sidebarTransition: SidebarTransition!
+  modalTransition: ModalTransition!
+
+  # Timestamps
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TenantTerminology {
+  id: ID!
+  tenantId: ID!
+  tenant: Tenant!
+
+  # Core Concepts
+  workspace: String!
+  workspacePlural: String!
+  channel: String!
+  channelPlural: String!
+  directMessage: String!
+  directMessagePlural: String!
+  directMessageShort: String!
+  thread: String!
+  threadPlural: String!
+  member: String!
+  memberPlural: String!
+  message: String!
+  messagePlural: String!
+  reaction: String!
+  reactionPlural: String!
+
+  # Actions
+  sendMessage: String!
+  editMessage: String!
+  deleteMessage: String!
+  replyToThread: String!
+  createChannel: String!
+  joinChannel: String!
+  leaveChannel: String!
+
+  # Placeholders
+  messageInputPlaceholder: String!
+  searchPlaceholder: String!
+  newChannelPlaceholder: String!
+
+  # Timestamps
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TemplatePreset {
+  id: ID!
+  name: String!
+  description: String
+  version: String
+  author: String
+
+  # Preview
+  previewImageUrl: String
+  screenshotUrls: [String!]
+
+  # Configuration
+  themeConfig: JSON!
+  featureConfig: JSON!
+  layoutConfig: JSON!
+  terminologyConfig: JSON!
+  animationConfig: JSON!
+
+  # Custom CSS
+  customCss: String
+
+  # Metadata
+  isOfficial: Boolean!
+  isActive: Boolean!
+  downloadCount: Int!
+  rating: Float
+
+  # Timestamps
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BrandingAsset {
+  id: ID!
+  tenantId: ID!
+  tenant: Tenant!
+
+  # Asset Info
+  assetType: AssetType!
+  fileName: String!
+  fileUrl: String!
+  fileSize: Int
+  mimeType: String
+
+  # Dimensions
+  width: Int
+  height: Int
+
+  # Status
+  isActive: Boolean!
+  uploadedBy: ID
+  uploader: User
+
+  # Timestamps
+  createdAt: DateTime!
+}
+
+type CustomDomain {
+  id: ID!
+  tenantId: ID!
+  tenant: Tenant!
+
+  # Domain Info
+  domain: String!
+  subdomain: String
+  isPrimary: Boolean!
+
+  # Verification
+  verificationToken: String
+  verificationMethod: VerificationMethod
+  verificationStatus: VerificationStatus!
+  verifiedAt: DateTime
+
+  # SSL/TLS
+  sslStatus: SslStatus!
+  sslExpiresAt: DateTime
+
+  # DNS Configuration
+  dnsConfigured: Boolean!
+  dnsRecords: [DnsRecord!]
+
+  # Status
+  isActive: Boolean!
+
+  # Timestamps
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ThemeExport {
+  id: ID!
+  tenantId: ID!
+  tenant: Tenant!
+
+  # Export Info
+  exportName: String
+  exportData: JSON!
+  exportVersion: String
+
+  # Metadata
+  exportedBy: ID
+  exporter: User
+  fileUrl: String
+  downloadCount: Int!
+
+  # Timestamps
+  createdAt: DateTime!
+}
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Supporting Types
+# ───────────────────────────────────────────────────────────────────────────────
+
+type FontUrls {
+  primary: String
+  heading: String
+  mono: String
+}
+
+type SocialLinks {
+  twitter: String
+  linkedin: String
+  github: String
+  discord: String
+  facebook: String
+  instagram: String
+}
+
+type DnsRecord {
+  type: String!
+  name: String!
+  value: String!
+  ttl: Int
+}
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Enums
+# ───────────────────────────────────────────────────────────────────────────────
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+  TRIAL
+  INACTIVE
+}
+
+enum TenantPlan {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum ThemeMode {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum ThreadStyle {
+  PANEL
+  INLINE
+  POPUP
+}
+
+enum ReactionStyle {
+  INLINE
+  FLOATING
+  HOVER
+}
+
+enum EmojiPickerType {
+  NATIVE
+  CUSTOM
+  BOTH
+}
+
+enum TypingStyle {
+  DOTS
+  TEXT
+  AVATAR
+}
+
+enum ReadReceiptStyle {
+  CHECKMARKS
+  AVATARS
+  TEXT
+}
+
+enum SidebarPosition {
+  LEFT
+  RIGHT
+}
+
+enum MessageDensity {
+  COMPACT
+  COMFORTABLE
+  SPACIOUS
+}
+
+enum AvatarStyle {
+  CIRCLE
+  ROUNDED
+  SQUARE
+}
+
+enum AvatarSize {
+  XS
+  SM
+  MD
+  LG
+  XL
+}
+
+enum ShowAvatarInGroup {
+  FIRST
+  LAST
+  ALL
+  HOVER
+  NONE
+}
+
+enum ChannelListDensity {
+  COMPACT
+  COMFORTABLE
+}
+
+enum PresenceDotPosition {
+  BOTTOM_RIGHT
+  BOTTOM_LEFT
+  TOP_RIGHT
+}
+
+enum TransitionDuration {
+  FAST
+  NORMAL
+  SLOW
+}
+
+enum MessageAppear {
+  FADE
+  SLIDE
+  NONE
+}
+
+enum SidebarTransition {
+  SLIDE
+  OVERLAY
+  PUSH
+}
+
+enum ModalTransition {
+  FADE
+  SCALE
+  SLIDE
+}
+
+enum AssetType {
+  LOGO
+  LOGO_DARK
+  FAVICON
+  EMAIL_HEADER
+  OG_IMAGE
+  CUSTOM
+}
+
+enum VerificationMethod {
+  DNS_TXT
+  DNS_CNAME
+  FILE
+  EMAIL
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  FAILED
+  EXPIRED
+}
+
+enum SslStatus {
+  PENDING
+  PROVISIONING
+  ACTIVE
+  FAILED
+  RENEWING
+}
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Input Types
+# ───────────────────────────────────────────────────────────────────────────────
+
+input CreateTenantInput {
+  slug: String!
+  name: String!
+  templateId: String
+}
+
+input UpdateTenantInput {
+  name: String
+  templateId: String
+  status: TenantStatus
+  isWhiteLabeled: Boolean
+  plan: TenantPlan
+}
+
+input UpdateBrandingInput {
+  appName: String
+  tagline: String
+  companyName: String
+  websiteUrl: String
+  logoUrl: String
+  logoDarkUrl: String
+  logoScale: Float
+  logoSvg: String
+  faviconUrl: String
+  faviconSvg: String
+  emailHeaderUrl: String
+  emailFooterHtml: String
+  primaryFont: String
+  headingFont: String
+  monoFont: String
+  fontUrls: FontUrlsInput
+  customDomain: String
+  metaTitle: String
+  metaDescription: String
+  metaKeywords: String
+  ogImageUrl: String
+  socialLinks: SocialLinksInput
+  privacyPolicyUrl: String
+  termsOfServiceUrl: String
+  supportEmail: String
+  contactEmail: String
+}
+
+input FontUrlsInput {
+  primary: String
+  heading: String
+  mono: String
+}
+
+input SocialLinksInput {
+  twitter: String
+  linkedin: String
+  github: String
+  discord: String
+  facebook: String
+  instagram: String
+}
+
+input ThemeColorsInput {
+  primaryColor: String
+  secondaryColor: String
+  accentColor: String
+  backgroundColor: String
+  surfaceColor: String
+  cardColor: String
+  popoverColor: String
+  textColor: String
+  textMutedColor: String
+  textInverseColor: String
+  borderColor: String
+  borderMutedColor: String
+  buttonPrimaryBg: String
+  buttonPrimaryText: String
+  buttonSecondaryBg: String
+  buttonSecondaryText: String
+  buttonGhostHover: String
+  successColor: String
+  warningColor: String
+  errorColor: String
+  infoColor: String
+  linkColor: String
+  focusRingColor: String
+  selectionBg: String
+  highlightBg: String
+}
+
+input UpdateThemeInput {
+  defaultMode: ThemeMode
+  lightColors: ThemeColorsInput
+  darkColors: ThemeColorsInput
+  lightMessageBubbleOwn: String
+  lightMessageBubbleOther: String
+  darkMessageBubbleOwn: String
+  darkMessageBubbleOther: String
+  customCss: String
+  customCssEnabled: Boolean
+}
+
+input UpdateFeaturesInput {
+  publicChannels: Boolean
+  privateChannels: Boolean
+  directMessages: Boolean
+  groupMessages: Boolean
+  threads: Boolean
+  threadStyle: ThreadStyle
+  reactions: Boolean
+  reactionStyle: ReactionStyle
+  messageEditing: Boolean
+  messageDeletion: Boolean
+  messagePinning: Boolean
+  messageBookmarking: Boolean
+  messageStarring: Boolean
+  messageForwarding: Boolean
+  messageScheduling: Boolean
+  fileUploads: Boolean
+  voiceMessages: Boolean
+  codeBlocks: Boolean
+  markdown: Boolean
+  linkPreviews: Boolean
+  emojiPicker: EmojiPickerType
+  gifPicker: Boolean
+  stickerPicker: Boolean
+  typingIndicators: Boolean
+  typingStyle: TypingStyle
+  userPresence: Boolean
+  readReceipts: Boolean
+  readReceiptStyle: ReadReceiptStyle
+  voiceCalls: Boolean
+  videoCalls: Boolean
+  screenSharing: Boolean
+  liveStreaming: Boolean
+  polls: Boolean
+  reminders: Boolean
+  tasks: Boolean
+  calendar: Boolean
+  search: Boolean
+  semanticSearch: Boolean
+  channelDiscovery: Boolean
+  e2ee: Boolean
+  disappearingMessages: Boolean
+  viewOnceMedia: Boolean
+  screenshotProtection: Boolean
+  webhooks: Boolean
+  bots: Boolean
+  slackIntegration: Boolean
+  githubIntegration: Boolean
+  jiraIntegration: Boolean
+  autoModeration: Boolean
+  profanityFilter: Boolean
+  spamDetection: Boolean
+  sidebarPosition: SidebarPosition
+  sidebarWidth: Int
+  sidebarCollapsible: Boolean
+  headerHeight: Int
+  showHeaderBorder: Boolean
+  messageDensity: MessageDensity
+  messageGrouping: Boolean
+  messageGroupingTimeout: Int
+  avatarStyle: AvatarStyle
+  avatarSize: AvatarSize
+  showAvatarInGroup: ShowAvatarInGroup
+  showChannelIcons: Boolean
+  showChannelDescription: Boolean
+  showMemberCount: Boolean
+  channelListDensity: ChannelListDensity
+  showUserStatus: Boolean
+  showPresenceDots: Boolean
+  presenceDotPosition: PresenceDotPosition
+  enableAnimations: Boolean
+  reducedMotion: Boolean
+  transitionDuration: TransitionDuration
+  messageAppear: MessageAppear
+  sidebarTransition: SidebarTransition
+  modalTransition: ModalTransition
+}
+
+input UpdateTerminologyInput {
+  workspace: String
+  workspacePlural: String
+  channel: String
+  channelPlural: String
+  directMessage: String
+  directMessagePlural: String
+  directMessageShort: String
+  thread: String
+  threadPlural: String
+  member: String
+  memberPlural: String
+  message: String
+  messagePlural: String
+  reaction: String
+  reactionPlural: String
+  sendMessage: String
+  editMessage: String
+  deleteMessage: String
+  replyToThread: String
+  createChannel: String
+  joinChannel: String
+  leaveChannel: String
+  messageInputPlaceholder: String
+  searchPlaceholder: String
+  newChannelPlaceholder: String
+}
+
+input CreateCustomDomainInput {
+  domain: String!
+  subdomain: String
+  isPrimary: Boolean
+  verificationMethod: VerificationMethod!
+}
+
+input ExportThemeInput {
+  exportName: String!
+  includeAssets: Boolean
+}
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Queries
+# ───────────────────────────────────────────────────────────────────────────────
+
+type Query {
+  # Tenants
+  tenant(id: ID!): Tenant
+  tenantBySlug(slug: String!): Tenant
+  tenantByDomain(domain: String!): Tenant
+  myTenants: [Tenant!]!
+
+  # Template Presets
+  templatePresets(isOfficial: Boolean): [TemplatePreset!]!
+  templatePreset(id: ID!): TemplatePreset
+
+  # Branding Assets
+  brandingAssets(tenantId: ID!): [BrandingAsset!]!
+
+  # Theme Exports
+  themeExports(tenantId: ID!): [ThemeExport!]!
+}
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Mutations
+# ───────────────────────────────────────────────────────────────────────────────
+
+type Mutation {
+  # Tenant Management
+  createTenant(input: CreateTenantInput!): Tenant!
+  updateTenant(id: ID!, input: UpdateTenantInput!): Tenant!
+  deleteTenant(id: ID!): Boolean!
+
+  # Branding
+  updateBranding(tenantId: ID!, input: UpdateBrandingInput!): TenantBranding!
+  uploadBrandingAsset(tenantId: ID!, assetType: AssetType!, file: Upload!): BrandingAsset!
+  deleteBrandingAsset(id: ID!): Boolean!
+
+  # Theme
+  updateTheme(tenantId: ID!, input: UpdateThemeInput!): TenantTheme!
+  applyTemplatePreset(tenantId: ID!, presetId: ID!): TenantTheme!
+  resetTheme(tenantId: ID!): TenantTheme!
+
+  # Features
+  updateFeatures(tenantId: ID!, input: UpdateFeaturesInput!): TenantFeatures!
+
+  # Terminology
+  updateTerminology(tenantId: ID!, input: UpdateTerminologyInput!): TenantTerminology!
+
+  # Custom Domains
+  createCustomDomain(tenantId: ID!, input: CreateCustomDomainInput!): CustomDomain!
+  verifyCustomDomain(id: ID!): CustomDomain!
+  deleteCustomDomain(id: ID!): Boolean!
+
+  # Theme Export/Import
+  exportTheme(tenantId: ID!, input: ExportThemeInput!): ThemeExport!
+  importTheme(tenantId: ID!, exportId: ID!): TenantTheme!
+}
+
+# ───────────────────────────────────────────────────────────────────────────────
+# Subscriptions
+# ───────────────────────────────────────────────────────────────────────────────
+
+type Subscription {
+  tenantUpdated(tenantId: ID!): Tenant!
+  brandingUpdated(tenantId: ID!): TenantBranding!
+  themeUpdated(tenantId: ID!): TenantTheme!
+  domainVerified(tenantId: ID!): CustomDomain!
+}

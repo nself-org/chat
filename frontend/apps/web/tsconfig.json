@@ -1,0 +1,48 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/graphql/*": ["./src/graphql/*"],
+      "@/styles/*": ["./src/styles/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/contexts/*": ["./src/contexts/*"],
+      "@/stores/*": ["./src/stores/*"],
+      "@/providers/*": ["./src/providers/*"],
+      "@/test-utils": ["./src/test-utils"],
+      "@/test-utils/*": ["./src/test-utils/*"],
+
+      "@nself-chat/core": ["../../packages/core/src"],
+      "@nself-chat/core/*": ["../../packages/core/src/*"],
+      "@nself-chat/api": ["../../packages/api/src"],
+      "@nself-chat/api/*": ["../../packages/api/src/*"],
+      "@nself-chat/state": ["../../packages/state/src"],
+      "@nself-chat/state/*": ["../../packages/state/src/*"],
+      "@nself-chat/ui": ["../../packages/ui/src"],
+      "@nself-chat/ui/*": ["../../packages/ui/src/*"],
+      "@nself-chat/config": ["../../packages/config/src"],
+      "@nself-chat/config/*": ["../../packages/config/src/*"],
+      "@nself-chat/testing": ["../../packages/testing/src"],
+      "@nself-chat/testing/*": ["../../packages/testing/src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/__tests__/**/*",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

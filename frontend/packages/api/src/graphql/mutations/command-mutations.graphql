@@ -1,0 +1,329 @@
+# ============================================================================
+# Slash Commands - GraphQL Mutations
+# ============================================================================
+
+# Create a new custom command
+mutation CreateCommand(
+  $trigger: String!
+  $name: String!
+  $description: String!
+  $category: String = "custom"
+  $aliases: jsonb
+  $helpText: String
+  $usage: String
+  $icon: String
+  $order: Int
+  $cooldown: Int
+  $arguments: jsonb = []
+  $minRole: String = "member"
+  $allowedRoles: jsonb
+  $allowedUsers: jsonb
+  $deniedUsers: jsonb
+  $allowGuests: Boolean = false
+  $allowedChannelTypes: jsonb = ["public", "private", "direct", "group"]
+  $allowedChannels: jsonb
+  $blockedChannels: jsonb
+  $allowInThreads: Boolean = true
+  $responseType: String = "ephemeral"
+  $responseTemplate: String
+  $responseEphemeral: Boolean = true
+  $showTyping: Boolean = false
+  $responseDelay: Int
+  $actionType: String!
+  $actionConfig: jsonb!
+  $webhookUrl: String
+  $webhookMethod: String
+  $webhookHeaders: jsonb
+  $webhookBodyTemplate: String
+  $webhookTimeout: Int
+  $webhookRetryAttempts: Int
+  $workflowId: String
+  $workflowInputMapping: jsonb
+  $workflowWait: Boolean
+  $workflowTimeout: Int
+  $createdBy: uuid!
+) {
+  insert_nchat_commands_one(
+    object: {
+      trigger: $trigger
+      name: $name
+      description: $description
+      category: $category
+      aliases: $aliases
+      help_text: $helpText
+      usage: $usage
+      icon: $icon
+      order: $order
+      cooldown: $cooldown
+      is_enabled: true
+      is_built_in: false
+      arguments: $arguments
+      min_role: $minRole
+      allowed_roles: $allowedRoles
+      allowed_users: $allowedUsers
+      denied_users: $deniedUsers
+      allow_guests: $allowGuests
+      allowed_channel_types: $allowedChannelTypes
+      allowed_channels: $allowedChannels
+      blocked_channels: $blockedChannels
+      allow_in_threads: $allowInThreads
+      response_type: $responseType
+      response_template: $responseTemplate
+      response_ephemeral: $responseEphemeral
+      show_typing: $showTyping
+      response_delay: $responseDelay
+      action_type: $actionType
+      action_config: $actionConfig
+      webhook_url: $webhookUrl
+      webhook_method: $webhookMethod
+      webhook_headers: $webhookHeaders
+      webhook_body_template: $webhookBodyTemplate
+      webhook_timeout: $webhookTimeout
+      webhook_retry_attempts: $webhookRetryAttempts
+      workflow_id: $workflowId
+      workflow_input_mapping: $workflowInputMapping
+      workflow_wait: $workflowWait
+      workflow_timeout: $workflowTimeout
+      created_by: $createdBy
+    }
+  ) {
+    ...CommandFull
+  }
+}
+
+# Update a custom command
+mutation UpdateCommand(
+  $id: uuid!
+  $trigger: String
+  $name: String
+  $description: String
+  $category: String
+  $aliases: jsonb
+  $helpText: String
+  $usage: String
+  $icon: String
+  $order: Int
+  $cooldown: Int
+  $isEnabled: Boolean
+  $arguments: jsonb
+  $minRole: String
+  $allowedRoles: jsonb
+  $allowedUsers: jsonb
+  $deniedUsers: jsonb
+  $allowGuests: Boolean
+  $allowedChannelTypes: jsonb
+  $allowedChannels: jsonb
+  $blockedChannels: jsonb
+  $allowInThreads: Boolean
+  $responseType: String
+  $responseTemplate: String
+  $responseEphemeral: Boolean
+  $showTyping: Boolean
+  $responseDelay: Int
+  $actionType: String
+  $actionConfig: jsonb
+  $webhookUrl: String
+  $webhookMethod: String
+  $webhookHeaders: jsonb
+  $webhookBodyTemplate: String
+  $webhookTimeout: Int
+  $webhookRetryAttempts: Int
+  $workflowId: String
+  $workflowInputMapping: jsonb
+  $workflowWait: Boolean
+  $workflowTimeout: Int
+) {
+  update_nchat_commands_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      trigger: $trigger
+      name: $name
+      description: $description
+      category: $category
+      aliases: $aliases
+      help_text: $helpText
+      usage: $usage
+      icon: $icon
+      order: $order
+      cooldown: $cooldown
+      is_enabled: $isEnabled
+      arguments: $arguments
+      min_role: $minRole
+      allowed_roles: $allowedRoles
+      allowed_users: $allowedUsers
+      denied_users: $deniedUsers
+      allow_guests: $allowGuests
+      allowed_channel_types: $allowedChannelTypes
+      allowed_channels: $allowedChannels
+      blocked_channels: $blockedChannels
+      allow_in_threads: $allowInThreads
+      response_type: $responseType
+      response_template: $responseTemplate
+      response_ephemeral: $responseEphemeral
+      show_typing: $showTyping
+      response_delay: $responseDelay
+      action_type: $actionType
+      action_config: $actionConfig
+      webhook_url: $webhookUrl
+      webhook_method: $webhookMethod
+      webhook_headers: $webhookHeaders
+      webhook_body_template: $webhookBodyTemplate
+      webhook_timeout: $webhookTimeout
+      webhook_retry_attempts: $webhookRetryAttempts
+      workflow_id: $workflowId
+      workflow_input_mapping: $workflowInputMapping
+      workflow_wait: $workflowWait
+      workflow_timeout: $workflowTimeout
+      updated_at: "now()"
+    }
+  ) {
+    ...CommandFull
+  }
+}
+
+# Delete a custom command
+mutation DeleteCommand($id: uuid!) {
+  delete_nchat_commands_by_pk(id: $id) {
+    id
+    trigger
+    name
+  }
+}
+
+# Enable a command
+mutation EnableCommand($id: uuid!) {
+  update_nchat_commands_by_pk(
+    pk_columns: { id: $id }
+    _set: { is_enabled: true, updated_at: "now()" }
+  ) {
+    id
+    trigger
+    is_enabled
+  }
+}
+
+# Disable a command
+mutation DisableCommand($id: uuid!) {
+  update_nchat_commands_by_pk(
+    pk_columns: { id: $id }
+    _set: { is_enabled: false, updated_at: "now()" }
+  ) {
+    id
+    trigger
+    is_enabled
+  }
+}
+
+# Bulk enable/disable commands
+mutation BulkUpdateCommandStatus($ids: [uuid!]!, $isEnabled: Boolean!) {
+  update_nchat_commands(
+    where: { id: { _in: $ids }, is_built_in: { _eq: false } }
+    _set: { is_enabled: $isEnabled, updated_at: "now()" }
+  ) {
+    affected_rows
+    returning {
+      id
+      trigger
+      is_enabled
+    }
+  }
+}
+
+# Duplicate a command
+mutation DuplicateCommand($sourceId: uuid!, $newTrigger: String!, $createdBy: uuid!) {
+  insert_nchat_commands_one(
+    object: {
+      trigger: $newTrigger
+      # Copy other fields from source - this would need to be done in application layer
+      # or via a stored procedure
+      created_by: $createdBy
+    }
+  ) {
+    ...CommandFull
+  }
+}
+
+# Record command execution
+mutation RecordCommandExecution(
+  $commandId: uuid!
+  $trigger: String!
+  $userId: uuid!
+  $channelId: uuid!
+  $input: String!
+  $success: Boolean!
+  $error: String
+  $durationMs: Int!
+) {
+  insert_nchat_command_executions_one(
+    object: {
+      command_id: $commandId
+      trigger: $trigger
+      user_id: $userId
+      channel_id: $channelId
+      input: $input
+      success: $success
+      error: $error
+      duration_ms: $durationMs
+    }
+  ) {
+    id
+    executed_at
+  }
+}
+
+# Clear old execution history
+mutation ClearOldExecutions($olderThan: timestamptz!) {
+  delete_nchat_command_executions(where: { executed_at: { _lt: $olderThan } }) {
+    affected_rows
+  }
+}
+
+# ============================================================================
+# Fragments (same as queries)
+# ============================================================================
+
+fragment CommandFull on nchat_commands {
+  id
+  trigger
+  aliases
+  name
+  description
+  help_text
+  usage
+  category
+  icon
+  order
+  cooldown
+  is_enabled
+  is_built_in
+  arguments
+  min_role
+  allowed_roles
+  allowed_users
+  denied_users
+  allow_guests
+  allowed_channel_types
+  allowed_channels
+  blocked_channels
+  allow_in_threads
+  response_type
+  response_template
+  response_ephemeral
+  show_typing
+  response_delay
+  action_type
+  action_config
+  webhook_url
+  webhook_method
+  webhook_headers
+  webhook_body_template
+  webhook_timeout
+  webhook_retry_attempts
+  workflow_id
+  workflow_input_mapping
+  workflow_wait
+  workflow_timeout
+  created_at
+  updated_at
+  created_by
+}

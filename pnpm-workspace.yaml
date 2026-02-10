@@ -1,24 +1,29 @@
 # ═══════════════════════════════════════════════════════════════════════════════
-# nself-chat pnpm Workspace Configuration
+# nself-chat v0.9.2 Monorepo Workspace Configuration
 # ═══════════════════════════════════════════════════════════════════════════════
 #
-# This file defines the monorepo structure for nself-chat.
-# The main app and backend services are managed as workspace packages.
+# This workspace defines the frontend monorepo structure.
+# Backend services are managed separately via nself CLI in .backend/
+#
+# Structure:
+#   frontend/apps/*       - Platform-specific applications (web, mobile, desktop)
+#   frontend/packages/*   - Shared packages (@nself-chat/core, api, state, ui, etc.)
+#   frontend/tooling/*    - Development and build tools
 #
 # Usage:
-#   pnpm install          - Install all dependencies
-#   pnpm dev              - Run development server
-#   pnpm -F @nchat/realtime dev  - Run specific service
+#   pnpm install                          - Install all dependencies
+#   pnpm -F @nself-chat/web dev          - Run web app
+#   pnpm -F @nself-chat/core build       - Build core package
+#   pnpm -r build                         - Build all packages
 #
 # ═══════════════════════════════════════════════════════════════════════════════
 
 packages:
-  # Main Next.js application
-  - '.'
+  # Frontend applications
+  - 'frontend/apps/*'
 
-  # Backend microservices will be added when initialized
-  # Run 'nself init' in .backend to set up services
-  # - '.backend/services/*'
+  # Shared packages
+  - 'frontend/packages/*'
 
-  # Shared packages (future)
-  # - 'packages/*'
+  # Development tooling
+  - 'frontend/tooling/*'

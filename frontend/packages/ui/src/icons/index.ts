@@ -1,0 +1,50 @@
+/**
+ * Icon exports for nself-chat UI package
+ */
+
+export * from './icon-map'
+
+// Re-export commonly used lucide-react icons
+export {
+  AlertCircle,
+  AlertTriangle,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  Circle,
+  Copy,
+  Download,
+  Edit,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  File,
+  FileText,
+  Filter,
+  HelpCircle,
+  Home,
+  Image as ImageIcon,
+  Info,
+  Loader2,
+  Mail,
+  Menu,
+  Moon,
+  MoreHorizontal,
+  MoreVertical,
+  Plus,
+  RefreshCw,
+  Search,
+  Send,
+  Settings,
+  Star,
+  Sun,
+  Trash2,
+  Upload,
+  User,
+  Users,
+  X,
+  XCircle,
+} from 'lucide-react'

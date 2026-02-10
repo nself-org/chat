@@ -115,15 +115,15 @@ jobs:
           echo "PREVIOUS_REVISION=$CURRENT_REVISION" >> $GITHUB_ENV
 
       - name: Update Helm dependencies
-        run: helm dependency update ./deploy/helm/nself-chat
+        run: helm dependency update ./.github/deploy/helm/nself-chat
 
       - name: Deploy to production
         run: |
-          helm upgrade --install ${{ env.RELEASE_NAME }} ./deploy/helm/nself-chat \
+          helm upgrade --install ${{ env.RELEASE_NAME }} ./.github/deploy/helm/nself-chat \
             --namespace ${{ env.NAMESPACE }} \
             --create-namespace \
-            --values ./deploy/helm/nself-chat/values.yaml \
-            --values ./deploy/helm/nself-chat/values-production.yaml \
+            --values ./.github/deploy/helm/nself-chat/values.yaml \
+            --values ./.github/deploy/helm/nself-chat/values-production.yaml \
             --set image.tag=${{ needs.validate.outputs.image-tag }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
             --wait \

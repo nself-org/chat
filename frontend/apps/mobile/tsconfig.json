@@ -1,0 +1,31 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@nself-chat/core": ["../../packages/core/src"],
+      "@nself-chat/api": ["../../packages/api/src"],
+      "@nself-chat/state": ["../../packages/state/src"],
+      "@nself-chat/ui": ["../../packages/ui/src"],
+      "@nself-chat/config": ["../../packages/config/src"],
+      "@nself-chat/testing": ["../../packages/testing/src"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "android", "ios"]
+}

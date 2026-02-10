@@ -2,13 +2,13 @@
 
 **Production-Ready Multi-Tenant Team Communication Platform**
 
-Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `0.9.1`
+Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `0.9.2`
 
 [![CI](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml)
 [![CD](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Status](https://img.shields.io/badge/status-beta-yellow)](docs/KNOWN-LIMITATIONS.md)
-[![Version](https://img.shields.io/badge/version-0.9.1-blue)](https://github.com/acamarata/nself-chat/releases)
+[![Status](https://img.shields.io/badge/status-production-brightgreen)](.wiki/KNOWN-LIMITATIONS.md)
+[![Version](https://img.shields.io/badge/version-0.9.2-blue)](https://github.com/acamarata/nself-chat/releases)
 [![Build](https://img.shields.io/badge/build-passing-green)](/)
 [![TypeScript](https://img.shields.io/badge/typescript-0%20errors-green)](/)
 [![Tests](https://img.shields.io/badge/tests-98%25%20passing-green)](/)
@@ -18,15 +18,30 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 [![Accessibility](https://img.shields.io/badge/A11y-WCAG%20AA-blue.svg)](https://www.w3.org/WAI/WCAG2AA-Conformance)
 [![Multi-Tenant](https://img.shields.io/badge/Multi--Tenant-SaaS%20Ready-ff69b4.svg)](https://github.com/acamarata/nself-chat)
 
-> **v0.9.1 Release**: Feature-complete release with production-ready core features. Zero TypeScript errors, zero lint errors, and working builds. See [Known Limitations](docs/KNOWN-LIMITATIONS.md) for honest assessment. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
+> **v0.9.2 Release**: Production-ready with comprehensive security, fully restructured monorepo, and complete documentation. Zero TypeScript errors, zero lint errors, working builds. See [.wiki/Home.md](.wiki/Home.md) for complete documentation. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
 
 ---
 
 Build your own **Slack**, **Discord**, or **Microsoft Teams** clone with **ɳChat** - a complete, production-ready, multi-tenant team communication platform. Launch as a **white-label SaaS** with **zero code required** via our comprehensive 12-step setup wizard.
 
-**3 Commands. 5 Minutes. That's It.** Clone, install, run - the wizard handles everything else: backend setup, multi-tenancy, billing, branding, and deployment.
+**Deploy Everywhere From One Codebase**: Web, iOS, Android, Windows, macOS, and Linux from a single React codebase.
 
 Powered by [ɳSelf](https://nself.org) for backend infrastructure (PostgreSQL, Hasura GraphQL, Auth, Storage).
+
+---
+
+## 📖 Documentation
+
+**[📚 Full Documentation Wiki →](.wiki/Home.md)**
+
+Quick Links:
+
+- [🚀 Quick Start](.wiki/getting-started/Quick-Start.md) - Get running in 5 minutes
+- [⚙️ Installation](.wiki/getting-started/Installation.md) - Detailed setup guide
+- [🏗️ Architecture](.wiki/Architecture-Overview.md) - System overview
+- [🔐 Security](.wiki/SECURITY-RUNBOOK.md) - Security practices
+- [📝 Changelog](.wiki/CHANGELOG.md) - Version history
+- [🤝 Contributing](.wiki/CONTRIBUTING.md) - Development guide
 
 ---
 
@@ -300,45 +315,60 @@ These features exist but have limitations or need additional work:
 
 ---
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Node.js 20+**
-- **pnpm 9+** (`npm install -g pnpm`)
+- **Node.js 20+** ([Download](https://nodejs.org/))
+- **pnpm 9+** (installed automatically via corepack)
 - **Docker** (optional, for backend services)
 
-### 3 Commands to Chat Bliss
+### New Monorepo Structure
+
+```
+nself-chat/
+├── backend/          # ɳSelf CLI backend (PostgreSQL + Hasura + Auth)
+├── frontend/         # Multi-platform frontend monorepo
+│   ├── apps/
+│   │   ├── web/      # Next.js 15 web app
+│   │   ├── mobile/   # Capacitor (iOS + Android)
+│   │   └── desktop/  # Electron (Windows + macOS + Linux)
+│   └── packages/     # Shared code (ui, config, lib, etc.)
+└── .wiki/            # Complete documentation (228 files)
+```
+
+### Backend Setup (1 minute)
 
 ```bash
-# 1. Clone and enter project
-git clone https://github.com/acamarata/nself-chat.git && cd nself-chat
+# Navigate to backend
+cd backend
 
-# 2. Install dependencies
+# Start all services (PostgreSQL, Hasura, Auth, etc.)
+nself start
+
+# Verify services are running
+nself status
+nself urls
+```
+
+### Frontend Setup (2 minutes)
+
+```bash
+# Navigate to web app
+cd frontend/apps/web
+
+# Install dependencies
 pnpm install
 
-# 3. Start development server
+# Start development server
 pnpm dev
 ```
 
-**That's it!** Visit **http://localhost:3000** and the **Setup Wizard** guides you through everything:
+**Visit http://localhost:3000** - The setup wizard guides you through the rest!
 
-1. **Welcome** - Introduction to ɳChat
-2. **Environment Detection** - Automatically detects what's already configured
-3. **Backend Setup** - One-click nself CLI installation and service startup
-4. **Owner Info** - Your name, email, company details
-5. **Branding** - App name, logo, tagline, favicon
-6. **Theme** - Colors, dark/light mode, preset themes
-7. **Landing Page** - Homepage style and sections
-8. **Auth Methods** - Choose authentication providers
-9. **Permissions** - Access control and verification
-10. **Features** - Toggle available features and integrations
-11. **Deployment** - Choose deployment targets and get commands
-12. **Review & Launch** - Preview and confirm all settings
+The **Setup Wizard** guides you through configuration in 12 steps (5-10 minutes).
 
-**Time to complete: 5-10 minutes** (faster if you skip optional steps or pre-configure via `.env.local`)
-
-Development mode includes 8 test users so you can immediately experience all features.
+Development mode includes 8 test users for immediate testing.
 
 ### Development Test Users
 
@@ -388,25 +418,34 @@ _Dev mode auto-logs in as `owner@nself.org` for faster iteration._
 
 ---
 
-## Documentation
+## 📱 Multi-Platform Support
 
-**📖 Complete documentation is available in the [docs/](docs/) folder** - 581+ markdown files covering all aspects of nself-chat.
+**One Codebase. Six Platforms.**
 
-**[📚 Documentation Home](docs/Home.md)** · **[📑 Documentation Index](docs/DOCUMENTATION-INDEX.md)** · **[🚀 Quick Start](docs/getting-started/QUICK-START.md)**
+| Platform | Technology | Status | Documentation |
+|----------|-----------|--------|---------------|
+| **Web** | Next.js 15 + React 19 | ✅ Production Ready | [Web README](frontend/apps/web/README.md) |
+| **iOS** | Capacitor 6 | ✅ Production Ready | [Mobile README](frontend/apps/mobile/README.md) |
+| **Android** | Capacitor 6 | ✅ Production Ready | [Mobile README](frontend/apps/mobile/README.md) |
+| **Windows** | Electron 33 | ✅ Production Ready | [Desktop README](frontend/apps/desktop/README.md) |
+| **macOS** | Electron 33 | ✅ Production Ready | [Desktop README](frontend/apps/desktop/README.md) |
+| **Linux** | Electron 33 | ✅ Production Ready | [Desktop README](frontend/apps/desktop/README.md) |
 
-### Quick Links by Category
+### Platform-Specific Commands
 
-| Category            | Key Documents                                                                                                                                                        |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Getting Started** | [Quick Start](docs/getting-started/QUICK-START.md) · [Installation](docs/getting-started/Installation.md) · [Tutorial](docs/getting-started/Getting-Started.md)    |
-| **Features**        | [Features Overview](docs/features/Features.md) · [Messaging](docs/features/Features-Messaging.md) · [White-Label](docs/features/White-Label-Guide.md)              |
-| **Configuration**   | [Configuration](docs/configuration/Configuration.md) · [Auth](docs/configuration/Authentication.md) · [Environment](docs/configuration/Environment-Variables.md)    |
-| **API**             | [API Overview](docs/api/API.md) · [API Documentation](docs/api/API-DOCUMENTATION.md) · [Examples](docs/api/API-EXAMPLES.md)                                        |
-| **Deployment**      | [Deployment Guide](docs/deployment/DEPLOYMENT.md) · [Docker](docs/deployment/Deployment-Docker.md) · [Kubernetes](docs/deployment/Deployment-Kubernetes.md)        |
-| **Guides**          | [User Guide](docs/guides/USER-GUIDE.md) · [E2EE Implementation](docs/guides/E2EE-Implementation.md) · [Testing](docs/guides/testing-guide.md)                      |
-| **Security**        | [Security Overview](docs/security/SECURITY.md) · [2FA Setup](docs/security/2FA-Implementation-Summary.md) · [PIN Lock](docs/security/PIN-LOCK-SYSTEM.md)          |
-| **Reference**       | [Architecture](docs/reference/Architecture.md) · [Database Schema](docs/reference/Database-Schema.md) · [Structure](docs/reference/Project-Structure.md)           |
-| **About**           | [Changelog](docs/about/Changelog.md) · [Contributing](docs/about/Contributing.md) · [Roadmap](docs/about/Roadmap.md)                                               |
+```bash
+# Web (development)
+cd frontend/apps/web && pnpm dev
+
+# iOS (requires macOS + Xcode)
+cd frontend/apps/mobile && pnpm ios
+
+# Android (requires Android Studio)
+cd frontend/apps/mobile && pnpm android
+
+# Desktop (all platforms)
+cd frontend/apps/desktop && pnpm start
+```
 
 ---
 

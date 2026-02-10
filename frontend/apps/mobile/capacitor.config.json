@@ -1,0 +1,38 @@
+{
+  "appId": "com.nself.chat",
+  "appName": "nself-chat",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#6366f1",
+      "showSpinner": true,
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#ffffff"
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "StatusBar": {
+      "style": "dark",
+      "backgroundColor": "#6366f1"
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "dark",
+      "resizeOnFullScreen": true
+    },
+    "Camera": {
+      "quality": 90,
+      "allowEditing": true,
+      "resultType": "uri",
+      "saveToGallery": false
+    }
+  }
+}

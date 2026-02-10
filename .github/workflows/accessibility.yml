@@ -200,14 +200,14 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Validate translation coverage
-        run: pnpm tsx scripts/validate-translations.ts
+        run: pnpm tsx .github/scripts/validate-translations.ts
         continue-on-error: true
 
       - name: Generate translation report
         if: always()
         run: |
           echo "## Translation Coverage Report" >> $GITHUB_STEP_SUMMARY
-          pnpm tsx scripts/validate-translations.ts 2>&1 | tail -n 50 >> $GITHUB_STEP_SUMMARY
+          pnpm tsx .github/scripts/validate-translations.ts 2>&1 | tail -n 50 >> $GITHUB_STEP_SUMMARY
 
   accessibility-summary:
     name: Accessibility Summary

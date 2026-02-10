@@ -1,0 +1,143 @@
+/**
+ * Desktop App Base Styles
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --accent-color: #6366f1;
+  --accent-hover: #4f46e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2a2a2a;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --border-color: #3a3a3a;
+    --accent-color: #818cf8;
+    --accent-hover: #6366f1;
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.window-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-header {
+  padding: 1rem 1.5rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.version {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.app-main {
+  flex: 1;
+  padding: 2rem;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.status-panel,
+.info-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.status-panel h2,
+.info-panel h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.status-panel ul,
+.info-panel ul {
+  list-style: none;
+}
+
+.status-panel li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.status-panel li:last-child {
+  border-bottom: none;
+}
+
+.info-panel li {
+  padding: 0.25rem 0;
+  padding-left: 0.5rem;
+}
+
+.info-panel p {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.app-footer {
+  padding: 1rem 1.5rem;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.app-footer a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.app-footer a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
