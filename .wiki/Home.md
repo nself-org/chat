@@ -22,42 +22,45 @@ Welcome to the **nself-chat** documentation! A production-ready, white-label tea
 
 ---
 
-## 🏗️ New Monorepo Structure (v0.9.2)
+## 🏗️ Project Structure (v0.9.2)
 
-nself-chat has been restructured into a clean monorepo:
+nself-chat follows the **nself-family clean organization pattern**:
 
 ```
 nself-chat/
-├── backend/          # ɳSelf CLI backend infrastructure
-│   ├── migrations/   # Database migrations
-│   ├── hasura/      # GraphQL metadata
-│   └── README.md    # Backend documentation
-├── frontend/         # Multi-platform frontend monorepo
-│   ├── apps/
-│   │   ├── web/     # Next.js 15 web app (main development)
-│   │   ├── mobile/  # Capacitor (iOS + Android)
-│   │   └── desktop/ # Electron (Windows + macOS + Linux)
-│   ├── packages/    # Shared code
-│   │   ├── ui/      # UI components
-│   │   ├── config/  # Configuration
-│   │   ├── lib/     # Utilities
-│   │   └── ...      # More shared packages
-│   └── README.md    # Frontend documentation
-└── .wiki/           # Complete documentation (this folder)
-    ├── Home.md      # This file
-    ├── getting-started/
-    ├── features/
-    ├── guides/
-    ├── api/
-    └── ...          # 228 documentation files
+├── backend/              # ɳSelf CLI backend infrastructure
+│   ├── db/
+│   │   └── migrations/   # Database migrations (incl. per-app RBAC)
+│   ├── hasura/          # GraphQL metadata
+│   └── README.md        # Backend documentation
+├── frontend/            # Clean flat structure
+│   ├── src/            # Source code
+│   │   ├── app/        # Next.js App Router
+│   │   ├── components/ # React components
+│   │   ├── hooks/      # Custom hooks (incl. useAppPermissions)
+│   │   ├── contexts/   # React contexts
+│   │   ├── graphql/    # GraphQL queries (incl. RBAC)
+│   │   ├── types/      # TypeScript types (incl. RBAC)
+│   │   └── lib/        # Utilities
+│   ├── platforms/      # Multi-platform builds
+│   │   ├── mobile/     # Capacitor (iOS + Android)
+│   │   └── desktop/    # Electron (Windows + macOS + Linux)
+│   ├── public/         # Static assets
+│   ├── tests/          # Jest + Playwright tests
+│   └── README.md       # Frontend documentation
+├── ARCHITECTURE.md      # **NEW** - Monorepo setup guide
+└── .wiki/              # Complete documentation (this folder)
 ```
 
-**Key Changes:**
+**Key Features:**
 
-- ✅ Cleaner separation of backend and frontend
-- ✅ Shared packages for code reuse across platforms
-- ✅ All documentation moved to `.wiki/` folder
-- ✅ Platform-specific READMEs (web, mobile, desktop)
+- ✅ Clean flat structure (nself-family pattern)
+- ✅ **"One of Many" Monorepo Compatible** - Can run standalone or with other apps
+- ✅ **Per-App RBAC** - Users can have different roles across apps
+- ✅ Shared authentication with SSO
+- ✅ Multi-platform support (Web, iOS, Android, Desktop)
+
+**New in v0.9.2:** Per-app RBAC/ACL system enables users to have different roles in different applications sharing the same backend. See [ARCHITECTURE.md](../ARCHITECTURE.md) for monorepo setup.
 
 ---
 
@@ -108,6 +111,7 @@ nself-chat/
 **Production deployment guides:**
 
 - [Deployment Overview](deployment/DEPLOYMENT-GUIDE.md) - General deployment guide
+- **[Monorepo Setup](deployment/Monorepo-Setup.md)** - **NEW** - Run multiple apps with one backend
 - [Docker Deployment](deployment/Deployment-Docker.md) - Docker containers
 - [Kubernetes Deployment](deployment/Deployment-Kubernetes.md) - K8s manifests
 - [Vercel Deployment](deployment/Deployment-Vercel.md) - Vercel hosting

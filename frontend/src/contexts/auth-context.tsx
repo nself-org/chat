@@ -27,6 +27,7 @@ import type {
   OAuthProvider,
   TwoFactorStatus,
 } from '@/services/auth/auth.interface'
+import type { AppRole, UserAppContext } from '@/types/app-rbac'
 import { logger } from '@/lib/logger'
 
 // ============================================================================
@@ -43,6 +44,9 @@ interface User {
   emailVerified?: boolean
   createdAt?: string
   lastLoginAt?: string
+  // Per-app RBAC (monorepo compatibility)
+  appRoles?: AppRole[] // User's roles in the current app
+  appContext?: UserAppContext // Full app context with permissions
 }
 
 interface SignInOptions {

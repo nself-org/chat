@@ -1,0 +1,724 @@
+# Monorepo Setup Guide
+
+**Version**: 0.9.2
+**Last Updated**: February 12, 2026
+**Prerequisites**: nSelf CLI v0.4.2+
+
+---
+
+## Overview
+
+This guide explains how to deploy **multiple nSelf applications** (e.g., ɳChat, ɳTV, ɳFamily) that share a single backend, single authentication system, and single user base—while maintaining **per-app role-based access control (RBAC)**.
+
+**What You Get:**
+- 🔐 **One authentication system** - Users log in once across all apps (SSO)
+- 👥 **One user base** - Single `auth.users` table shared by all apps
+- 🎭 **Per-app roles** - User can be admin in ɳChat, regular user in ɳTV
+- 🔌 **Independent frontends** - Each app has its own UI and features
+- 🗄️ **Shared backend** - One nSelf CLI instance serves all apps
+
+---
+
+## Table of Contents
+
+1. [Architecture](#architecture)
+2. [Prerequisites](#prerequisites)
+3. [Directory Structure](#directory-structure)
+4. [Step-by-Step Setup](#step-by-step-setup)
+5. [Per-App RBAC System](#per-app-rbac-system)
+6. [User Role Management](#user-role-management)
+7. [App Configuration](#app-configuration)
+8. [Common Scenarios](#common-scenarios)
+9. [Troubleshooting](#troubleshooting)
+
+---
+
+## Architecture
+
+### System Diagram
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   Users' Browsers                    │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐          │
+│  │  ɳChat   │  │   ɳTV    │  │ ɳFamily  │          │
+│  │ :3000    │  │  :3001   │  │  :3002   │          │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘          │
+└───────┼─────────────┼─────────────┼─────────────────┘
+        │             │             │
+        │   ┌─────────▼─────────────▼─────┐
+        └───►  Nginx Reverse Proxy         │
+            │  api.localhost               │
+            └─────────┬────────────────────┘
+                      │
+        ┌─────────────┼─────────────────┐
+        │             │                 │
+  ┌─────▼──────┐ ┌───▼──────┐ ┌───────▼────────┐
+  │  Hasura    │ │   Auth   │ │    Storage     │
+  │ GraphQL    │ │  (Nhost) │ │    (MinIO)     │
+  └─────┬──────┘ └───┬──────┘ └───────┬────────┘
+        │            │                 │
+        └────────────┼─────────────────┘
+                     │
+             ┌───────▼────────┐
+             │   PostgreSQL   │
+             │                │
+             │  Shared Tables:│
+             │  - auth.users  │
+             │  - apps        │
+             │  - app_user_roles
+             │                │
+             │  App Tables:   │
+             │  - nchat_*     │
+             │  - ntv_*       │
+             │  - nfamily_*   │
+             └────────────────┘
+```
+
+### Key Concepts
+
+**Shared Components:**
+- PostgreSQL database
+- Hasura GraphQL engine
+- Nhost Auth service
+- MinIO storage
+- User accounts (`auth.users`)
+
+**Per-App Components:**
+- Frontend application (Next.js, React, etc.)
+- App-specific tables (e.g., `nchat_channels`, `ntv_videos`)
+- App-specific roles (`app_user_roles` table)
+- App configuration (`NEXT_PUBLIC_APP_ID`)
+
+**Cross-App Features:**
+- Single sign-on (SSO)
+- Shared user profiles
+- Cross-app notifications (optional)
+
+---
+
+## Prerequisites
+
+1. **nSelf CLI** - Version 0.4.2 or later
+   ```bash
+   npm install -g @nself/cli@latest
+   ```
+
+2. **Multiple nSelf Apps** - Clone the apps you want to run:
+   ```bash
+   git clone https://github.com/nself/nself-chat.git
+   git clone https://github.com/nself/nself-tv.git
+   git clone https://github.com/nself/nself-family.git
+   ```
+
+3. **System Requirements:**
+   - Docker Desktop 20.10+
+   - Node.js 20.0+
+   - pnpm 9.0+
+   - 8GB RAM minimum (16GB recommended)
+
+---
+
+## Directory Structure
+
+Create a monorepo directory structure:
+
+```bash
+mkdir nself-monorepo
+cd nself-monorepo
+```
+
+**Recommended structure:**
+
+```
+nself-monorepo/
+├── backend/              # Shared nSelf CLI backend
+│   ├── db/
+│   │   └── migrations/   # All migrations (ordered)
+│   ├── docker-compose.yml (generated by nself)
+│   └── .env
+├── nchat/                # ɳChat application
+│   └── frontend/
+│       ├── src/
+│       ├── package.json
+│       └── .env.local
+├── ntv/                  # ɳTV application
+│   └── frontend/
+│       ├── src/
+│       ├── package.json
+│       └── .env.local
+└── nfamily/              # ɳFamily application
+    └── frontend/
+        ├── src/
+        ├── package.json
+        └── .env.local
+```
+
+---
+
+## Step-by-Step Setup
+
+### Step 1: Create Directory Structure
+
+```bash
+mkdir -p nself-monorepo/{backend,nchat,ntv,nfamily}
+cd nself-monorepo
+```
+
+### Step 2: Initialize Shared Backend
+
+```bash
+cd backend
+
+# Initialize nSelf CLI with demo configuration
+nself init --demo
+
+# Follow the prompts:
+# ✓ Project name: nself-monorepo
+# ✓ Enable services: PostgreSQL, Hasura, Auth, MinIO, Redis, MeiliSearch
+# ✓ Enable monitoring: Yes (Grafana + Prometheus + Loki)
+# ✓ Domain: api.localhost
+```
+
+This creates:
+- `docker-compose.yml` (all services)
+- `.env` (backend configuration)
+- Database with core tables
+
+### Step 3: Clone Applications
+
+```bash
+cd ..
+
+# Clone apps into monorepo
+git clone https://github.com/nself/nself-chat.git nchat
+git clone https://github.com/nself/nself-tv.git ntv
+git clone https://github.com/nself/nself-family.git nfamily
+```
+
+### Step 4: Prepare Migrations
+
+Collect all database migrations into one place:
+
+```bash
+cd backend
+mkdir -p db/migrations
+
+# Copy migrations in order
+cp ../nchat/backend/db/migrations/20260212_add_per_app_rbac.sql db/migrations/001_per_app_rbac.sql
+cp ../nchat/backend/db/migrations/*.sql db/migrations/002_nchat_tables.sql
+cp ../ntv/backend/db/migrations/*.sql db/migrations/003_ntv_tables.sql
+cp ../nfamily/backend/db/migrations/*.sql db/migrations/004_nfamily_tables.sql
+```
+
+### Step 5: Start Backend
+
+```bash
+cd backend
+nself start
+
+# Wait for all services to start (2-3 minutes)
+nself status
+```
+
+**Expected output:**
+```
+✓ PostgreSQL running on :5432
+✓ Hasura running on :8080
+✓ Auth running on :4000
+✓ MinIO running on :9000
+✓ Redis running on :6379
+✓ MeiliSearch running on :7700
+✓ Grafana running on :3000
+```
+
+### Step 6: Run Migrations
+
+```bash
+cd backend
+
+# Run migrations in order
+for migration in db/migrations/*.sql; do
+  echo "Running $migration..."
+  nself exec postgres psql -U postgres -d nself -f "/migrations/$(basename $migration)"
+done
+```
+
+**Verify migrations:**
+```bash
+nself exec postgres psql -U postgres -d nself -c "\dt public.app*"
+```
+
+Expected tables:
+- `public.apps`
+- `public.app_user_roles`
+- `public.app_role_permissions`
+
+### Step 7: Register Apps in Database
+
+```bash
+nself exec postgres psql -U postgres -d nself
+```
+
+Then run:
+```sql
+INSERT INTO public.apps (app_id, app_name, app_url, is_active) VALUES
+  ('nchat', 'ɳChat', 'http://localhost:3000', true),
+  ('ntv', 'ɳTV', 'http://localhost:3001', true),
+  ('nfamily', 'ɳFamily', 'http://localhost:3002', true);
+
+-- Verify
+SELECT * FROM public.apps;
+```
+
+### Step 8: Configure Frontend Apps
+
+**ɳChat (.env.local):**
+```bash
+cd ../nchat/frontend
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
+```bash
+# App Identity
+NEXT_PUBLIC_APP_ID=nchat
+NEXT_PUBLIC_APP_NAME=ɳChat
+
+# Backend URLs (shared)
+NEXT_PUBLIC_GRAPHQL_URL=http://api.localhost/v1/graphql
+NEXT_PUBLIC_AUTH_URL=http://auth.localhost/v1/auth
+NEXT_PUBLIC_STORAGE_URL=http://storage.localhost/v1/storage
+
+# Environment
+NEXT_PUBLIC_ENV=development
+```
+
+**ɳTV (.env.local):**
+```bash
+cd ../../ntv/frontend
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
+```bash
+# App Identity
+NEXT_PUBLIC_APP_ID=ntv
+NEXT_PUBLIC_APP_NAME=ɳTV
+
+# Backend URLs (shared - SAME AS NCHAT)
+NEXT_PUBLIC_GRAPHQL_URL=http://api.localhost/v1/graphql
+NEXT_PUBLIC_AUTH_URL=http://auth.localhost/v1/auth
+NEXT_PUBLIC_STORAGE_URL=http://storage.localhost/v1/storage
+
+# Environment
+NEXT_PUBLIC_ENV=development
+```
+
+**ɳFamily (.env.local):**
+```bash
+cd ../../nfamily/frontend
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
+```bash
+# App Identity
+NEXT_PUBLIC_APP_ID=nfamily
+NEXT_PUBLIC_APP_NAME=ɳFamily
+
+# Backend URLs (shared - SAME AS NCHAT)
+NEXT_PUBLIC_GRAPHQL_URL=http://api.localhost/v1/graphql
+NEXT_PUBLIC_AUTH_URL=http://auth.localhost/v1/auth
+NEXT_PUBLIC_STORAGE_URL=http://storage.localhost/v1/storage
+
+# Environment
+NEXT_PUBLIC_ENV=development
+```
+
+### Step 9: Install Dependencies
+
+```bash
+# ɳChat
+cd ../../nchat/frontend
+pnpm install
+
+# ɳTV
+cd ../../ntv/frontend
+pnpm install
+
+# ɳFamily
+cd ../../nfamily/frontend
+pnpm install
+```
+
+### Step 10: Start All Apps
+
+Open 3 terminals:
+
+**Terminal 1 - ɳChat:**
+```bash
+cd nchat/frontend
+pnpm dev
+# Runs on http://localhost:3000
+```
+
+**Terminal 2 - ɳTV:**
+```bash
+cd ntv/frontend
+pnpm dev --port 3001
+# Runs on http://localhost:3001
+```
+
+**Terminal 3 - ɳFamily:**
+```bash
+cd nfamily/frontend
+pnpm dev --port 3002
+# Runs on http://localhost:3002
+```
+
+### Step 11: Create First User
+
+Visit any app (e.g., http://localhost:3000) and sign up:
+- Email: `admin@example.com`
+- Password: `SecurePass123!`
+
+This creates a user in the shared `auth.users` table.
+
+### Step 12: Assign Roles
+
+```bash
+cd backend
+nself exec postgres psql -U postgres -d nself
+```
+
+```sql
+-- Get the user ID
+SELECT id, email FROM auth.users WHERE email = 'admin@example.com';
+
+-- Assign roles (replace UUID with actual user ID)
+INSERT INTO public.app_user_roles (app_id, user_id, role) VALUES
+  ('nchat', 'user-uuid-here', 'owner'),
+  ('ntv', 'user-uuid-here', 'admin'),
+  ('nfamily', 'user-uuid-here', 'member');
+
+-- Verify
+SELECT * FROM public.app_user_roles;
+```
+
+---
+
+## Per-App RBAC System
+
+### Overview
+
+The per-app RBAC system allows users to have **different roles in different applications** while sharing authentication.
+
+### Tables
+
+**1. `apps` - Application Registry**
+```sql
+CREATE TABLE public.apps (
+    id UUID PRIMARY KEY,
+    app_id TEXT UNIQUE NOT NULL,  -- 'nchat', 'ntv', 'nfamily'
+    app_name TEXT NOT NULL,       -- 'ɳChat', 'ɳTV', 'ɳFamily'
+    app_url TEXT,                 -- 'https://chat.example.com'
+    is_active BOOLEAN DEFAULT true
+);
+```
+
+**2. `app_user_roles` - Per-App User Roles**
+```sql
+CREATE TABLE public.app_user_roles (
+    id UUID PRIMARY KEY,
+    app_id TEXT NOT NULL REFERENCES apps(app_id),
+    user_id UUID NOT NULL REFERENCES auth.users(id),
+    role TEXT NOT NULL,           -- 'owner', 'admin', 'moderator', 'member', 'guest'
+    granted_by UUID REFERENCES auth.users(id),
+    granted_at TIMESTAMPTZ DEFAULT NOW(),
+    expires_at TIMESTAMPTZ        -- Optional expiration
+);
+```
+
+**3. `app_role_permissions` - Per-Role Permissions**
+```sql
+CREATE TABLE public.app_role_permissions (
+    id UUID PRIMARY KEY,
+    app_id TEXT NOT NULL REFERENCES apps(app_id),
+    role TEXT NOT NULL,
+    permission TEXT NOT NULL,     -- 'channels.create', 'messages.delete'
+    resource TEXT                 -- Optional: specific resource ID
+);
+```
+
+### Role Types
+
+| Role | Description | Typical Permissions |
+|------|-------------|-------------------|
+| **owner** | Complete control | All permissions, billing, settings |
+| **admin** | User/content management | Create/delete channels, manage users, moderation |
+| **moderator** | Content moderation | Delete messages, warn/timeout users |
+| **member** | Standard user | Send messages, join channels, upload files |
+| **guest** | Limited access | View channels, read messages (no posting) |
+
+### Frontend Integration
+
+**Check permissions in React:**
+```typescript
+import { useAppPermissions } from '@/hooks/use-app-permissions'
+
+function DeleteChannelButton({ channelId }: { channelId: string }) {
+  const { hasPermission, isAdmin } = useAppPermissions()
+
+  if (!hasPermission('channels.delete')) {
+    return null // Hide button if no permission
+  }
+
+  return (
+    <button onClick={() => deleteChannel(channelId)}>
+      Delete Channel
+    </button>
+  )
+}
+```
+
+**Check roles:**
+```typescript
+const { hasRole, userRoles } = useAppPermissions()
+
+if (hasRole('owner')) {
+  // Show owner-only features
+}
+```
+
+---
+
+## User Role Management
+
+### Assigning Roles via SQL
+
+```sql
+-- Grant admin role in ɳChat
+INSERT INTO public.app_user_roles (app_id, user_id, role)
+VALUES ('nchat', 'user-uuid', 'admin');
+
+-- Grant member role in ɳTV
+INSERT INTO public.app_user_roles (app_id, user_id, role)
+VALUES ('ntv', 'user-uuid', 'member');
+```
+
+### Assigning Roles via GraphQL
+
+```graphql
+mutation GrantUserRole {
+  insert_app_user_roles_one(
+    object: {
+      app_id: "nchat"
+      user_id: "user-uuid"
+      role: "admin"
+      granted_by: "admin-user-uuid"
+    }
+  ) {
+    id
+    role
+  }
+}
+```
+
+### Auto-Assign Default Role
+
+Create a trigger to assign default role to new users:
+
+```sql
+CREATE OR REPLACE FUNCTION assign_default_app_role()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Assign 'member' role in all active apps
+  INSERT INTO public.app_user_roles (app_id, user_id, role)
+  SELECT app_id, NEW.id, 'member'
+  FROM public.apps
+  WHERE is_active = true;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION assign_default_app_role();
+```
+
+---
+
+## App Configuration
+
+### Environment Variables
+
+Each app must set:
+
+```bash
+# Required
+NEXT_PUBLIC_APP_ID=nchat  # Unique app identifier
+NEXT_PUBLIC_APP_NAME=ɳChat  # Display name
+
+# Shared backend
+NEXT_PUBLIC_GRAPHQL_URL=http://api.localhost/v1/graphql
+NEXT_PUBLIC_AUTH_URL=http://auth.localhost/v1/auth
+NEXT_PUBLIC_STORAGE_URL=http://storage.localhost/v1/storage
+```
+
+### Hasura Configuration
+
+Grant permissions in Hasura console (http://localhost:8080):
+
+1. Track tables:
+   - `public.apps`
+   - `public.app_user_roles`
+   - `public.app_role_permissions`
+
+2. Add permissions for `user` role:
+   ```yaml
+   select:
+     filter:
+       user_id: { _eq: X-Hasura-User-Id }
+   ```
+
+3. Grant function permissions:
+   - `user_has_app_role`
+   - `user_has_app_permission`
+   - `get_user_app_roles`
+
+---
+
+## Common Scenarios
+
+### Scenario 1: User is Admin in One App, Member in Another
+
+**Setup:**
+```sql
+INSERT INTO public.app_user_roles (app_id, user_id, role) VALUES
+  ('nchat', 'alice-uuid', 'admin'),
+  ('ntv', 'alice-uuid', 'member');
+```
+
+**Result:**
+- Alice can create/delete channels in ɳChat
+- Alice can only view/post content in ɳTV
+- Alice logs in once, seamless switch between apps
+
+### Scenario 2: Temporary Moderator Role
+
+**Grant temporary role:**
+```sql
+INSERT INTO public.app_user_roles (app_id, user_id, role, expires_at)
+VALUES ('nchat', 'bob-uuid', 'moderator', NOW() + INTERVAL '7 days');
+```
+
+**Result:**
+- Bob has moderator permissions for 7 days
+- Role automatically expires
+- No manual cleanup needed
+
+### Scenario 3: Owner Across All Apps
+
+**Grant owner role everywhere:**
+```sql
+INSERT INTO public.app_user_roles (app_id, user_id, role)
+SELECT app_id, 'owner-uuid', 'owner'
+FROM public.apps
+WHERE is_active = true;
+```
+
+**Result:**
+- User has full control across all apps
+- New apps automatically grant owner role (via trigger)
+
+---
+
+## Troubleshooting
+
+### Issue: User Has No Roles
+
+**Symptom:** User can log in but has no permissions.
+
+**Solution:**
+```sql
+-- Check if user has roles
+SELECT * FROM public.app_user_roles WHERE user_id = 'user-uuid';
+
+-- If empty, assign default role
+INSERT INTO public.app_user_roles (app_id, user_id, role)
+VALUES ('nchat', 'user-uuid', 'member');
+```
+
+**Prevention:** Implement the `assign_default_app_role()` trigger.
+
+### Issue: Permission Denied on app_user_roles
+
+**Symptom:** GraphQL query returns "permission denied".
+
+**Solution:**
+```sql
+-- Grant Hasura access
+GRANT SELECT ON public.app_user_roles TO hasura;
+GRANT SELECT ON public.app_role_permissions TO hasura;
+GRANT EXECUTE ON FUNCTION public.user_has_app_role TO hasura;
+GRANT EXECUTE ON FUNCTION public.user_has_app_permission TO hasura;
+```
+
+### Issue: Apps Not Showing in GraphQL
+
+**Symptom:** `apps` table not visible in Hasura.
+
+**Solution:**
+1. Visit Hasura console: http://localhost:8080
+2. Data tab → Schema → public
+3. Track tables: `apps`, `app_user_roles`, `app_role_permissions`
+4. Reload metadata: `nself exec hasura hasura-cli metadata reload`
+
+### Issue: Session Not Shared Between Apps
+
+**Symptom:** User must log in separately for each app.
+
+**Solution:**
+- Verify all apps use the **same** `NEXT_PUBLIC_AUTH_URL`
+- Check that cookies have the same domain (e.g., `.localhost`)
+- In production, use a shared domain (e.g., `*.example.com`)
+
+### Issue: Database Migrations Conflict
+
+**Symptom:** Migrations fail due to table conflicts.
+
+**Solution:**
+- Prefix app-specific tables with app ID (e.g., `nchat_channels`, `ntv_videos`)
+- Use schema separation:
+  ```sql
+  CREATE SCHEMA nchat;
+  CREATE TABLE nchat.channels (...);
+
+  CREATE SCHEMA ntv;
+  CREATE TABLE ntv.videos (...);
+  ```
+
+---
+
+## Next Steps
+
+1. **Security:** Review [Security Guide](../security/SECURITY.md)
+2. **Production:** Read [Deployment Guide](DEPLOYMENT-GUIDE.md)
+3. **Scaling:** Check [Performance Guide](../Performance-Optimization.md)
+4. **Monitoring:** Set up [Observability](../observability/README.md)
+
+---
+
+## Additional Resources
+
+- [ARCHITECTURE.md](../../ARCHITECTURE.md) - Complete architecture documentation
+- [Per-App RBAC Types](../../frontend/src/types/app-rbac.ts) - TypeScript types
+- [useAppPermissions Hook](../../frontend/src/hooks/use-app-permissions.ts) - React hook
+- [GraphQL Queries](../../frontend/src/graphql/app-rbac.ts) - RBAC queries
+
+---
+
+**Questions?** Open an issue on [GitHub](https://github.com/nself/nself-chat/issues).

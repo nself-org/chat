@@ -22,11 +22,97 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 
 ---
 
+## 🎯 Project Mission
+
+**ɳChat is a Free and Open Source Software (FOSS) reference implementation** showcasing the power and simplicity of building production-grade applications using [**ɳSelf CLI**](https://github.com/acamarata/nself) as the complete backend infrastructure.
+
+### Why This Exists
+
+This project demonstrates:
+
+- ✅ **The ɳSelf Way** - 100% reliance on ɳSelf CLI for all backend needs
+- ✅ **Real-World Complexity** - Not a toy example, but a complete production app
+- ✅ **Clone, Customize, Deploy** - Fully functional out-of-the-box
+- ✅ **White-Label Ready** - Comprehensive customization via setup wizard
+- ✅ **Monorepo Compatible** - Works standalone OR as part of a larger ecosystem
+
+### Live Demo
+
+See it in action: **[chat.nself.org](https://chat.nself.org)** (coming soon)
+
+### For Developers
+
+This codebase serves as:
+
+- 📚 **Learning Resource** - Study how to build complex apps with ɳSelf CLI
+- 🏗️ **Starter Template** - Clone and customize for your own projects
+- 🔍 **Best Practices** - Real-world patterns and architecture decisions
+- 🤝 **Community Example** - Contribute and improve the reference implementation
+
+---
+
+## 🏢 Deployment Flexibility
+
+### Standalone Deployment
+
+Run ɳChat as a **single, independent application**:
+
+```bash
+# One backend, one app
+git clone https://github.com/acamarata/nself-chat.git
+cd nself-chat
+pnpm install
+cd backend && nself start
+cd ../frontend && pnpm dev
+```
+
+Perfect for: Single-purpose chat applications, internal team tools, white-label deployments
+
+### Monorepo Deployment ("One of Many")
+
+Run ɳChat **alongside other apps** sharing the same backend:
+
+```bash
+# One backend, multiple apps
+monorepo/
+├── backend/          # Shared ɳSelf CLI backend
+│   ├── nself.yaml
+│   └── docker-compose.yml
+├── apps/
+│   ├── nchat/        # This app
+│   ├── ntv/          # ɳTV (media streaming)
+│   ├── nfamily/      # ɳFamily (family organizer)
+│   └── other-app/    # Your custom app
+```
+
+**Key Features**:
+
+- 🔐 **Shared Authentication** - Single sign-on (SSO) across all apps
+- 👥 **Unified User Base** - One users table, one login for everything
+- 🎭 **Per-App Roles** - User can be admin in ɳChat, regular user in ɳTV
+- 📊 **Centralized Data** - Shared database with app-specific schemas
+- ⚡ **Resource Efficiency** - One backend serves multiple applications
+
+See [ARCHITECTURE.md](.wiki/Architecture-Overview.md) for detailed monorepo setup.
+
+---
+
+## 🚀 What is ɳChat?
+
 Build your own **Slack**, **Discord**, or **Microsoft Teams** clone with **ɳChat** - a complete, production-ready, multi-tenant team communication platform. Launch as a **white-label SaaS** with **zero code required** via our comprehensive 12-step setup wizard.
 
 **Deploy Everywhere From One Codebase**: Web, iOS, Android, Windows, macOS, and Linux from a single React codebase.
 
-Powered by [ɳSelf](https://nself.org) for backend infrastructure (PostgreSQL, Hasura GraphQL, Auth, Storage).
+**100% Powered by [ɳSelf CLI](https://nself.org)** for backend infrastructure:
+
+- PostgreSQL with 60+ extensions
+- Hasura GraphQL Engine
+- Nhost Authentication
+- MinIO Storage (S3-compatible)
+- Redis Cache
+- MeiliSearch
+- LiveKit (WebRTC)
+- Complete monitoring stack
 
 ---
 
