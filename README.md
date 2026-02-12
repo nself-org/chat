@@ -22,6 +22,95 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 
 ---
 
+## ⚡ Quick Start - Running in 3 Commands
+
+Get a complete, production-ready chat application running in under 5 minutes:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/acamarata/nself-chat.git
+cd nself-chat
+
+# 2. Start the backend (includes PostgreSQL, Hasura, Auth, Storage, etc.)
+cd backend
+nself start
+
+# 3. Start the frontend (in a new terminal)
+cd frontend
+pnpm install
+pnpm dev
+```
+
+**That's it!** Your app is now running:
+
+- 🎨 **Chat Application**: [http://localhost:3000](http://localhost:3000)
+- 🚀 **GraphQL API**: [https://api.local.nself.org](https://api.local.nself.org)
+- 🔐 **Auth Service**: [https://auth.local.nself.org](https://auth.local.nself.org)
+- 📦 **Storage**: [https://storage.local.nself.org](https://storage.local.nself.org)
+- 📧 **Email (dev)**: [https://mail.local.nself.org](https://mail.local.nself.org)
+- 📊 **Admin Dashboard**: [http://localhost:3021](http://localhost:3021)
+
+All URLs use automatic SSL with zero configuration. No browser warnings!
+
+**First time?** The backend will automatically:
+
+- ✅ Download and start 11 backend services (Docker)
+- ✅ Initialize PostgreSQL with 222 tables
+- ✅ Configure GraphQL with authentication
+- ✅ Set up real-time subscriptions
+- ✅ Enable S3-compatible storage
+- ✅ Configure email (dev mode with MailPit)
+
+**What you get:**
+
+- 🔒 Production-grade authentication (email/password + 11 OAuth providers)
+- 💬 Real-time messaging with typing indicators
+- 📁 File uploads with S3 storage
+- 🔍 Full-text search (MeiliSearch)
+- 📊 Admin dashboard for user management
+- 🎭 White-label customization
+- 🚀 Ready to deploy to production
+
+### Prerequisites
+
+- **Docker Desktop** (20.10+) - [Install Docker](https://www.docker.com/get-started)
+- **Node.js** (20.0+) - [Install Node](https://nodejs.org/)
+- **ɳSelf CLI** (0.9.8+) - Install with: `curl -sSL https://install.nself.org | bash`
+
+**System Requirements:**
+- RAM: 8GB minimum (16GB recommended)
+- Disk: 20GB free space
+- OS: macOS, Linux, or Windows with WSL2
+
+### Troubleshooting
+
+**Backend not starting?**
+
+```bash
+# Check Docker is running
+docker --version
+
+# Check nself installation
+nself version
+
+# View logs
+cd backend
+nself logs
+```
+
+**Port conflicts?**
+
+```bash
+# Check if ports are already in use
+lsof -i :3000  # Frontend
+lsof -i :5432  # PostgreSQL
+lsof -i :8080  # Hasura
+```
+
+**Need help?** See [Troubleshooting Guide](.wiki/troubleshooting/README.md) or [open an issue](https://github.com/acamarata/nself-chat/issues).
+
+---
+
 ## 🎯 Project Mission
 
 **ɳChat is a Free and Open Source Software (FOSS) reference implementation** showcasing the power and simplicity of building production-grade applications using [**ɳSelf CLI**](https://github.com/acamarata/nself) as the complete backend infrastructure.

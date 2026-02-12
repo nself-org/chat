@@ -106,7 +106,7 @@ nself db migrate status
 
 ```bash
 # In a new terminal
-cd ../frontend/apps/web
+cd ../frontend
 
 # Install dependencies (first time only)
 pnpm install
@@ -119,9 +119,12 @@ pnpm dev
 
 Open your browser:
 
-- **Frontend**: http://localhost:3000
-- **GraphQL Console**: https://api.local.nself.org/console
-- **Admin UI**: https://admin.local.nself.org
+- **Chat Application**: <http://localhost:3000>
+- **GraphQL Console**: <https://api.local.nself.org/console>
+- **Auth Service**: <https://auth.local.nself.org>
+- **Storage**: <https://storage.local.nself.org>
+- **Email (dev)**: <https://mail.local.nself.org>
+- **Admin UI**: <http://localhost:3021>
 
 ---
 
@@ -765,7 +768,7 @@ curl https://api.chat.example.com/v1/graphql \
 
 - [`README.md`](./README.md) - Backend overview
 - [`../docs/`](../docs/) - Project documentation
-- [`../.claude/CLAUDE.md`](../.claude/CLAUDE.md) - AI assistant context
+- [`../.wiki/`](../.wiki/) - Complete documentation wiki
 
 ### Support
 
