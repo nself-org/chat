@@ -64,6 +64,12 @@ types/*
 *~
 
 # ============================================================================
+# GENERATED FILES (nself CLI generates these - never commit)
+# ============================================================================
+docker-compose.yml
+docker-compose.*.yml
+
+# ============================================================================
 # KEEP THESE (do NOT ignore)
 # ============================================================================
 # !.env             # Main config (contains no secrets)
@@ -71,7 +77,6 @@ types/*
 # !.env.staging
 # !.env.prod
 # !schema.dbml
-# !docker-compose.yml
 # !README.md
 # !nself/migrations/
 # !hasura/
