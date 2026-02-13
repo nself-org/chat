@@ -6,7 +6,7 @@
  * different roles across different applications.
  */
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
 import { useAuth } from '@/contexts/auth-context'
 import {
@@ -211,11 +211,14 @@ export function useMultiAppPermissions(
 /**
  * Higher-order component to require specific roles
  *
+ * TODO: Move to separate .tsx file to enable JSX in HOCs
+ *
  * @example
  * ```tsx
  * const AdminOnlyComponent = requireRoles(['admin', 'owner'])(MyComponent)
  * ```
  */
+/* TEMPORARILY DISABLED - JSX not allowed in .ts files
 export function requireRoles(roles: AppRole[]) {
   return function <P extends object>(Component: React.ComponentType<P>) {
     return function WrappedComponent(props: P) {
@@ -233,15 +236,19 @@ export function requireRoles(roles: AppRole[]) {
     }
   }
 }
+*/
 
 /**
  * Higher-order component to require specific permissions
+ *
+ * TODO: Move to separate .tsx file to enable JSX in HOCs
  *
  * @example
  * ```tsx
  * const CanDeleteMessages = requirePermissions(['messages.delete'])(DeleteButton)
  * ```
  */
+/* TEMPORARILY DISABLED - JSX not allowed in .ts files
 export function requirePermissions(permissions: AppPermission[]) {
   return function <P extends object>(Component: React.ComponentType<P>) {
     return function WrappedComponent(props: P) {
@@ -259,3 +266,4 @@ export function requirePermissions(permissions: AppPermission[]) {
     }
   }
 }
+*/

@@ -126,6 +126,11 @@ export default function ChannelsManagementPage() {
     description: '',
     type: 'public' as 'public' | 'private',
   })
+  const [editForm, setEditForm] = useState({
+    name: '',
+    description: '',
+    type: 'public' as 'public' | 'private',
+  })
 
   useEffect(() => {
     if (!loading && (!user || !['owner', 'admin'].includes(user.role))) {
@@ -135,7 +140,31 @@ export default function ChannelsManagementPage() {
 
   const handleEditChannel = (channel: Channel) => {
     setSelectedChannel(channel)
+    setEditForm({
+      name: channel.name,
+      description: channel.description || '',
+      type: channel.type as 'public' | 'private',
+    })
     setEditDialogOpen(true)
+  }
+
+  const handleSaveEditChannel = () => {
+    if (!selectedChannel) return
+    setChannels((prev) =>
+      prev.map((c) =>
+        c.id === selectedChannel.id
+          ? {
+              ...c,
+              name: editForm.name,
+              slug: editForm.name.toLowerCase().replace(/\s+/g, '-'),
+              description: editForm.description,
+              type: editForm.type,
+            }
+          : c
+      )
+    )
+    setEditDialogOpen(false)
+    setSelectedChannel(null)
   }
 
   const handleArchiveChannel = (channel: Channel) => {
@@ -306,19 +335,31 @@ export default function ChannelsManagementPage() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Channel Name</Label>
-                <Input id="edit-name" defaultValue={selectedChannel?.name} />
+                <Input
+                  id="edit-name"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-description">Description</Label>
                 <Textarea
                   id="edit-description"
-                  defaultValue={selectedChannel?.description}
+                  value={editForm.description}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({ ...prev, description: e.target.value }))
+                  }
                   rows={3}
                 />
               </div>
               <div className="space-y-2">
                 <Label>Channel Type</Label>
-                <Select defaultValue={selectedChannel?.type}>
+                <Select
+                  value={editForm.type}
+                  onValueChange={(value: 'public' | 'private') =>
+                    setEditForm((prev) => ({ ...prev, type: value }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -333,7 +374,9 @@ export default function ChannelsManagementPage() {
               <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => setEditDialogOpen(false)}>Save Changes</Button>
+              <Button onClick={handleSaveEditChannel} disabled={!editForm.name.trim()}>
+                Save Changes
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
