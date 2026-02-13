@@ -83,3 +83,10 @@ docker-compose.*.yml
 # !nginx/
 # !postgres/
 # !auth/
+
+# ============================================================================
+# GENERATED ENV FILES (nself CLI generates these - never commit)
+# ============================================================================
+.env.runtime
+.env.computed
+
