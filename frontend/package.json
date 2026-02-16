@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@aparajita/capacitor-biometric-auth": "^9.1.2",
-    "@apollo/client": "^3.14.0",
+    "@apollo/client": "^4.1.4",
     "@aws-sdk/client-s3": "^3.981.0",
     "@aws-sdk/s3-request-presigner": "^3.981.0",
     "@capacitor-firebase/analytics": "^6.1.0",
