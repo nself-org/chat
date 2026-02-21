@@ -180,7 +180,7 @@ All features from v0.9.0 are included:
 **Installation**:
 ```bash
 # Clone repository
-git clone https://github.com/acamarata/nself-chat.git
+git clone https://github.com/nself-org/chat.git
 cd nself-chat
 
 # Install dependencies
@@ -271,7 +271,7 @@ Will be generated with final release artifacts.
 
 ### Reporting Issues
 
-**Bug Reports**: https://github.com/acamarata/nself-chat/issues
+**Bug Reports**: https://github.com/nself-org/chat/issues
 
 **Include**:
 - Version: v0.9.1-rc.1
@@ -424,11 +424,11 @@ Special thanks to all contributors who reported issues and suggested improvement
 
 ## 🔗 Links
 
-- **Repository**: https://github.com/acamarata/nself-chat
-- **Issue Tracker**: https://github.com/acamarata/nself-chat/issues
-- **Documentation**: https://github.com/acamarata/nself-chat/wiki
-- **Releases**: https://github.com/acamarata/nself-chat/releases
-- **nself CLI**: https://github.com/acamarata/nself
+- **Repository**: https://github.com/nself-org/chat
+- **Issue Tracker**: https://github.com/nself-org/chat/issues
+- **Documentation**: https://github.com/nself-org/chat/wiki
+- **Releases**: https://github.com/nself-org/chat/releases
+- **nself CLI**: https://github.com/nself-org/cli
 
 ---
 
@@ -442,7 +442,7 @@ MIT License - see LICENSE file for details
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/acamarata/nself-chat.git
+git clone https://github.com/nself-org/chat.git
 cd nself-chat
 git checkout v0.9.1-rc.1
 pnpm install

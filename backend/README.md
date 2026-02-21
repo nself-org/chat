@@ -1,6 +1,6 @@
 # nchat Backend
 
-Production-ready backend infrastructure powered by [nself CLI](https://github.com/acamarata/nself).
+Production-ready backend infrastructure powered by [nself CLI](https://github.com/nself-org/cli).
 
 ## Quick Start
 

@@ -31,7 +31,7 @@ Complete installation instructions for all platforms: Web, iOS, Android, and Des
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/acamarata/nself-chat.git
+   git clone https://github.com/nself-org/chat.git
    cd nself-chat
    ```
 
@@ -747,9 +747,9 @@ After installation:
 
 Need help?
 
-- **Documentation**: https://github.com/acamarata/nself-chat/tree/main/docs
-- **Issues**: https://github.com/acamarata/nself-chat/issues
-- **Discussions**: https://github.com/acamarata/nself-chat/discussions
+- **Documentation**: https://github.com/nself-org/chat/tree/main/docs
+- **Issues**: https://github.com/nself-org/chat/issues
+- **Discussions**: https://github.com/nself-org/chat/discussions
 - **nself CLI Docs**: https://nself.org/docs
 
 ---

@@ -4,11 +4,11 @@
 
 Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `0.9.2`
 
-[![CI](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml)
-[![CD](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml)
+[![CI](https://github.com/nself-org/chat/actions/workflows/ci.yml/badge.svg)](https://github.com/nself-org/chat/actions/workflows/ci.yml)
+[![CD](https://github.com/nself-org/chat/actions/workflows/cd.yml/badge.svg)](https://github.com/nself-org/chat/actions/workflows/cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Status](https://img.shields.io/badge/status-production-brightgreen)](.wiki/KNOWN-LIMITATIONS.md)
-[![Version](https://img.shields.io/badge/version-0.9.2-blue)](https://github.com/acamarata/nself-chat/releases)
+[![Version](https://img.shields.io/badge/version-0.9.2-blue)](https://github.com/nself-org/chat/releases)
 [![Build](https://img.shields.io/badge/build-passing-green)](/)
 [![TypeScript](https://img.shields.io/badge/typescript-0%20errors-green)](/)
 [![Tests](https://img.shields.io/badge/tests-98%25%20passing-green)](/)
@@ -16,9 +16,9 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev/)
 [![Accessibility](https://img.shields.io/badge/A11y-WCAG%20AA-blue.svg)](https://www.w3.org/WAI/WCAG2AA-Conformance)
-[![Multi-Tenant](https://img.shields.io/badge/Multi--Tenant-SaaS%20Ready-ff69b4.svg)](https://github.com/acamarata/nself-chat)
+[![Multi-Tenant](https://img.shields.io/badge/Multi--Tenant-SaaS%20Ready-ff69b4.svg)](https://github.com/nself-org/chat)
 
-> **v0.9.2 Release**: Production-ready with comprehensive security, fully restructured monorepo, and complete documentation. Zero TypeScript errors, zero lint errors, working builds. See [.wiki/Home.md](.wiki/Home.md) for complete documentation. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
+> **v0.9.2 Release**: Production-ready with comprehensive security, fully restructured monorepo, and complete documentation. Zero TypeScript errors, zero lint errors, working builds. See [.wiki/Home.md](.wiki/Home.md) for complete documentation. Powered by [ɳSelf CLI](https://github.com/nself-org/cli) for backend infrastructure.
 
 ---
 
@@ -28,7 +28,7 @@ Get a complete, production-ready chat application running in under 5 minutes:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/acamarata/nself-chat.git
+git clone https://github.com/nself-org/chat.git
 cd nself-chat
 
 # 2. Start the backend (11 services: PostgreSQL, Hasura, Auth, Storage, etc.)
@@ -135,13 +135,13 @@ lsof -i :8080  # Hasura
 lsof -i :3021  # Admin dashboard
 ```
 
-**Need help?** See [.wiki/Home.md](.wiki/Home.md) or [open an issue](https://github.com/acamarata/nself-chat/issues).
+**Need help?** See [.wiki/Home.md](.wiki/Home.md) or [open an issue](https://github.com/nself-org/chat/issues).
 
 ---
 
 ## 🎯 Project Mission
 
-**ɳChat is a Free and Open Source Software (FOSS) reference implementation** showcasing the power and simplicity of building production-grade applications using [**ɳSelf CLI**](https://github.com/acamarata/nself) as the complete backend infrastructure.
+**ɳChat is a Free and Open Source Software (FOSS) reference implementation** showcasing the power and simplicity of building production-grade applications using [**ɳSelf CLI**](https://github.com/nself-org/cli) as the complete backend infrastructure.
 
 ### Why This Exists
 
@@ -176,7 +176,7 @@ Run ɳChat as a **single, independent application**:
 
 ```bash
 # One backend, one app
-git clone https://github.com/acamarata/nself-chat.git
+git clone https://github.com/nself-org/chat.git
 cd nself-chat
 pnpm install
 cd backend && nself start
@@ -678,7 +678,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - [ɳSelf Core](https://github.com/nselforg/nself) - BaaS platform
 - [ɳAdmin](https://github.com/nselforg/nself-admin) - Admin dashboard
-- [ɳChat](https://github.com/acamarata/nself-chat) - Real-time chat (this project)
+- [ɳChat](https://github.com/nself-org/chat) - Real-time chat (this project)
 - [ɳPlugins](https://github.com/nselforg/nself-plugins) - Plugin marketplace
 
 Learn more at [nself.org](https://nself.org)
@@ -687,8 +687,8 @@ Learn more at [nself.org](https://nself.org)
 
 ## Support
 
-- **GitHub Issues**: [Bug reports & feature requests](https://github.com/acamarata/nself-chat/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)
+- **GitHub Issues**: [Bug reports & feature requests](https://github.com/nself-org/chat/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/nself-org/chat/discussions)
 - **Documentation**: [Full documentation](docs/)
 - **ɳSelf**: [Backend infrastructure](https://nself.org)
 - **Discord**: [Join our community](https://discord.gg/nself) (coming soon)

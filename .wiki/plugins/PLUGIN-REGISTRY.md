@@ -498,7 +498,7 @@ nself logs <plugin-name> --follow
 ## Registry Metadata
 
 **Primary Registry**: https://plugins.nself.org
-**Fallback Registry**: https://github.com/acamarata/nself-plugins
+**Fallback Registry**: https://github.com/nself-org/plugins
 **Cache TTL**: 300 seconds (5 minutes)
 **Installation Directory**: `~/.nself/plugins`
 
@@ -509,7 +509,7 @@ nself logs <plugin-name> --follow
 - **Plugin Documentation**: `/docs/plugins/`
 - **Installation Guide**: `/docs/plugins/NEW-PLUGINS-INSTALLATION-GUIDE.md`
 - **Integration Guide**: `/docs/plugins/INTEGRATION-GUIDE.md`
-- **Issues**: https://github.com/acamarata/nself-plugins/issues
+- **Issues**: https://github.com/nself-org/plugins/issues
 - **Discord**: https://discord.gg/nself
 - **Email**: support@nself.org
 

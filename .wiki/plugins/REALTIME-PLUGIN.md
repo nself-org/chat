@@ -591,7 +591,7 @@ Configured per-user limits:
 ## Support
 
 - **Documentation**: https://nself.org/docs/plugins/realtime
-- **Issues**: https://github.com/acamarata/nself-plugins/issues
+- **Issues**: https://github.com/nself-org/plugins/issues
 - **Discord**: https://discord.gg/nself
 
 ---

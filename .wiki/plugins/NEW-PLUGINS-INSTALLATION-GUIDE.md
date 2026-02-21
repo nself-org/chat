@@ -486,5 +486,5 @@ nself plugin remove analytics advanced-search media-pipeline ai-orchestration wo
 **Support**:
 
 - Documentation: `/docs/plugins/`
-- Issues: https://github.com/acamarata/nself-plugins/issues
+- Issues: https://github.com/nself-org/plugins/issues
 - Discord: https://discord.gg/nself

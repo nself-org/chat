@@ -688,7 +688,7 @@ nself logs analytics --tail 100
 ## Support
 
 - **Documentation**: `/docs/plugins/ANALYTICS-PLUGIN.md`
-- **Issues**: https://github.com/acamarata/nself-plugins/issues
+- **Issues**: https://github.com/nself-org/plugins/issues
 - **Discord**: https://discord.gg/nself
 
 ---

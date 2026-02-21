@@ -572,8 +572,8 @@ See the [Plugin Examples](./examples/) directory for complete plugin implementat
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/acamarata/nself-chat/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)
+- **Issues**: [GitHub Issues](https://github.com/nself-org/chat/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/nself-org/chat/discussions)
 - **Discord**: [Join our community](https://discord.gg/nself)
 - **Email**: plugins@nself.org
 

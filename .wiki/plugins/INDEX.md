@@ -335,13 +335,13 @@ nself doctor
 
 - **Main Docs**: `/docs/plugins/`
 - **Project Root**: `/Users/admin/Sites/nself-chat/`
-- **Wiki**: https://github.com/acamarata/nself-plugins/wiki
+- **Wiki**: https://github.com/nself-org/plugins/wiki
 
 ### Community
 
-- **Issues**: https://github.com/acamarata/nself-plugins/issues
+- **Issues**: https://github.com/nself-org/plugins/issues
 - **Discord**: https://discord.gg/nself
-- **Discussions**: https://github.com/acamarata/nself-plugins/discussions
+- **Discussions**: https://github.com/nself-org/plugins/discussions
 
 ### Resources
 

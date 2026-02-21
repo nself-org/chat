@@ -82,7 +82,7 @@ curl -sSL https://install.nself.org | bash
 
 ```bash
 # Clone nself repository
-git clone https://github.com/acamarata/nself.git ~/Sites/nself
+git clone https://github.com/nself-org/cli.git ~/Sites/nself
 cd ~/Sites/nself
 
 # Make executable
@@ -713,7 +713,7 @@ After `nself start`, access services at:
 
 ## Additional Resources
 
-- **nself GitHub**: https://github.com/acamarata/nself
+- **nself GitHub**: https://github.com/nself-org/cli
 - **nself Documentation**: ~/Sites/nself/docs/
 - **Hasura Docs**: https://hasura.io/docs/
 - **Nhost Auth Docs**: https://docs.nhost.io/

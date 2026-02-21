@@ -185,9 +185,9 @@
 
 ## 🔗 Links
 
-- [GitHub](https://github.com/acamarata/nself-chat)
-- [Issues](https://github.com/acamarata/nself-chat/issues)
-- [Discussions](https://github.com/acamarata/nself-chat/discussions)
+- [GitHub](https://github.com/nself-org/chat)
+- [Issues](https://github.com/nself-org/chat/issues)
+- [Discussions](https://github.com/nself-org/chat/discussions)
 - [Demo](https://demo.nself-chat.org)
 
 ---

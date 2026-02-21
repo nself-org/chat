@@ -203,9 +203,8 @@ next-env.d.ts
 *.backup
 *.bak
 *.orig
-# AI assistant directories (private context)
+# AI assistant directories (legacy)
 .ai-assistant/
-.*aude/
 
 # nSelf CLI feedback (private)
 CLI.md
@@ -224,8 +223,6 @@ platforms/capacitor/ios/App/App/GoogleService-Info.plist
 
 # AI agent directories (private)
 .ai/
-.claude
-.codex
 
 # Standard entries (added by global compliance)
 .env.*.local
@@ -238,3 +235,5 @@ FEEDBACK.md
 PLAN.md
 READY.md
 .claude/
+.codex/
+.cursor/

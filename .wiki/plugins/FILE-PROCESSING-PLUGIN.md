@@ -615,7 +615,7 @@ nself logs file-processing --follow
 ## Support
 
 - **Documentation**: https://nself.org/docs/plugins/file-processing
-- **Issues**: https://github.com/acamarata/nself-plugins/issues
+- **Issues**: https://github.com/nself-org/plugins/issues
 - **Discord**: https://discord.gg/nself
 
 ---

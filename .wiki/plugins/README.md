@@ -551,8 +551,8 @@ nself logs <plugin-name> --follow
 
 - **nself CLI Documentation**: https://nself.org/docs
 - **Plugin Registry**: https://plugins.nself.org
-- **GitHub**: https://github.com/acamarata/nself-plugins
-- **Issues**: https://github.com/acamarata/nself-plugins/issues
+- **GitHub**: https://github.com/nself-org/plugins
+- **Issues**: https://github.com/nself-org/plugins/issues
 
 ---
 

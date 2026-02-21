@@ -687,7 +687,7 @@ nself logs notifications --follow
 ## Support
 
 - **Documentation**: https://nself.org/docs/plugins/notifications
-- **Issues**: https://github.com/acamarata/nself-plugins/issues
+- **Issues**: https://github.com/nself-org/plugins/issues
 
 ---
 

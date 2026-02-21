@@ -190,7 +190,7 @@ nself-chat is designed with the following compliance considerations:
 
 - **Security Issues**: security@nself.org
 - **General Support**: support@nself.org
-- **Documentation**: https://github.com/acamarata/nself-chat/tree/main/docs
+- **Documentation**: https://github.com/nself-org/chat/tree/main/docs
 
 ## Hall of Fame
 

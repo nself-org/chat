@@ -452,7 +452,7 @@ After plugin installation:
 ## Plugin Registry
 
 **Primary**: https://plugins.nself.org
-**Fallback**: https://github.com/acamarata/nself-plugins
+**Fallback**: https://github.com/nself-org/plugins
 
 **Cache TTL**: 300 seconds (5 minutes)
 **Installation Dir**: `~/.nself/plugins`

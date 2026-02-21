@@ -302,7 +302,7 @@ No migration required. Simply update package version and restart.
 
 ## Links
 
-- [Homepage](https://github.com/acamarata/nself-chat)
-- [Documentation](https://github.com/acamarata/nself-chat/wiki)
-- [Release Notes](https://github.com/acamarata/nself-chat/releases)
-- [Issues](https://github.com/acamarata/nself-chat/issues)
+- [Homepage](https://github.com/nself-org/chat)
+- [Documentation](https://github.com/nself-org/chat/wiki)
+- [Release Notes](https://github.com/nself-org/chat/releases)
+- [Issues](https://github.com/nself-org/chat/issues)

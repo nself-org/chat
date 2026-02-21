@@ -333,7 +333,7 @@ export async function GET() {
 
 - [nself CLI Setup Guide](../../../docs/guides/backend/nself-cli-setup.md)
 - [nself CLI Deployment Guide](../../../docs/guides/backend/nself-cli-deployment.md)
-- [nself Documentation](https://github.com/acamarata/nself)
+- [nself Documentation](https://github.com/nself-org/cli)
 
 ---
 

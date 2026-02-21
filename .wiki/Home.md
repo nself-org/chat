@@ -208,8 +208,8 @@ nself-chat/
 - **Build a mobile app** → [Mobile Apps Guide](../frontend/apps/mobile/README.md)
 - **Understand the architecture** → [Architecture Overview](Architecture-Overview.md)
 - **Contribute code** → [Contributing Guide](CONTRIBUTING.md)
-- **Report a bug** → [GitHub Issues](https://github.com/acamarata/nself-chat/issues)
-- **Ask a question** → [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)
+- **Report a bug** → [GitHub Issues](https://github.com/nself-org/chat/issues)
+- **Ask a question** → [GitHub Discussions](https://github.com/nself-org/chat/discussions)
 
 ---
 
@@ -255,8 +255,8 @@ See [Quick Reference](Quick-Reference.md) for complete command list.
 
 ### Community Support
 
-- **[GitHub Issues](https://github.com/acamarata/nself-chat/issues)** - Bug reports and feature requests
-- **[GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)** - Questions and community help
+- **[GitHub Issues](https://github.com/nself-org/chat/issues)** - Bug reports and feature requests
+- **[GitHub Discussions](https://github.com/nself-org/chat/discussions)** - Questions and community help
 - **[Email Support](mailto:support@nself.org)** - Direct support (paid plans)
 
 ### Professional Support
@@ -275,7 +275,7 @@ See [Quick Reference](Quick-Reference.md) for complete command list.
 - [Main README](../README.md) - Project overview
 - [Backend README](../backend/README.md) - Backend documentation
 - [Frontend README](../frontend/README.md) - Frontend monorepo docs
-- [GitHub Repository](https://github.com/acamarata/nself-chat)
+- [GitHub Repository](https://github.com/nself-org/chat)
 
 ### External Resources
 

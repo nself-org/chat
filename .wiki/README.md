@@ -211,7 +211,7 @@ Get nself-chat running in under 5 minutes:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/acamarata/nself-chat.git
+git clone https://github.com/nself-org/chat.git
 cd nself-chat
 
 # 2. Install dependencies
@@ -494,8 +494,8 @@ open http://localhost:3000
 ### Getting Help
 
 - **Documentation**: You're reading it!
-- **Issues**: [GitHub Issues](https://github.com/acamarata/nself-chat/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)
+- **Issues**: [GitHub Issues](https://github.com/nself-org/chat/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/nself-org/chat/discussions)
 - **Email**: support@nself.org
 
 ### Contributing
@@ -530,7 +530,7 @@ MIT License - see [LICENSE](../LICENSE) for details.
 Built with:
 
 - [Next.js](https://nextjs.org/) - React framework
-- [nself CLI](https://github.com/acamarata/nself) - Backend infrastructure
+- [nself CLI](https://github.com/nself-org/cli) - Backend infrastructure
 - [Radix UI](https://www.radix-ui.com/) - UI components
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [MeiliSearch](https://www.meilisearch.com/) - Search engine
@@ -540,7 +540,7 @@ Built with:
 
 <div align="center">
 
-**Version 0.9.1** • **February 2026** • **[GitHub](https://github.com/acamarata/nself-chat)**
+**Version 0.9.1** • **February 2026** • **[GitHub](https://github.com/nself-org/chat)**
 
 _nself-chat - White-label team communication platform_
 

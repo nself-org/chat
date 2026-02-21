@@ -744,7 +744,7 @@ nself logs jobs --follow
 ## Support
 
 - **Documentation**: https://nself.org/docs/plugins/jobs
-- **Issues**: https://github.com/acamarata/nself-plugins/issues
+- **Issues**: https://github.com/nself-org/plugins/issues
 
 ---
 

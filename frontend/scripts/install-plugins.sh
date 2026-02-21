@@ -58,7 +58,7 @@ check_prerequisites() {
     # Check if nself CLI is installed
     if ! command -v nself &> /dev/null; then
         print_error "nself CLI not found"
-        echo "Install from: https://github.com/acamarata/nself"
+        echo "Install from: https://github.com/nself-org/cli"
         exit 1
     fi
     print_success "nself CLI found: $(nself --version | head -1)"

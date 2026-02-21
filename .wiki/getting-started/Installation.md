@@ -31,7 +31,7 @@ For local development with test users. **Fastest way to get started.**
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/acamarata/nself-chat.git
+git clone https://github.com/nself-org/chat.git
 cd nself-chat
 
 # 2. Install dependencies
@@ -93,13 +93,13 @@ For production deployment with real authentication and database.
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/acamarata/nself-chat.git
+git clone https://github.com/nself-org/chat.git
 cd nself-chat
 ```
 
 ### Step 2: Setup Backend with nself CLI
 
-The backend uses [nself CLI](https://github.com/acamarata/nself) v0.4.2+ for complete backend infrastructure.
+The backend uses [nself CLI](https://github.com/nself-org/cli) v0.4.2+ for complete backend infrastructure.
 
 ```bash
 # Install nself CLI globally
@@ -538,7 +538,7 @@ vercel --prod
 
 ```bash
 # On your VPS
-git clone https://github.com/acamarata/nself-chat.git
+git clone https://github.com/nself-org/chat.git
 cd nself-chat
 pnpm install
 pnpm build
@@ -730,7 +730,7 @@ pnpm build
 
 - [Troubleshooting Guide](TROUBLESHOOTING)
 - [FAQ](troubleshooting/FAQ)
-- [GitHub Issues](https://github.com/acamarata/nself-chat/issues)
+- [GitHub Issues](https://github.com/nself-org/chat/issues)
 - [Email Support](mailto:support@nself.org)
 
 ---
