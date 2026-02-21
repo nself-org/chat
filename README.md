@@ -676,10 +676,10 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 **ɳChat** is part of the **ɳSelf** platform - the open-source Firebase alternative:
 
-- [ɳSelf Core](https://github.com/nselforg/nself) - BaaS platform
-- [ɳAdmin](https://github.com/nselforg/nself-admin) - Admin dashboard
+- [ɳSelf CLI](https://github.com/nself-org/cli) - Self-hosted backend platform
+- [ɳAdmin](https://github.com/nself-org/admin) - Admin dashboard
 - [ɳChat](https://github.com/nself-org/chat) - Real-time chat (this project)
-- [ɳPlugins](https://github.com/nselforg/nself-plugins) - Plugin marketplace
+- [ɳPlugins](https://github.com/nself-org/plugins) - Plugin marketplace
 
 Learn more at [nself.org](https://nself.org)
 
@@ -714,6 +714,6 @@ Built with love using:
 
 ---
 
-Built with [ɳSelf](https://nself.org) | Powered by Next.js 15 & React 19 | Version 0.9.1
+Built with [ɳSelf](https://nself.org) · Powered by Next.js 15 & React 19 · [GitHub](https://github.com/nself-org/chat)
 
 **Star us on GitHub** ⭐ if you find ɳChat useful!
