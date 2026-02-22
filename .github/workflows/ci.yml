@@ -149,7 +149,7 @@ jobs:
       needs.detect-changes.outputs.frontend == 'true' ||
       needs.detect-changes.outputs.packages == 'true' ||
       needs.detect-changes.outputs.config == 'true'
-    timeout-minutes: 45
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: frontend

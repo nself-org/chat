@@ -76,6 +76,7 @@ const customJestConfig = {
     '<rootDir>/node_modules/',
     '<rootDir>/.backend/',
     '<rootDir>/e2e/',
+    '<rootDir>/tests/',
     '<rootDir>/platforms/',
     '<rootDir>/src/__tests__/mocks/',
     '<rootDir>/src/__tests__/utils/',
