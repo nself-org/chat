@@ -22,7 +22,8 @@
     "mobile:ios": "cd platforms/mobile && npx cap run ios",
     "mobile:android": "cd platforms/mobile && npx cap run android",
     "desktop:dev": "cd platforms/desktop && electron .",
-    "desktop:build": "cd platforms/desktop && electron-builder"
+    "desktop:build": "cd platforms/desktop && electron-builder",
+    "scan:placeholders": "ts-node ../.github/scripts/scan-placeholders.ts"
   },
   "dependencies": {
     "@aparajita/capacitor-biometric-auth": "^9.1.2",
