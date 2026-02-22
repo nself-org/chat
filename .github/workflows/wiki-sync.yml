@@ -17,7 +17,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check if wiki is initialized
+        id: wiki-check
+        run: |
+          if git ls-remote --exit-code \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git" \
+            > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::GitHub Wiki not yet initialized for ${{ github.repository }}."
+            echo "::warning::Visit https://github.com/${{ github.repository }}/wiki to create the first page, then re-run this workflow."
+          fi
+
       - name: Sync to GitHub Wiki
+        if: steps.wiki-check.outputs.exists == 'true'
         uses: Andrew-Chen-Wang/github-wiki-action@v4
         with:
           path: .wiki/
