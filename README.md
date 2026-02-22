@@ -6,7 +6,7 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 
 [![CI](https://github.com/nself-org/chat/actions/workflows/ci.yml/badge.svg)](https://github.com/nself-org/chat/actions/workflows/ci.yml)
 [![CD](https://github.com/nself-org/chat/actions/workflows/cd.yml/badge.svg)](https://github.com/nself-org/chat/actions/workflows/cd.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License: nself](https://img.shields.io/badge/License-nself-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-production-brightgreen)](.wiki/KNOWN-LIMITATIONS.md)
 [![Version](https://img.shields.io/badge/version-0.9.2-blue)](https://github.com/nself-org/chat/releases)
 [![Build](https://img.shields.io/badge/build-passing-green)](/)
@@ -139,6 +139,39 @@ lsof -i :3021  # Admin dashboard
 
 ---
 
+## Plugin Requirements
+
+ɳChat is built on the free ɳSelf CLI and 15 open-source plugins for its core backend. The advanced features — AI moderation, billing, calls, compliance, analytics, and more — are powered by **ɳSelf Pro Plugins**.
+
+**Pro Plugins require a license: $9.99/year.** [Get it at nself.org/pricing](https://nself.org/pricing)
+
+### Without a license
+
+You have two options:
+
+1. **Run with free plugins only** — Core messaging, auth, storage, and search work out of the box with the 15 free plugins.
+2. **Build replacements as Custom Services** — nself gives you 10 custom Docker service slots (CS_1 through CS_10). You can implement any Pro Plugin's functionality in your own container. It takes more work, but nothing is locked away from you.
+
+### What the Pro Plugins license covers
+
+| ɳChat Feature | Plugin | Alternative |
+|---|---|---|
+| AI chat moderation | `ai`, `moderation` | Build custom moderation service |
+| Stripe billing and subscriptions | `stripe` | Implement your own Stripe webhook handler |
+| Voice and video calls | `livekit` | Set up WebRTC infrastructure manually |
+| Analytics dashboard | `analytics` | Build custom analytics service |
+| GDPR/HIPAA compliance tools | `compliance` | Build compliance tooling from scratch |
+| Advanced auth (WebAuthn, passkeys) | `auth` | Use standard nhost auth |
+| Bot framework | `bots` | Write custom bot endpoints |
+| Live streaming | `streaming` | Set up RTMP/HLS infrastructure manually |
+| Support ticketing | `support` | Build custom helpdesk |
+| Admin API | `admin-api` | Write custom admin endpoints |
+| Real-time server (Socket.io) | `realtime` | Use standard GraphQL subscriptions |
+
+> The $9.99/year license covers all 49 Pro Plugins across every project you self-host. See [nself.org/plugins](https://nself.org/plugins) for the full catalog.
+
+---
+
 ## 🎯 Project Mission
 
 **ɳChat is a Free and Open Source Software (FOSS) reference implementation** showcasing the power and simplicity of building production-grade applications using [**ɳSelf CLI**](https://github.com/nself-org/cli) as the complete backend infrastructure.
@@ -155,7 +188,9 @@ This project demonstrates:
 
 ### Live Demo
 
-See it in action: **[chat.nself.org](https://chat.nself.org)** (coming soon)
+Try it: **[chat.nself.org](https://chat.nself.org)**
+
+The live demo runs the full ɳChat stack with ɳSelf Pro Plugins active — so you get AI moderation, analytics, calling, live streaming, compliance tools, and everything else. The CLI and admin are free for everyone. Pro Plugins ($9.99/year) are what power the demo's advanced features.
 
 ### For Developers
 

@@ -17,6 +17,16 @@ Complete installation guide for nself-chat v0.3.0. This guide covers all install
 
 ---
 
+## Plugin License
+
+ɳChat's advanced features (AI moderation, calls, analytics, billing, compliance, streaming) run on ɳSelf Pro Plugins.
+
+- **License:** $9.99/year at [nself.org/pricing](https://nself.org/pricing)
+- **How it works:** Set `NSELF_PLUGIN_LICENSE_KEY` in `backend/.env` — `nself start` installs licensed plugins automatically
+- **Without a license:** Core messaging, auth, storage, and search work via the 15 free plugins
+
+---
+
 ## Quick Install (Development)
 
 For local development with test users. **Fastest way to get started.**

@@ -17,6 +17,8 @@ Before you begin, ensure you have:
 - A **code editor** (VS Code recommended)
 - A **modern web browser** (Chrome, Firefox, Safari, or Edge)
 
+**Pro Plugins license (recommended):** ɳChat's advanced features — AI moderation, calls, analytics, billing, compliance, streaming — run on ɳSelf Pro Plugins. Get a license at [nself.org/pricing](https://nself.org/pricing) ($9.99/year), add `NSELF_PLUGIN_LICENSE_KEY` to your `.env`, and `nself start` installs everything automatically. Without it, core messaging and auth work via the 15 free plugins.
+
 ---
 
 ## 🏗️ New Monorepo Structure (v0.9.2)

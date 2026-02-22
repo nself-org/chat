@@ -174,7 +174,6 @@ jobs:
 
       - name: Run tests
         run: |
-          cd frontend
           NODE_OPTIONS='--max-old-space-size=4096' npx jest --no-coverage --forceExit --maxWorkers=1
         env:
           CI: true

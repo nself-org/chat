@@ -6,6 +6,18 @@ Welcome to the **nself-chat** documentation! A production-ready, white-label tea
 
 ---
 
+## Plugin Requirements
+
+ɳChat's advanced features run on **ɳSelf Pro Plugins** — AI moderation, voice/video calls, analytics, Stripe billing, GDPR/HIPAA compliance, live streaming, and more.
+
+**Pro Plugins license: $9.99/year** at [nself.org/pricing](https://nself.org/pricing). Set `NSELF_PLUGIN_LICENSE_KEY` in your backend `.env` and `nself start` installs them automatically.
+
+Without a license: core messaging, auth, storage, and search work using the 15 free plugins. You can also implement any Pro Plugin's functionality as a [Custom Service](https://docs.nself.org/custom-services) (CS_1–CS_10).
+
+See the [live demo](https://chat.nself.org) — it runs the full stack with Pro Plugins active.
+
+---
+
 ## 🚀 Quick Start
 
 **New to nself-chat?** Start here:
