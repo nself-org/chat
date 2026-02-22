@@ -5,7 +5,7 @@
  * Provides retry logic, rate limiting, and webhook delivery tracking.
  */
 
-import { Queue, Worker, QueueEvents, Job } from 'bullmq'
+import { Queue, Worker, QueueEvents, Job, type ConnectionOptions } from 'bullmq'
 import { Redis } from 'ioredis'
 
 import { logger } from '@/lib/logger'
@@ -97,7 +97,7 @@ export class WebhookQueueManager {
 
     // Initialize queue
     this.queue = new Queue<OutgoingWebhookPayload>('webhooks', {
-      connection: this.redis,
+      connection: this.redis as unknown as ConnectionOptions,
       defaultJobOptions: {
         attempts: this.config.maxRetries,
         backoff: {
@@ -121,14 +121,14 @@ export class WebhookQueueManager {
         return this.processWebhook(job)
       },
       {
-        connection: this.redis.duplicate(),
+        connection: this.redis.duplicate() as unknown as ConnectionOptions,
         concurrency: this.config.concurrency,
       }
     )
 
     // Initialize events
     this.events = new QueueEvents('webhooks', {
-      connection: this.redis.duplicate(),
+      connection: this.redis.duplicate() as unknown as ConnectionOptions,
     })
 
     // Setup event listeners

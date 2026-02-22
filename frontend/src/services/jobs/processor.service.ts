@@ -8,7 +8,7 @@
  * @version 0.9.1
  */
 
-import { Worker, Job, Processor } from 'bullmq'
+import { Worker, Job, Processor, type ConnectionOptions } from 'bullmq'
 import IORedis from 'ioredis'
 import { createLogger } from '@/lib/logger'
 import { getQueueService, QUEUE_NAMES } from './queue.service'
@@ -796,7 +796,7 @@ export class ProcessorService {
         return this.processJob(job)
       },
       {
-        connection: this.connection!.duplicate(),
+        connection: this.connection!.duplicate() as unknown as ConnectionOptions,
         concurrency: this.config.defaultConcurrency,
         autorun: true,
       }

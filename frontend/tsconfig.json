@@ -40,6 +40,17 @@
     "node_modules",
     ".next",
     "platforms/**",
-    "tests/**"
+    "tests/**",
+    "scripts/**",
+    "src/**/__tests__/**",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/**/*.example.tsx",
+    "src/**/*.example.ts",
+    "src/**/examples/**",
+    "src/**/examples.tsx",
+    "src/**/examples.ts"
   ]
 }

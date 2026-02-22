@@ -8,7 +8,7 @@
  * @version 0.9.1
  */
 
-import { Queue, QueueEvents, Job, JobsOptions } from 'bullmq'
+import { Queue, QueueEvents, Job, JobsOptions, type ConnectionOptions } from 'bullmq'
 import IORedis from 'ioredis'
 import { createLogger } from '@/lib/logger'
 import {
@@ -128,14 +128,14 @@ export class QueueService {
       // Create queues
       for (const queueName of QUEUE_NAMES) {
         const queue = new Queue(queueName, {
-          connection: this.connection,
+          connection: this.connection as unknown as ConnectionOptions,
           defaultJobOptions: DEFAULT_JOB_OPTIONS,
         })
         this.queues.set(queueName, queue)
 
         // Create queue events listener
         const events = new QueueEvents(queueName, {
-          connection: this.connection.duplicate(),
+          connection: this.connection.duplicate() as unknown as ConnectionOptions,
         })
         this.queueEvents.set(queueName, events)
         this.setupQueueEventHandlers(queueName, events)
