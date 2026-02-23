@@ -5,7 +5,7 @@
  *
  * Features:
  * - Realtime reaction broadcasting
- * - Socket.io integration
+ * - Socket.io integration via APIEventBroadcaster
  * - Optimistic updates
  * - Rate limiting per user
  */
@@ -15,6 +15,7 @@ import { logger } from '@/lib/logger'
 import { z } from 'zod'
 import { apolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
+import { broadcastReactionAdded, broadcastReactionRemoved } from '@/lib/realtime/broadcast-helpers'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -68,21 +69,6 @@ const GET_MESSAGE_INFO = gql`
     }
   }
 `
-
-// ============================================================================
-// HELPERS
-// ============================================================================
-
-async function broadcastReactionEvent(event: Record<string, unknown>) {
-  // In a real implementation, this would use Socket.io or similar
-  // For now, we'll just log it
-  logger.debug('Broadcasting reaction event', event)
-
-  // TODO: Implement actual Socket.io broadcasting
-  // Example:
-  // const io = getSocketIOInstance()
-  // io.to(`channel:${event.channelId}`).emit('reaction', event)
-}
 
 // ============================================================================
 // POST - Broadcast reaction event
@@ -149,23 +135,34 @@ export async function POST(request: NextRequest) {
       {}
     )
 
-    // Build broadcast payload
-    const broadcastPayload = {
-      type: 'reaction',
-      action: event.action,
-      messageId: event.messageId,
-      channelId: event.channelId,
-      userId: event.userId,
-      userName: event.userName,
+    // Build the actor user object for broadcasting
+    const actorUser = {
+      id: event.userId,
+      username: event.userName || event.userId,
+      displayName: event.userName,
       avatarUrl: event.avatarUrl,
-      emoji: event.emoji,
-      reactionCount: message.reaction_count,
-      reactionSummary,
-      timestamp: new Date().toISOString(),
     }
 
-    // Broadcast to all channel members
-    await broadcastReactionEvent(broadcastPayload)
+    // Broadcast via APIEventBroadcaster — posts to the realtime server's
+    // /api/broadcast endpoint which fans out to all connected Socket.io clients
+    // in the channel room.
+    if (event.action === 'add') {
+      await broadcastReactionAdded(
+        event.messageId,
+        event.channelId,
+        event.emoji,
+        actorUser,
+        message.reaction_count ?? 0
+      )
+    } else {
+      await broadcastReactionRemoved(
+        event.messageId,
+        event.channelId,
+        event.emoji,
+        event.userId,
+        Math.max(0, (message.reaction_count ?? 1) - 1)
+      )
+    }
 
     logger.info('Reaction event broadcasted', {
       messageId: event.messageId,

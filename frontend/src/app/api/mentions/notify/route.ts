@@ -11,6 +11,8 @@
  * - Role mentions (@role)
  * - Notification batching
  * - Preference checking
+ * - In-app Socket.io notification via APIEventBroadcaster
+ * - Email notification via emailService
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -18,6 +20,10 @@ import { logger } from '@/lib/logger'
 import { z } from 'zod'
 import { apolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
+import { getAPIEventBroadcaster } from '@/services/realtime/api-event-broadcaster'
+import { getUserRoom, REALTIME_EVENTS } from '@/services/realtime/events.types'
+import { emailService } from '@/lib/email/email.service'
+import { v4 as uuidv4 } from 'uuid'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -94,6 +100,8 @@ const GET_USER_NOTIFICATION_PREFERENCES = gql`
   query GetUserNotificationPreferences($userIds: [uuid!]!) {
     nchat_users(where: { id: { _in: $userIds } }) {
       id
+      email
+      display_name
       preferences
     }
   }
@@ -222,7 +230,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create notification objects
+    // Build notification objects and collect user details for email/socket.
+    // Fetch user email + display_name for all recipients in one query.
+    const userDetailsMap = new Map<
+      string,
+      { id: string; email: string; display_name: string; preferences: Record<string, unknown> }
+    >()
+
+    if (recipientIds.size > 0) {
+      const { data: usersData } = await apolloClient.query({
+        query: GET_USER_NOTIFICATION_PREFERENCES,
+        variables: { userIds: Array.from(recipientIds) },
+        fetchPolicy: 'network-only',
+      })
+      for (const u of usersData?.nchat_users || []) {
+        userDetailsMap.set(u.id, u)
+      }
+    }
+
     for (const userId of recipientIds) {
       const notificationType = data.mentionsEveryone
         ? 'mention_everyone'
@@ -249,6 +274,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Batch insert notifications
+    let insertedIds: string[] = []
     if (notifications.length > 0) {
       const { data: insertData, errors } = await apolloClient.mutate({
         mutation: CREATE_MENTION_NOTIFICATIONS,
@@ -259,6 +285,11 @@ export async function POST(request: NextRequest) {
         throw new Error(errors[0].message)
       }
 
+      insertedIds =
+        insertData?.insert_nchat_notifications?.returning?.map(
+          (n: { id: string }) => n.id
+        ) || []
+
       logger.info('Mention notifications created', {
         messageId: data.messageId,
         recipientCount: notifications.length,
@@ -266,14 +297,79 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // TODO: Send push notifications and emails based on user preferences
-    // This would integrate with notification service
+    // Deliver real-time in-app notifications via Socket.io.
+    // APIEventBroadcaster POSTs to the realtime server's /api/broadcast
+    // endpoint which fans out to each user's personal Socket.io room.
+    const broadcaster = getAPIEventBroadcaster()
+    if (!broadcaster.initialized) {
+      broadcaster.initialize()
+    }
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || ''
+
+    for (const userId of recipientIds) {
+      const userDetails = userDetailsMap.get(userId)
+
+      // 1. In-app Socket.io notification — sent to user:<userId> room
+      await broadcaster.broadcast(
+        REALTIME_EVENTS.NOTIFICATION,
+        [getUserRoom(userId)],
+        {
+          id: uuidv4(),
+          type: 'mention',
+          title: `${data.actorName} mentioned you in #${channel.name}`,
+          body: data.messagePreview.substring(0, 100),
+          data: {
+            channelId: data.channelId,
+            messageId: data.messageId,
+            threadId: data.threadId,
+            actorId: data.actorId,
+            actorName: data.actorName,
+          },
+          createdAt: new Date().toISOString(),
+        }
+      )
+
+      // 2. Email notification — sent when user has an email and has not
+      //    explicitly disabled email mentions via preferences.
+      if (userDetails?.email) {
+        const emailMentionsDisabled =
+          (userDetails.preferences as Record<string, unknown>)?.email_mentions === false
+
+        if (!emailMentionsDisabled) {
+          const channelUrl = `${appUrl}/chat/${data.channelId}`
+          await emailService
+            .send({
+              to: userDetails.email,
+              subject: `${data.actorName} mentioned you in #${channel.name}`,
+              html: [
+                `<p><strong>${data.actorName}</strong> mentioned you in <strong>#${channel.name}</strong>:</p>`,
+                `<blockquote style="border-left:3px solid #ccc;margin:0;padding:0 12px;color:#555;">`,
+                `  ${data.messagePreview}`,
+                `</blockquote>`,
+                `<p style="margin-top:16px;">`,
+                `  <a href="${channelUrl}" style="background:#5865F2;color:#fff;padding:10px 20px;`,
+                `     border-radius:4px;text-decoration:none;font-weight:600;">View message</a>`,
+                `</p>`,
+              ].join(''),
+            })
+            .catch((err: Error) => {
+              // Non-fatal: log and continue so a failed email doesn't block
+              // the API response or in-app notification delivery.
+              logger.warn('Failed to send mention email notification', {
+                userId,
+                error: err.message,
+              })
+            })
+        }
+      }
+    }
 
     return NextResponse.json({
       success: true,
       data: {
         recipientCount: notifications.length,
-        notificationIds: notifications.map((n) => n.id),
+        notificationIds: insertedIds,
         messageId: data.messageId,
         channelId: data.channelId,
       },

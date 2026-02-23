@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
 import { Sidebar } from '@/components/layout/sidebar'
@@ -8,12 +8,18 @@ import { DevModeBanner } from '@/components/dev-mode-banner'
 import { ChatLayoutProvider } from '@/components/layout/chat-layout'
 import { CallInvitation } from '@/components/calls/CallInvitation'
 import { VideoCallModal } from '@/components/calls/VideoCallModal'
-import { useCallStore, selectHasIncomingCall, selectIsInCall } from '@/stores/call-store'
+import {
+  useCallStore,
+  selectHasIncomingCall,
+  selectIsInCall,
+  selectIncomingCalls,
+} from '@/stores/call-store'
 import { cn } from '@/lib/utils'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import type { CallInvitation as CallInvitationType } from '@/lib/calls/call-invitation'
 
 // ============================================================================
 // Resize Handle Component
@@ -87,6 +93,33 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   // Call state
   const hasIncomingCall = useCallStore(selectHasIncomingCall)
   const isInCall = useCallStore(selectIsInCall)
+  const incomingCalls = useCallStore(selectIncomingCalls)
+  const acceptCall = useCallStore((s) => s.acceptCall)
+  const declineCall = useCallStore((s) => s.declineCall)
+
+  // Convert the first IncomingCall (store type) to the CallInvitation type
+  // expected by the CallInvitation component. The store uses ISO strings for
+  // dates; the component expects Date objects.
+  const activeInvitation = useMemo<CallInvitationType | null>(() => {
+    const first = incomingCalls[0]
+    if (!first) return null
+
+    const receivedAt = new Date(first.receivedAt)
+    // Timeout after 30 seconds from when the invite was received
+    const expiresAt = new Date(receivedAt.getTime() + 30_000)
+
+    return {
+      id: first.id,
+      callerId: first.callerId,
+      callerName: first.callerName,
+      callerAvatarUrl: first.callerAvatarUrl,
+      type: first.type,
+      channelId: first.channelId,
+      receivedAt,
+      expiresAt,
+      status: 'pending',
+    }
+  }, [incomingCalls])
 
   useEffect(() => {
     if (!loading && !user) {
@@ -175,15 +208,14 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
           )}
         </div>
 
-        {/* Call Invitation Overlay */}
-        {/* TODO: Properly integrate with useCallInvitation hook */}
-        {/* {hasIncomingCall && (
+        {/* Call Invitation Overlay — shown when there is an incoming call */}
+        {hasIncomingCall && activeInvitation && (
           <CallInvitation
-            invitation={...}
-            onAccept={...}
-            onDecline={...}
+            invitation={activeInvitation}
+            onAccept={() => acceptCall(activeInvitation.id)}
+            onDecline={() => declineCall(activeInvitation.id)}
           />
-        )} */}
+        )}
 
         {/* Video Call Modal */}
         {isInCall && (

@@ -27,6 +27,8 @@ import { logAuditEvent } from '@/lib/audit/audit-logger'
 import { logger } from '@/lib/logger'
 import { getAPIEventBroadcaster } from '@/services/realtime/api-event-broadcaster'
 import { getUserRoom, REALTIME_EVENTS } from '@/services/realtime/events.types'
+import { getAPIEventBroadcaster } from '@/services/realtime/api-event-broadcaster'
+import { getUserRoom, REALTIME_EVENTS } from '@/services/realtime/events.types'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -161,6 +163,19 @@ const INSERT_CALL_EVENT = gql`
       object: { call_id: $callId, user_id: $userId, event_type: $eventType, data: $data }
     ) {
       id
+    }
+  }
+`
+
+const GET_CALL_PARTICIPANT_USER_IDS = gql`
+  query GetCallParticipantUserIds($callId: uuid!) {
+    nchat_call_participants(
+      where: { call_id: { _eq: $callId }, left_at: { _is_null: true } }
+    ) {
+      user_id
+    }
+    nchat_calls_by_pk(id: $callId) {
+      caller_id
     }
   }
 `

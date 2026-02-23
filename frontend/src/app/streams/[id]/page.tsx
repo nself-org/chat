@@ -7,18 +7,38 @@
 
 'use client'
 
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { StreamPlayer } from '@/components/voice-video/StreamPlayer'
 import { useAuth } from '@/contexts/auth-context'
 import { logger } from '@/lib/logger'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { getSocket, connect, on, off } from '@/lib/socket/client'
 import type {
   StreamMetadata,
   StreamMessage,
   StreamReaction,
 } from '@/components/voice-video/StreamPlayer'
+
+// =============================================================================
+// Socket event payload types for streams
+// =============================================================================
+
+interface StreamViewerCountEvent {
+  streamId: string
+  count: number
+}
+
+interface StreamChatEvent {
+  id: string
+  streamId: string
+  userId: string
+  userName: string
+  userAvatarUrl?: string
+  message: string
+  timestamp: string
+}
 
 // =============================================================================
 // Component
@@ -43,6 +63,10 @@ export default function StreamPage() {
     { type: 'clap', count: 0 },
   ])
   const [error, setError] = useState<string | null>(null)
+
+  // Keep a stable ref to streamId for use in event callbacks
+  const streamIdRef = useRef(streamId)
+  streamIdRef.current = streamId
 
   // Fetch stream metadata
   useEffect(() => {
@@ -75,17 +99,59 @@ export default function StreamPage() {
     fetchStreamMetadata()
   }, [streamId])
 
-  // Subscribe to stream chat and updates (WebSocket)
+  // Subscribe to stream chat and viewer count via Socket.io
   useEffect(() => {
     if (!streamId || !user) return
 
-    // TODO: Connect to WebSocket for real-time chat and viewer count updates
-    // This would use Socket.io or LiveKit's data channel
+    // Ensure socket is connected; connect() is a no-op when already connected.
+    connect()
 
-    logger.info('[Stream Page] Subscribed to stream updates', { streamId })
+    const socket = getSocket()
+    if (!socket) {
+      logger.warn('[Stream Page] Socket not available for stream subscription', { streamId })
+      return
+    }
+
+    // Join the stream room so the server can send targeted events
+    socket.emit('channel:join', { channelId: streamId })
+
+    // Handler: viewer count updates broadcast by the realtime server
+    const handleViewerCount = (data: StreamViewerCountEvent) => {
+      if (data.streamId !== streamIdRef.current) return
+      setStreamMetadata((prev) =>
+        prev ? { ...prev, viewerCount: data.count } : prev
+      )
+    }
+
+    // Handler: chat messages from other viewers
+    const handleStreamChat = (data: StreamChatEvent) => {
+      if (data.streamId !== streamIdRef.current) return
+      const msg: StreamMessage = {
+        id: data.id,
+        userId: data.userId,
+        userName: data.userName,
+        userAvatarUrl: data.userAvatarUrl,
+        message: data.message,
+        timestamp: new Date(data.timestamp),
+      }
+      setMessages((prev) => [...prev, msg])
+    }
+
+    // Attach listeners — the realtime server emits these on the stream room
+    on('stream:viewerCount' as never, handleViewerCount as never)
+    on('stream:chat' as never, handleStreamChat as never)
+
+    logger.info('[Stream Page] Subscribed to stream updates via Socket.io', { streamId })
 
     return () => {
-      logger.info('[Stream Page] Unsubscribed from stream updates')
+      // Leave the stream room and detach listeners on unmount
+      const s = getSocket()
+      if (s) {
+        s.emit('channel:leave', { channelId: streamId })
+      }
+      off('stream:viewerCount' as never, handleViewerCount as never)
+      off('stream:chat' as never, handleStreamChat as never)
+      logger.info('[Stream Page] Unsubscribed from stream updates', { streamId })
     }
   }, [streamId, user])
 
