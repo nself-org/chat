@@ -76,10 +76,8 @@ const PLACEHOLDER_PATTERNS: PlaceholderPattern[] = [
 
 // Production paths that must be clean
 const PRODUCTION_PATHS = [
-  'frontend/apps/web/src',
-  'frontend/apps/mobile/src',
-  'frontend/apps/desktop/src',
-  'frontend/packages',
+  'frontend/src',
+  'frontend/platforms',
   'backend',
 ]
 
@@ -100,51 +98,51 @@ const EXCEPTION_PATHS = [
 // Specific files with approved exceptions
 const APPROVED_EXCEPTIONS = [
   // FauxAuth is dev-mode only, properly guarded
-  'frontend/apps/web/src/services/auth/faux-auth.service.ts',
-  'frontend/apps/web/src/contexts/auth-context.tsx', // Uses FauxAuth but guarded
+  'frontend/src/services/auth/faux-auth.service.ts',
+  'frontend/src/contexts/auth-context.tsx', // Uses FauxAuth but guarded
 
   // Bot API has createMockServices for development
-  'frontend/apps/web/src/lib/bots/bot-api.ts',
-  'frontend/apps/web/src/lib/bots/bot-manager.ts',
-  'frontend/apps/web/src/lib/bots/bot-runtime.ts',
-  'frontend/apps/web/src/lib/bots/index.ts',
+  'frontend/src/lib/bots/bot-api.ts',
+  'frontend/src/lib/bots/bot-manager.ts',
+  'frontend/src/lib/bots/bot-runtime.ts',
+  'frontend/src/lib/bots/index.ts',
 
   // Draft sync has createMockSyncApiClient for offline mode
-  'frontend/apps/web/src/lib/drafts/draft-sync.ts',
-  'frontend/apps/web/src/lib/drafts/index.ts',
+  'frontend/src/lib/drafts/draft-sync.ts',
+  'frontend/src/lib/drafts/index.ts',
 
   // Bot store has mock creators for SDK testing
-  'frontend/apps/web/src/stores/bot-sdk-store.ts',
+  'frontend/src/stores/bot-sdk-store.ts',
 
   // System health dashboard uses mock data for demo
-  'frontend/apps/web/src/components/admin/monitoring/SystemHealthDashboard.tsx',
+  'frontend/src/components/admin/monitoring/SystemHealthDashboard.tsx',
 
   // Entity conversion API uses mock constructors (not test mocks)
-  'frontend/apps/web/src/app/api/entities/[id]/convert/route.ts',
+  'frontend/src/app/api/entities/[id]/convert/route.ts',
 
   // Locale validator checks for TODO/FIXME in translation files
-  'frontend/apps/web/src/lib/i18n/locale-validator.ts',
+  'frontend/src/lib/i18n/locale-validator.ts',
 
   // Privacy features use PLACEHOLDER constants for redacted content
-  'frontend/apps/web/src/lib/privacy/ip-anonymizer.ts',
-  'frontend/apps/web/src/lib/privacy/index.ts',
-  'frontend/apps/web/src/lib/disappearing/view-once.ts',
-  'frontend/apps/web/src/lib/disappearing/index.ts',
+  'frontend/src/lib/privacy/ip-anonymizer.ts',
+  'frontend/src/lib/privacy/index.ts',
+  'frontend/src/lib/disappearing/view-once.ts',
+  'frontend/src/lib/disappearing/index.ts',
 
   // XXXX is used as format placeholder in documentation/comments
-  'frontend/apps/web/src/lib/crypto/key-recovery.ts',
-  'frontend/apps/web/src/lib/security/two-factor.ts',
-  'frontend/apps/web/src/lib/auth/registration-lock.ts',
-  'frontend/apps/web/src/lib/2fa/backup-codes.ts',
-  'frontend/apps/web/src/lib/e2ee/recovery-key.ts',
+  'frontend/src/lib/crypto/key-recovery.ts',
+  'frontend/src/lib/security/two-factor.ts',
+  'frontend/src/lib/auth/registration-lock.ts',
+  'frontend/src/lib/2fa/backup-codes.ts',
+  'frontend/src/lib/e2ee/recovery-key.ts',
 
   // UI components with XXXX as input placeholders
-  'frontend/apps/web/src/app/auth/2fa-backup/page.tsx',
-  'frontend/apps/web/src/components/auth/TwoFactorVerify.tsx',
-  'frontend/apps/web/src/components/admin/deployment/VercelDeployButton.tsx',
+  'frontend/src/app/auth/2fa-backup/page.tsx',
+  'frontend/src/components/auth/TwoFactorVerify.tsx',
+  'frontend/src/components/admin/deployment/VercelDeployButton.tsx',
 
   // Feature registry references TODO.md for phase documentation
-  'frontend/apps/web/src/config/feature-registry.ts',
+  'frontend/src/config/feature-registry.ts',
 ]
 
 // ============================================================================
@@ -273,7 +271,7 @@ function scanForPlaceholders(args: string[]): ScanResult {
   const strict = args.includes('--strict')
   const json = args.includes('--json')
   const violations: Violation[] = []
-  const projectRoot = path.resolve(__dirname, '..')
+  const projectRoot = path.resolve(__dirname, '../..')
 
   if (!json) {
     console.log('🔍 Scanning for placeholders and mocks in production code...\n')
