@@ -25,6 +25,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import {
   successResponse,
   errorResponse,
@@ -50,17 +51,8 @@ import {
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-// Use crypto.randomUUID() in edge runtime, or fallback to manual UUID generation
 function generateUUID(): string {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID()
-  }
-  // Fallback for environments without crypto.randomUUID
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0
-    const v = c === 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
+  return randomUUID()
 }
 // ============================================================================
 // File Type Utilities (duplicated from client-side to avoid nhost import)

@@ -7,6 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { getAuthenticatedUser } from '@/lib/api/middleware'
 import { createLogger } from '@/lib/logger'
 import {
   getBotById,
@@ -23,6 +24,11 @@ const logger = createLogger('BotAPI')
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const { id } = await params
     const bot = getBotById(id)
 
@@ -62,6 +68,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
  */
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const { id } = await params
     const body = await request.json()
 
@@ -132,6 +143,11 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const { id } = await params
     const botIndex = getBotIndexById(id)
 

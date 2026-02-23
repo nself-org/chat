@@ -3,6 +3,7 @@
  * Manages reminder scheduling and execution
  */
 
+import { randomBytes } from 'crypto'
 import type { BotApi, BotResponse, ChannelId, UserId } from '@/lib/bots'
 import { response, embed, mentionUser, formatDuration } from '@/lib/bots'
 
@@ -34,7 +35,7 @@ const timers = new Map<string, NodeJS.Timeout>()
  * Generate a unique reminder ID
  */
 export function generateReminderId(): string {
-  return `rem_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`
+  return `rem_${Date.now()}_${randomBytes(4).toString('hex')}`
 }
 
 /**

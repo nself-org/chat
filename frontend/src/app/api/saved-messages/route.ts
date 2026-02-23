@@ -6,6 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import type { SavedMessage, SavedFilters, SavedSortBy, SavedSortOrder } from '@/lib/saved'
 import { filterSavedMessages, sortSavedMessages } from '@/lib/saved'
 
@@ -191,8 +192,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Create a new message in the "Saved Messages" self-chat
-    const messageId = `self-msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    const savedId = `saved-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    const messageId = `self-msg-${Date.now()}-${randomBytes(5).toString('hex')}`
+    const savedId = `saved-${Date.now()}-${randomBytes(5).toString('hex')}`
 
     const savedMessage: SavedMessage = {
       id: savedId,

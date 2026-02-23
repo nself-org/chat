@@ -6,6 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes, randomInt } from 'crypto'
 import { z } from 'zod'
 import { logger } from '@/lib/logger'
 
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     // Create recovery session
     const recoverySession = {
-      id: `rec_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`,
+      id: `rec_${Date.now().toString(36)}_${randomBytes(4).toString('hex')}`,
       userId: validated.userId,
       method: validated.method,
       status: 'pending',
@@ -332,12 +333,7 @@ export async function DELETE(request: NextRequest) {
 // ============================================================================
 
 function generateSecureToken(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let token = 'rec_'
-  for (let i = 0; i < 32; i++) {
-    token += chars[Math.floor(Math.random() * chars.length)]
-  }
-  return token
+  return 'rec_' + randomBytes(24).toString('hex')
 }
 
 function generateRecoveryCodes(count: number): string[] {
@@ -347,7 +343,7 @@ function generateRecoveryCodes(count: number): string[] {
   for (let i = 0; i < count; i++) {
     let code = ''
     for (let j = 0; j < 8; j++) {
-      code += alphabet[Math.floor(Math.random() * alphabet.length)]
+      code += alphabet[randomInt(0, alphabet.length)]
     }
     codes.push(`${code.slice(0, 4)}-${code.slice(4)}`)
   }
@@ -356,11 +352,7 @@ function generateRecoveryCodes(count: number): string[] {
 }
 
 function computeMockFingerprint(publicKey: string): string {
-  const chars = '0123456789ABCDEF'
-  let fingerprint = ''
-  for (let i = 0; i < 64; i++) {
-    fingerprint += chars[Math.floor(Math.random() * chars.length)]
-    if (i % 4 === 3 && i < 63) fingerprint += ' '
-  }
-  return fingerprint
+  const bytes = randomBytes(32)
+  const hex = bytes.toString('hex').toUpperCase()
+  return hex.match(/.{1,4}/g)!.join(' ')
 }

@@ -6,6 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { getSpamDetector } from '@/lib/spam'
 import type { SpamRule } from '@/lib/spam'
 import { captureError } from '@/lib/sentry-utils'
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
     const detector = getSpamDetector()
 
     const rule: SpamRule = {
-      id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `rule-${Date.now()}-${randomBytes(5).toString('hex')}`,
       name,
       type,
       pattern,

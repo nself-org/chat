@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { z } from 'zod'
 import { logger } from '@/lib/logger'
 
@@ -283,11 +284,7 @@ export async function PUT(request: NextRequest) {
 // ============================================================================
 
 function generateMockFingerprint(): string {
-  const chars = '0123456789ABCDEF'
-  let fingerprint = ''
-  for (let i = 0; i < 64; i++) {
-    fingerprint += chars[Math.floor(Math.random() * chars.length)]
-    if (i % 4 === 3 && i < 63) fingerprint += ' '
-  }
-  return fingerprint
+  const bytes = randomBytes(32)
+  const hex = bytes.toString('hex').toUpperCase()
+  return hex.match(/.{1,4}/g)!.join(' ')
 }

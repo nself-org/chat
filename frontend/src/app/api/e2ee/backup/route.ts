@@ -9,6 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { headers } from 'next/headers'
 import {
   validateBackup,
@@ -79,7 +80,7 @@ function getClientIp(req: NextRequest): string {
 
 function generateBackupId(): string {
   const timestamp = Date.now().toString(36)
-  const random = Math.random().toString(36).substring(2, 8)
+  const random = randomBytes(4).toString('hex')
   return `${timestamp}-${random}`
 }
 

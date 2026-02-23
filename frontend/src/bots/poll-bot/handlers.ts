@@ -3,6 +3,7 @@
  * Vote handling and poll management utilities
  */
 
+import { randomBytes } from 'crypto'
 import type { ReactionContext, BotApi, BotResponse } from '@/lib/bots'
 import { response, embed, mentionUser } from '@/lib/bots'
 
@@ -45,7 +46,7 @@ export const YES_NO_EMOJIS = { yes: '', no: '' }
  * Generate a unique poll ID
  */
 export function generatePollId(): string {
-  return `poll_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`
+  return `poll_${Date.now()}_${randomBytes(4).toString('hex')}`
 }
 
 /**

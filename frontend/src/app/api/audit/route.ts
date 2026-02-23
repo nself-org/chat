@@ -8,6 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 
 import type {
   AuditLogEntry,
@@ -29,7 +30,7 @@ import { logger } from '@/lib/logger'
 let mockAuditEntries: AuditLogEntry[] = []
 
 function generateMockId(): string {
-  return `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  return `audit-${Date.now()}-${randomBytes(5).toString('hex')}`
 }
 
 // ============================================================================

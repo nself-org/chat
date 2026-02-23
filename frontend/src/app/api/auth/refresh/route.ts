@@ -47,15 +47,15 @@ function initializeDatabaseConnection() {
 function getJWTSecret() {
   if (JWT_SECRET) return JWT_SECRET
 
-  if (authConfig.useDevAuth || process.env.SKIP_ENV_VALIDATION === 'true') {
-    return 'dev-secret-for-testing-only-not-for-production-use'
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is required')
   }
-
-  JWT_SECRET = process.env.JWT_SECRET || null
-  if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  if (secret.length < 32) {
     throw new Error('FATAL: JWT_SECRET must be at least 32 characters')
   }
 
+  JWT_SECRET = secret
   return JWT_SECRET
 }
 

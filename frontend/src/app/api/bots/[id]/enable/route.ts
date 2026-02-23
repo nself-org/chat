@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { getAuthenticatedUser } from '@/lib/api/middleware'
 import { createLogger } from '@/lib/logger'
 
 const logger = createLogger('BotAPI')
@@ -15,6 +16,11 @@ const logger = createLogger('BotAPI')
  */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const { id } = await params
     const body = await request.json()
     const { enabled } = body

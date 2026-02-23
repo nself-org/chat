@@ -3,6 +3,7 @@
  * Phase 19 - Security Hardening (Task 124)
  */
 
+import { randomBytes } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 // @ts-expect-error - Redis client not implemented yet
 import { createClient } from '@/lib/redis-client'
@@ -158,7 +159,7 @@ export async function slidingWindowRateLimit(
     }
 
     // Add current request
-    await redis.zadd(key, now.toString(), `${now}-${Math.random()}`)
+    await redis.zadd(key, now.toString(), `${now}-${randomBytes(4).toString('hex')}`)
     await redis.expire(key, windowSeconds * 2) // Keep data a bit longer for accuracy
 
     return null

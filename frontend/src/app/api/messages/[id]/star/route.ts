@@ -7,6 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import type { StarColor, StarPriority, StarredMessage } from '@/lib/stars'
 import { STAR_COLORS, starManager } from '@/lib/stars'
 
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Create starred message
     const starredMessage: StarredMessage = {
-      id: `star-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `star-${Date.now()}-${randomBytes(5).toString('hex')}`,
       userId: 'current-user-id', // Would come from auth
       messageId,
       channelId,

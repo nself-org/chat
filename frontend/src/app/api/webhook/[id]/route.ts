@@ -26,7 +26,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createHmac, timingSafeEqual } from 'crypto'
+import { createHmac, timingSafeEqual , randomBytes } from 'crypto'
 import {
   successResponse,
   badRequestResponse,
@@ -256,7 +256,7 @@ async function createWebhookMessage(
   // })
 
   // Mock implementation
-  const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  const messageId = `msg-${Date.now()}-${randomBytes(5).toString('hex')}`
 
   return { messageId }
 }
@@ -274,7 +274,7 @@ async function recordDelivery(
 ): Promise<WebhookDelivery> {
   // In production, this would insert into the database
   const delivery: WebhookDelivery = {
-    id: `delivery-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    id: `delivery-${Date.now()}-${randomBytes(5).toString('hex')}`,
     webhook_id: webhook.id,
     status,
     request_body: requestBody,

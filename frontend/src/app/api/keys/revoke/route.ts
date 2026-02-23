@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { z } from 'zod'
 import { logger } from '@/lib/logger'
 
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     // Create revocation record
     const revocation = {
-      id: `rev_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`,
+      id: `rev_${Date.now().toString(36)}_${randomBytes(4).toString('hex')}`,
       keyId: validated.keyId,
       deviceId: validated.deviceId,
       reason: validated.reason,

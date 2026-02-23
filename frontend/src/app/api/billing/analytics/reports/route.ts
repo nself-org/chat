@@ -10,6 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import type { BillingReportType, ReportFormat, AnalyticsGranularity } from '@/lib/billing/analytics-types'
 
 const VALID_TYPES: BillingReportType[] = [
@@ -105,7 +106,7 @@ export async function POST(request: NextRequest) {
     // 1. Queue report generation as a background job
     // 2. Return a report ID for polling status
     // 3. Use BillingAnalyticsService to generate the report
-    const reportId = `report-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+    const reportId = `report-${Date.now()}-${randomBytes(4).toString('hex')}`
 
     return NextResponse.json({
       reportId,

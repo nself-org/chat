@@ -7,6 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import type { Bookmark } from '@/types/bookmark'
 
 // In-memory store for demo (would be database in production)
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Create bookmark
     const bookmark: Bookmark = {
-      id: `bookmark-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `bookmark-${Date.now()}-${randomBytes(5).toString('hex')}`,
       messageId,
       userId: 'current-user-id', // Would come from auth
       bookmarkedAt: new Date(),

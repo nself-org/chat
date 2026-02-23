@@ -425,7 +425,7 @@ function generateDeviceId(): string {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
   let id = 'dev_'
   for (let i = 0; i < 24; i++) {
-    id += chars[Math.floor(Math.random() * chars.length)]
+    id += chars[randomInt(0, chars.length)]
   }
   return id
 }
@@ -434,7 +434,7 @@ function generateLinkCode(): string {
   const digits = '0123456789'
   let code = ''
   for (let i = 0; i < 6; i++) {
-    code += digits[Math.floor(Math.random() * digits.length)]
+    code += digits[randomInt(0, digits.length)]
   }
   return code
 }
@@ -453,11 +453,6 @@ function computeFingerprint(_publicKey: string): string {
 }
 
 function generateMockFingerprint(): string {
-  const chars = '0123456789ABCDEF'
-  let fingerprint = ''
-  for (let i = 0; i < 64; i++) {
-    fingerprint += chars[Math.floor(Math.random() * chars.length)]
-    if (i % 4 === 3 && i < 63) fingerprint += ' '
-  }
-  return fingerprint
+  const hex = randomBytes(32).toString('hex').toUpperCase()
+  return hex.match(/.{1,4}/g)!.join(' ')
 }

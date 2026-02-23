@@ -6,6 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { getAuthenticatedUser } from '@/lib/api/middleware'
 import { createLogger } from '@/lib/logger'
 import {
   allTemplates,
@@ -22,6 +23,11 @@ const logger = createLogger('BotTemplatesAPI')
  */
 export async function GET(request: NextRequest) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const searchParams = request.nextUrl.searchParams
     const category = searchParams.get('category')
     const featured = searchParams.get('featured')
@@ -70,6 +76,11 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const body = await request.json()
 
     // Validate required fields

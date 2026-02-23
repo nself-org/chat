@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { z } from 'zod'
 import { logger } from '@/lib/logger'
 
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
 
     // Create backup record
     const backup = {
-      id: `bak_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`,
+      id: `bak_${Date.now().toString(36)}_${randomBytes(4).toString('hex')}`,
       userId,
       deviceId: validated.deviceId,
       keyVersion: validated.keyVersion,

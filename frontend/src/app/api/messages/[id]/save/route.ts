@@ -7,6 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import type { SavedMessage } from '@/lib/saved'
 import { savedManager } from '@/lib/saved'
 
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Create saved message
     const savedMessage: SavedMessage = {
-      id: `saved-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `saved-${Date.now()}-${randomBytes(5).toString('hex')}`,
       userId: 'current-user-id', // Would come from auth
       messageId,
       channelId,

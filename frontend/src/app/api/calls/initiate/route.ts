@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { nhost } from '@/lib/nhost.server'
 import { getLiveKitService } from '@/services/webrtc/livekit.service'
 import { z } from 'zod'
@@ -82,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique room name
-    const roomName = `call-\${Date.now()}-\${Math.random().toString(36).substring(7)}`
+    const roomName = `call-\${Date.now()}-\${randomBytes(5).toString('hex')}`
 
     // Create LiveKit room
     const livekit = getLiveKitService()

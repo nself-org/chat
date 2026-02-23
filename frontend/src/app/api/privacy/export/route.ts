@@ -9,6 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { z } from 'zod'
 import { createLogger } from '@/lib/logger'
 import { getPrivacySettingsService } from '@/lib/privacy'
@@ -72,7 +73,7 @@ function getUserIdFromRequest(request: NextRequest): string | null {
  * Generate unique export ID
  */
 function generateExportId(): string {
-  return `export_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 9)}`
+  return `export_${Date.now().toString(36)}_${randomBytes(4).toString('hex')}`
 }
 
 // ============================================================================

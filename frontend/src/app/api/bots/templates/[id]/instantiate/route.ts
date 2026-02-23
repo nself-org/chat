@@ -5,6 +5,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { getAuthenticatedUser } from '@/lib/api/middleware'
+import { randomUUID } from 'crypto'
 import { createLogger } from '@/lib/logger'
 import { getTemplate } from '@/lib/bots/templates'
 
@@ -16,6 +18,11 @@ const logger = createLogger('BotTemplatesAPI')
  */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const { id: templateId } = await params
     const body = await request.json()
 
@@ -42,7 +49,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const now = new Date()
     const templateWithCode = template as typeof template & { code?: string }
     const bot = {
-      id: Math.random().toString(36).substring(7),
+      id: randomUUID(),
       name: body.name || template.name,
       description: body.description || template.description,
       code: templateWithCode.code || `// Bot instantiated from template: ${template.id}`,

@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import {
   validateRecoveryKey,
   verifyRecoveryKeyHash,
@@ -155,7 +156,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // Generate a short-lived verification token
     // In production, this would be a signed JWT
     const verificationToken = bytesToHex(
-      hash256(new TextEncoder().encode(`${userId}:${Date.now()}:${Math.random()}`))
+      hash256(new TextEncoder().encode(`${userId}:${Date.now()}:${randomBytes(16).toString('hex')}`))
     )
 
     return NextResponse.json({

@@ -7,6 +7,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
+import { getAuthenticatedUser } from '@/lib/api/middleware'
 import { createLogger } from '@/lib/logger'
 import { type Bot, getAllBots, getFilteredBots, addBot } from '@/services/bots/mock-store'
 
@@ -18,6 +20,11 @@ const logger = createLogger('BotAPI')
  */
 export async function GET(request: NextRequest) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const searchParams = request.nextUrl.searchParams
     const enabledParam = searchParams.get('enabled')
     const template_id = searchParams.get('template_id') || undefined
@@ -60,6 +67,11 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    const user = await getAuthenticatedUser(request)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 })
+    }
+
     const body = await request.json()
 
     // Validate required fields
@@ -80,7 +92,7 @@ export async function POST(request: NextRequest) {
     // Create new bot
     const now = new Date()
     const bot: Bot = {
-      id: Math.random().toString(36).substring(7),
+      id: randomUUID(),
       name: body.name,
       description: body.description,
       code: body.code,

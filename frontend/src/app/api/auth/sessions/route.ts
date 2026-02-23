@@ -15,6 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomBytes } from 'crypto'
 import { sessionManager } from '@/lib/auth/session-manager'
 import type { Session, SessionLocation } from '@/lib/security/session-store'
 
@@ -77,7 +78,7 @@ function getPlatformFromOS(os: string): 'web' | 'ios' | 'android' | 'electron' |
 
 function generateNewSessionId(): string {
   const timestamp = Date.now().toString(36)
-  const randomPart = Math.random().toString(36).substring(2, 15)
+  const randomPart = randomBytes(8).toString('hex')
   return `sess_${timestamp}_${randomPart}`
 }
 
