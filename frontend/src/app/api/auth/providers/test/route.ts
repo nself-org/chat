@@ -4,6 +4,10 @@
  *
  * This endpoint checks the configuration and connectivity of all OAuth providers
  * to help diagnose authentication issues.
+ *
+ * SECURITY: This route is disabled in production. It is only accessible in
+ * development/staging environments to prevent auth bypass via x-user-id /
+ * x-user-role header spoofing.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -26,6 +30,13 @@ interface ProviderTestResult {
  * Test all OAuth provider configurations
  */
 export async function GET(request: NextRequest) {
+  // SECURITY: Disable this route entirely in production.
+  // The original implementation trusted x-user-id and x-user-role headers
+  // without JWT validation, which is an auth bypass vector in production.
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
   try {
     logger.info('GET /api/auth/providers/test - Testing OAuth providers')
 
