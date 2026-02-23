@@ -54,9 +54,6 @@ import { logger } from '@/lib/logger'
 // ============================================================================
 
 const CONFIG = {
-  // Webhook secret for signature validation
-  WEBHOOK_SECRET: process.env.WEBHOOK_SECRET || 'nchat-webhook-secret',
-
   // Maximum payload size (1MB)
   MAX_PAYLOAD_SIZE: 1024 * 1024,
 
@@ -394,6 +391,13 @@ async function handlePost(request: NextRequest, context: RouteContext): Promise<
     }
   })
 
+  // Require WEBHOOK_SECRET to be configured
+  const webhookSecret = process.env.WEBHOOK_SECRET
+  if (!webhookSecret) {
+    console.error('WEBHOOK_SECRET environment variable is required')
+    return NextResponse.json({ error: 'Service misconfigured' }, { status: 503 })
+  }
+
   // Optional: Validate signature if provided
   const signature =
     request.headers.get('x-webhook-signature') ||
@@ -401,7 +405,7 @@ async function handlePost(request: NextRequest, context: RouteContext): Promise<
     request.headers.get('x-hub-signature')
 
   if (signature) {
-    const isValid = validateSignature(bodyText, signature, CONFIG.WEBHOOK_SECRET)
+    const isValid = validateSignature(bodyText, signature, webhookSecret)
     if (!isValid) {
       await recordDelivery(webhook, 'failed', bodyText, requestHeaders, 401, 'Invalid signature')
       return unauthorizedResponse('Invalid webhook signature', 'INVALID_SIGNATURE')

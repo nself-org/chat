@@ -395,7 +395,26 @@ export async function GET(request: NextRequest) {
       offset: 0,
     })
 
-    const failedCount = 0 // TODO: Query for failed messages
+    // Query actual failed message count
+    const failedCountResult = await apolloClient.query({
+      query: gql`
+        query GetFailedScheduledMessageCount {
+          nchat_scheduled_message_aggregate(
+            where: {
+              status: { _eq: "failed" }
+              retry_count: { _gte: ${MAX_RETRY_COUNT} }
+            }
+          ) {
+            aggregate {
+              count
+            }
+          }
+        }
+      `,
+      fetchPolicy: 'network-only',
+    })
+    const failedCount =
+      failedCountResult.data?.nchat_scheduled_message_aggregate?.aggregate?.count ?? 0
 
     return NextResponse.json({
       success: true,

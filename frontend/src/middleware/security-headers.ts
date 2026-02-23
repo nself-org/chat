@@ -96,7 +96,7 @@ export function validateUrl(url: string): { valid: boolean; error?: string } {
       '192.168.0.0',
     ]
 
-    if (blockedHosts.some((blocked) => parsed.hostname.includes(blocked))) {
+    if (blockedHosts.some((blocked) => parsed.hostname === blocked || parsed.hostname.endsWith('.' + blocked))) {
       return { valid: false, error: 'Private IP addresses not allowed' }
     }
 

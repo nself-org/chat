@@ -28,12 +28,15 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     // Generate verification token
     const verificationToken = randomBytes(32).toString('hex')
 
+    // Read platform domain from environment variable
+    const platformDomain = process.env.PLATFORM_DOMAIN || 'nself.app'
+
     // Generate DNS records
     const dnsRecords = [
       {
         type: 'CNAME',
         name: domain,
-        value: `${tenantId}.nself.app`, // Replace with actual platform domain
+        value: `${tenantId}.${platformDomain}`,
       },
       {
         type: 'TXT',

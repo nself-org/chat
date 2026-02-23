@@ -14,14 +14,52 @@ import {
   AuthenticatedRequest,
   RouteContext,
 } from '@/lib/api/middleware'
+import csstree from 'css-tree'
 
 export const dynamic = 'force-dynamic'
 
 // 50KB limit for custom CSS
 const MAX_CSS_SIZE = 50 * 1024
 
-// Block dangerous CSS patterns: javascript: URIs, expression(), and external @import URLs
-const DANGEROUS_CSS_PATTERN = /javascript:|expression\s*\(|@import\s+url\s*\(\s*(['"]?)https?:/i
+/**
+ * Validate CSS using a proper AST parser.
+ * Rejects malformed CSS and dangerous patterns (external URLs, javascript: URIs).
+ */
+function validateCSS(css: string): { valid: boolean; error?: string } {
+  try {
+    let dangerous = false
+    csstree.parse(css, {
+      parseValue: true,
+      onParseError: (err: Error) => {
+        throw err
+      },
+      // Walk the AST inline via the visitor API
+    })
+
+    // Walk AST to detect dangerous URL references
+    const ast = csstree.parse(css, { parseValue: true })
+    csstree.walk(ast, (node) => {
+      if (node.type === 'Url') {
+        // css-tree Url nodes have a value child that is a String or Raw
+        const urlNode = (node.value as unknown) as { type: string; value: string } | undefined
+        const urlStr = urlNode?.value?.replace(/['"]/g, '') ?? ''
+        if (/^(https?:|javascript:|data:)/i.test(urlStr)) {
+          dangerous = true
+        }
+      }
+      if (node.type === 'Atrule' && node.name === 'import') {
+        dangerous = true
+      }
+    })
+
+    if (dangerous) {
+      return { valid: false, error: 'External URLs and @import are not allowed in CSS' }
+    }
+    return { valid: true }
+  } catch (err) {
+    return { valid: false, error: `Invalid CSS: ${err instanceof Error ? err.message : err}` }
+  }
+}
 
 /**
  * POST - Apply custom CSS (admin/owner only)
@@ -60,10 +98,11 @@ export const POST = compose(
     )
   }
 
-  // Block dangerous CSS patterns
-  if (DANGEROUS_CSS_PATTERN.test(css)) {
+  // Validate CSS using AST parser (catches malformed CSS and dangerous patterns)
+  const cssValidation = validateCSS(css)
+  if (!cssValidation.valid) {
     return NextResponse.json(
-      { success: false, error: 'Invalid CSS content' },
+      { success: false, error: cssValidation.error || 'Invalid CSS content' },
       { status: 400 }
     )
   }

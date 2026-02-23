@@ -25,6 +25,8 @@ import {
 } from '@/lib/api/response'
 import { logAuditEvent } from '@/lib/audit/audit-logger'
 import { logger } from '@/lib/logger'
+import { getAPIEventBroadcaster } from '@/services/realtime/api-event-broadcaster'
+import { getUserRoom, REALTIME_EVENTS } from '@/services/realtime/events.types'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -159,6 +161,19 @@ const INSERT_CALL_EVENT = gql`
       object: { call_id: $callId, user_id: $userId, event_type: $eventType, data: $data }
     ) {
       id
+    }
+  }
+`
+
+const GET_CALL_PARTICIPANT_USER_IDS = gql`
+  query GetCallParticipantUserIds($callId: uuid!) {
+    nchat_call_participants(
+      where: { call_id: { _eq: $callId }, left_at: { _is_null: true } }
+    ) {
+      user_id
+    }
+    nchat_calls_by_pk(id: $callId) {
+      caller_id
     }
   }
 `
@@ -427,8 +442,65 @@ async function triggerQualityAlert(
       issues,
     })
 
-    // TODO: Integrate with notification system for real-time alerts
-    // Example: await sendNotification({ userId, type: 'call_quality_alert', ... })
+    // Broadcast real-time quality alert to all active call participants via
+    // Socket.io. The APIEventBroadcaster POSTs to the realtime server's
+    // /api/broadcast endpoint which fans out to each user's personal room.
+    const { data: participantsData } = await client.query({
+      query: GET_CALL_PARTICIPANT_USER_IDS,
+      variables: { callId },
+      fetchPolicy: 'no-cache',
+    })
+
+    const participantUserIds = new Set<string>()
+    for (const p of participantsData?.nchat_call_participants || []) {
+      participantUserIds.add(p.user_id)
+    }
+    // Always include the original caller
+    if (participantsData?.nchat_calls_by_pk?.caller_id) {
+      participantUserIds.add(participantsData.nchat_calls_by_pk.caller_id)
+    }
+
+    const broadcaster = getAPIEventBroadcaster()
+    if (!broadcaster.initialized) {
+      broadcaster.initialize()
+    }
+
+    const severity = qualityScore < 30 ? 'critical' : 'warning'
+    const alertPayload = {
+      callId,
+      reportedBy: userId,
+      qualityScore,
+      issues,
+      severity,
+      message:
+        qualityScore < 30
+          ? 'Call quality is very poor. Check your internet connection.'
+          : 'Call quality has degraded. You may experience audio or video issues.',
+      timestamp: new Date().toISOString(),
+    }
+
+    // Emit to every active participant so their UI can show a quality warning
+    for (const participantId of participantUserIds) {
+      await broadcaster.broadcast(
+        REALTIME_EVENTS.NOTIFICATION,
+        [getUserRoom(participantId)],
+        {
+          id: crypto.randomUUID(),
+          type: 'call_quality_alert',
+          title: 'Call quality alert',
+          body: alertPayload.message,
+          data: alertPayload,
+          createdAt: new Date().toISOString(),
+        }
+      )
+    }
+
+    logger.info('[triggerQualityAlert] Quality alert broadcast sent', {
+      callId,
+      qualityScore,
+      severity,
+      participantCount: participantUserIds.size,
+    })
   } catch (error) {
     logger.error('[triggerQualityAlert] Error:', error)
   }
@@ -844,7 +916,11 @@ export async function GET(request: NextRequest) {
       callId: m.call_id,
       participantId: m.participant_id,
       timestamp: m.reported_at,
-      qualityScore: m.packet_loss_rate !== null ? Math.round(100 - (m.packet_loss_rate as number)) : null,
+      qualityScore: (() => {
+        if (m.packet_loss_rate === null || m.packet_loss_rate === undefined) return null
+        const clampedLoss = Math.max(0, Math.min(100, m.packet_loss_rate as number))
+        return Math.round(100 - clampedLoss)
+      })(),
       audio: {
         bitrate: m.bitrate_sent || null,
         packetsLost: m.packets_lost,

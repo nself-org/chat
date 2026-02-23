@@ -319,12 +319,16 @@ async function testFacebookProvider(): Promise<ProviderTestResult> {
 
   try {
     // Test Facebook Graph API availability
-    const response = await fetch(
-      `https://graph.facebook.com/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
-      {
-        method: 'GET',
-      }
-    )
+    // Use POST body instead of URL query params to avoid logging credentials in access logs
+    const response = await fetch('https://graph.facebook.com/oauth/access_token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        grant_type: 'client_credentials',
+      }),
+    })
 
     if (!response.ok) {
       return {
