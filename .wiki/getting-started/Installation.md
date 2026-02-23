@@ -8,6 +8,7 @@ Complete installation guide for nself-chat v0.3.0. This guide covers all install
 
 - [Quick Install (Development)](#quick-install-development)
 - [Full Install (Production)](#full-install-production)
+- [Plugin Licenses](#plugin-licenses)
 - [Backend Setup (nself CLI)](#backend-setup-nself-cli)
 - [Database Migrations](#database-migrations)
 - [Environment Variables](#environment-variables)
@@ -17,13 +18,79 @@ Complete installation guide for nself-chat v0.3.0. This guide covers all install
 
 ---
 
-## Plugin License
+## Plugin Licenses
 
-ɳChat's advanced features (AI moderation, calls, analytics, billing, compliance, streaming) run on ɳSelf Pro Plugins.
+ɳChat's advanced features run on ɳSelf plugins. There are two tiers:
 
-- **License:** $9.99/year at [nself.org/pricing](https://nself.org/pricing)
-- **How it works:** Set `NSELF_PLUGIN_LICENSE_KEY` in `backend/.env` — `nself start` installs licensed plugins automatically
-- **Without a license:** Core messaging, auth, storage, and search work via the 15 free plugins
+### Free Plugins (15 included)
+
+The 15 free plugins install automatically with `nself start` — no license key needed. They cover the full core messaging stack:
+
+| Plugin | Feature |
+| --- | --- |
+| postgres | Database |
+| hasura | GraphQL API |
+| auth | Authentication |
+| storage | File storage (MinIO) |
+| search | Full-text search (MeiliSearch) |
+| redis | Caching and queues |
+| mail | Transactional email |
+| notifications | Push notifications |
+| presence | Online status |
+| reactions | Emoji reactions |
+| threads | Threaded replies |
+| media | Image and video processing |
+| webhooks | Outbound webhooks |
+| audit | Audit logging |
+| rbac | Role-based access control |
+
+### Pro Plugins (49 — license required)
+
+Pro plugins unlock advanced capabilities: video calls, E2E encryption, AI assistant, advanced moderation, bots, SSO, analytics, and more. A license key is required.
+
+**Get a license:** [nself.org/pricing](https://nself.org/pricing) — $9.99/year, all 49 plugins included.
+
+#### Option 1: Set via CLI (recommended)
+
+```bash
+cd .backend
+
+# Set your license key
+nself license set nself_pro_xxxxx...
+
+# Install the plugins you want
+nself plugin install livekit recording moderation bots ai access-controls auth analytics
+
+# Build with plugins included
+nself build
+
+# Start
+nself start
+```
+
+The CLI validates the key against `ping.nself.org/license/validate` and caches the result for 24 hours (offline-capable).
+
+#### Option 2: Set via environment variable
+
+Add to `backend/.env`:
+
+```bash
+NSELF_PLUGIN_LICENSE_KEY=nself_pro_xxxxx...
+```
+
+Then run `nself build && nself start`. The key is read automatically at build time.
+
+#### Key format
+
+License keys start with `nself_pro_` followed by 32+ characters:
+
+```
+nself_pro_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6
+```
+
+#### Without a license
+
+All 15 free plugins work fully. Pro features are gracefully absent — buttons are hidden, no hard errors. The app detects feature availability at runtime via environment variables set during `nself build`.
 
 ---
 
