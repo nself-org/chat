@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Search failed',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Search failed',
       } as SearchResponse,
       { status: 500 }
     )

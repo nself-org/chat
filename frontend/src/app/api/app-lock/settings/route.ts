@@ -300,7 +300,7 @@ async function handlePut(request: AuthenticatedRequest): Promise<NextResponse> {
       if (!errors[path]) {
         errors[path] = []
       }
-      errors[path].push(error.message)
+      errors[path].push((error instanceof Error ? error.message : String(error)))
     }
     return validationErrorResponse(errors)
   }

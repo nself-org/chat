@@ -47,10 +47,10 @@ export async function GET(request: NextRequest) {
       acceptedCurrencies: cryptoPaymentService.getAcceptedCurrencies(),
       acceptedNetworks: cryptoPaymentService.getAcceptedNetworks(),
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error fetching crypto rates:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch exchange rates', details: error.message },
+      { error: 'Failed to fetch exchange rates', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

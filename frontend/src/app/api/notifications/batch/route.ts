@@ -254,7 +254,7 @@ async function processBatch(
       } catch (error) {
         errors.push({
           index: i,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
         })
 
         if (stopOnError) {
@@ -303,7 +303,7 @@ async function processBatch(
           .catch((error) => {
             errors.push({
               index: globalIndex,
-              error: error instanceof Error ? error.message : 'Unknown error',
+              error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
             })
           })
       })
@@ -390,7 +390,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             status: 'failed',
             successful: 0,
             failed: notifications.length,
-            errors: [{ index: -1, error: error.message }],
+            errors: [{ index: -1, error: (error instanceof Error ? error.message : String(error)) }],
             results: [],
           },
           authToken

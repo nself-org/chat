@@ -9,7 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { Pool } from 'pg'
+import { getAuthPool } from '@/lib/db/pool'
 import { withErrorHandler, withRateLimit, compose } from '@/lib/api/middleware'
 import {
   successResponse,
@@ -25,48 +25,7 @@ import { logger } from '@/lib/logger'
 // Database Configuration (Production Only)
 // ============================================================================
 
-let pool: Pool | null = null
 let JWT_SECRET: string | null = null
-
-function initializeDatabaseConnection() {
-  if (pool) return pool
-
-  // Skip in dev mode or during build
-  if (authConfig.useDevAuth || process.env.SKIP_ENV_VALIDATION === 'true') {
-    return null
-  }
-
-  const requiredEnvVars = {
-    DATABASE_HOST: process.env.DATABASE_HOST,
-    DATABASE_PORT: process.env.DATABASE_PORT,
-    DATABASE_NAME: process.env.DATABASE_NAME,
-    DATABASE_USER: process.env.DATABASE_USER,
-    DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
-  }
-
-  // Validate required environment variables at runtime
-  if (authConfig.isProduction) {
-    for (const [key, value] of Object.entries(requiredEnvVars)) {
-      if (!value) {
-        throw new Error(`FATAL: ${key} environment variable must be set in production`)
-      }
-    }
-
-    if (requiredEnvVars.DATABASE_PASSWORD!.length < 16) {
-      throw new Error('FATAL: DATABASE_PASSWORD must be at least 16 characters in production')
-    }
-  }
-
-  pool = new Pool({
-    host: process.env.DATABASE_HOST!,
-    port: parseInt(process.env.DATABASE_PORT || '5432'),
-    database: process.env.DATABASE_NAME!,
-    user: process.env.DATABASE_USER!,
-    password: process.env.DATABASE_PASSWORD!,
-  })
-
-  return pool
-}
 
 function getJWTSecret() {
   if (JWT_SECRET) return JWT_SECRET
@@ -199,7 +158,7 @@ async function handleSignIn(request: NextRequest): Promise<NextResponse> {
     // Production Mode: Database Authentication
     // ==========================================================================
 
-    const dbPool = initializeDatabaseConnection()
+    const dbPool = getAuthPool()
     if (!dbPool) {
       return internalErrorResponse('Database connection not available')
     }

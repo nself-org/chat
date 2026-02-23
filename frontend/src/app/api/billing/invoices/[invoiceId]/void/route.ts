@@ -39,10 +39,10 @@ export async function POST(request: NextRequest, context: RouteContext) {
         status: result.data!.status,
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error voiding invoice:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

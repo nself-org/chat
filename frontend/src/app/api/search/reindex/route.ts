@@ -115,7 +115,7 @@ async function handlePost(request: NextRequest): Promise<NextResponse> {
       } catch (error) {
         results[indexName] = {
           success: false,
-          error: error instanceof Error ? error.message : 'Reindex failed',
+          error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Reindex failed',
         }
       }
     }
@@ -138,7 +138,7 @@ async function handlePost(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Reindex failed',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Reindex failed',
       },
       { status: 500 }
     )
@@ -183,7 +183,7 @@ async function handleGet(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get status',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to get status',
       },
       { status: 500 }
     )

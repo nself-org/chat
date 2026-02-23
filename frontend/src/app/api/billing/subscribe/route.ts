@@ -63,10 +63,10 @@ export async function POST(request: NextRequest) {
       sessionId: session.id,
       url: session.url,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating subscription:', error)
     return NextResponse.json(
-      { error: 'Failed to create subscription', details: error.message },
+      { error: 'Failed to create subscription', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

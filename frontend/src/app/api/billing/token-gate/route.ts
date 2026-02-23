@@ -64,10 +64,10 @@ export async function GET(request: NextRequest) {
     // Get specific channel gate
     // Note: This would need the internal getTokenGate method to be exposed
     return NextResponse.json({ gates: [] })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error fetching token gates:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch token gates', details: error.message },
+      { error: 'Failed to fetch token gates', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }
@@ -111,10 +111,10 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json({ gate }, { status: 201 })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating token gate:', error)
     return NextResponse.json(
-      { error: 'Failed to create token gate', details: error.message },
+      { error: 'Failed to create token gate', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }
@@ -144,10 +144,10 @@ export async function PUT(request: NextRequest) {
     }
 
     return NextResponse.json({ gate })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error updating token gate:', error)
     return NextResponse.json(
-      { error: 'Failed to update token gate', details: error.message },
+      { error: 'Failed to update token gate', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }
@@ -171,10 +171,10 @@ export async function DELETE(request: NextRequest) {
     await tokenGateService.deleteTokenGate(gateId)
 
     return NextResponse.json({ success: true })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error deleting token gate:', error)
     return NextResponse.json(
-      { error: 'Failed to delete token gate', details: error.message },
+      { error: 'Failed to delete token gate', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

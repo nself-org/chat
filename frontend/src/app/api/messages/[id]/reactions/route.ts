@@ -82,7 +82,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       {
         success: false,
         error: 'Failed to fetch reactions',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       {
         success: false,
         error: 'Failed to add reaction',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -240,7 +240,7 @@ export async function DELETE(
       {
         success: false,
         error: 'Failed to remove reaction',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -306,7 +306,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       {
         success: false,
         error: 'Failed to toggle reaction',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

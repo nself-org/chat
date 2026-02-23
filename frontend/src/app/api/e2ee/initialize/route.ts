@@ -47,13 +47,13 @@ export async function POST(request: NextRequest) {
       recoveryCode, // Only returned during initial setup
       message: 'E2EE initialized successfully',
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('E2EE initialization error:', error)
 
     return NextResponse.json(
       {
         error: 'Failed to initialize E2EE',
-        message: error.message,
+        message: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)),
       },
       { status: 500 }
     )
@@ -83,13 +83,13 @@ export async function GET(request: NextRequest) {
       success: true,
       status,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('E2EE status error:', error)
 
     return NextResponse.json(
       {
         error: 'Failed to get E2EE status',
-        message: error.message,
+        message: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)),
       },
       { status: 500 }
     )

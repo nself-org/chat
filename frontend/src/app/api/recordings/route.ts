@@ -146,15 +146,15 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(result, { status: 201 })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error starting recording:', error)
 
-    if (error.code === 'RECORDING_ALREADY_EXISTS') {
-      return NextResponse.json({ error: error.message }, { status: 409 })
+    if ((error as { code?: string }).code === 'RECORDING_ALREADY_EXISTS') {
+      return NextResponse.json({ error: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) }, { status: 409 })
     }
 
-    if (error.code === 'STORAGE_QUOTA_EXCEEDED') {
-      return NextResponse.json({ error: error.message }, { status: 403 })
+    if ((error as { code?: string }).code === 'STORAGE_QUOTA_EXCEEDED') {
+      return NextResponse.json({ error: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) }, { status: 403 })
     }
 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

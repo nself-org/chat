@@ -142,7 +142,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     logger.error('Failed to get key status', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
     }
 
     logger.error('Health check failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -269,7 +269,7 @@ export async function PUT(request: NextRequest) {
     }
 
     logger.error('Metadata update failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(

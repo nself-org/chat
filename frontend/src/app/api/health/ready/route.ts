@@ -36,7 +36,7 @@ export async function GET() {
     } catch (error) {
       checks.graphql = {
         status: 'error',
-        message: error instanceof Error ? error.message : 'Failed to connect',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to connect',
       }
       allReady = false
     }
@@ -60,7 +60,7 @@ export async function GET() {
     } catch (error) {
       checks.auth = {
         status: 'error',
-        message: error instanceof Error ? error.message : 'Failed to connect',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to connect',
       }
       allReady = false
     }
@@ -83,7 +83,7 @@ export async function GET() {
     return NextResponse.json(
       {
         ready: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
         timestamp: new Date().toISOString(),
         checks,
       },

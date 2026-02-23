@@ -332,7 +332,7 @@ export async function POST(request: NextRequest) {
         })
       } catch (error) {
         stats.failed++
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        const errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
 
         logger.error('Failed to send scheduled message', error as Error, {
           scheduledMessageId: scheduledMsg.id,
@@ -367,7 +367,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: 'Failed to process scheduled messages',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -431,7 +431,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: 'Failed to get job status',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

@@ -59,16 +59,16 @@ export async function POST(request: NextRequest) {
       plan: tenant.billing.plan,
       createdAt: tenant.createdAt,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating tenant:', error)
 
     // Check for specific error types
-    if (error.message?.includes('already exists')) {
+    if ((error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error))?.includes('already exists')) {
       return NextResponse.json({ error: 'A tenant with this slug already exists' }, { status: 409 })
     }
 
     return NextResponse.json(
-      { error: 'Failed to create tenant', details: error.message },
+      { error: 'Failed to create tenant', details: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) },
       { status: 500 }
     )
   }

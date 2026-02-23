@@ -52,10 +52,10 @@ export async function POST(request: NextRequest) {
       confirmations: result.payment?.confirmations,
       transactionHash: result.payment?.transactionHash,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error verifying crypto payment:', error)
     return NextResponse.json(
-      { error: 'Failed to verify payment', details: error.message },
+      { error: 'Failed to verify payment', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

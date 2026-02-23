@@ -168,7 +168,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
         if (!errors[path]) {
           errors[path] = []
         }
-        errors[path].push(error.message)
+        errors[path].push((error instanceof Error ? error.message : String(error)))
       }
       return validationErrorResponse(errors)
     }
@@ -218,7 +218,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
         if (!errors[path]) {
           errors[path] = []
         }
-        errors[path].push(error.message)
+        errors[path].push((error instanceof Error ? error.message : String(error)))
       }
       return validationErrorResponse(errors)
     }

@@ -65,10 +65,10 @@ export async function GET(request: NextRequest, context: RouteContext) {
         metadata: invoice.metadata,
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error getting invoice:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

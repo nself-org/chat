@@ -67,10 +67,10 @@ export async function GET(request: NextRequest) {
         })),
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error getting upcoming invoice:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

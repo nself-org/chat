@@ -127,11 +127,11 @@ export async function POST(request: NextRequest) {
       success: true,
       policy,
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating retention policy:', error)
 
-    if (error.code === 'RETENTION_POLICY_ERROR') {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if ((error as { code?: string }).code === 'RETENTION_POLICY_ERROR') {
+      return NextResponse.json({ error: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) }, { status: 400 })
     }
 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: 'Failed to fetch audit logs',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -193,7 +193,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: 'Failed to create audit log entry',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -259,7 +259,7 @@ export async function DELETE(request: NextRequest) {
       {
         success: false,
         error: 'Failed to delete audit logs',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

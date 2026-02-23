@@ -45,7 +45,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       },
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to trigger sync'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to trigger sync'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }

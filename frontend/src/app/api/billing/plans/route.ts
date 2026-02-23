@@ -24,10 +24,10 @@ export async function GET(request: NextRequest) {
     // Get all available plans
     const plans = getAvailablePlans()
     return NextResponse.json({ plans })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error fetching plans:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch plans', details: error.message },
+      { error: 'Failed to fetch plans', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

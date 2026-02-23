@@ -129,10 +129,10 @@ export async function POST(request: NextRequest) {
       wasReplay: result.wasReplay,
       idempotencyKey: result.idempotencyKey,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating refund:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

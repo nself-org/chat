@@ -40,13 +40,13 @@ export async function POST(request: NextRequest) {
       message: `Successfully replenished ${count} one-time prekeys`,
       count,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Prekey replenishment error:', error)
 
     return NextResponse.json(
       {
         error: 'Failed to replenish prekeys',
-        message: error.message,
+        message: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)),
       },
       { status: 500 }
     )

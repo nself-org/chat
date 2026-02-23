@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }
@@ -193,7 +193,7 @@ export async function POST(request: NextRequest) {
       data: resolution,
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     const status = message.includes('not found') ? 404 : 400
     return NextResponse.json(
       { success: false, error: message },

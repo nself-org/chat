@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : 'Failed to start embedding generation',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to start embedding generation',
       },
       { status: 500 }
     )

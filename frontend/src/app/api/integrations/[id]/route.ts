@@ -39,7 +39,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       },
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to fetch integration'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to fetch integration'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }
@@ -76,7 +76,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({ success: true, data: installation })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to update integration'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to update integration'
     const status = message.includes('not found') ? 404 : 500
     return NextResponse.json(
       { success: false, error: message },
@@ -93,7 +93,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to uninstall integration'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to uninstall integration'
     const status = message.includes('not found') ? 404 : 500
     return NextResponse.json(
       { success: false, error: message },

@@ -129,7 +129,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
     logger.error('POST /api/workspaces/join - Error', error as Error)
 
     if (error instanceof Error) {
-      if (error.message.includes('Invalid or expired')) {
+      if ((error instanceof Error ? error.message : String(error)).includes('Invalid or expired')) {
         return notFoundResponse('Invalid or expired invite code', 'INVALID_INVITE')
       }
     }

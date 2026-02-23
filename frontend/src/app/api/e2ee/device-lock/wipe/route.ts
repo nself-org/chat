@@ -55,13 +55,13 @@ export async function POST(request: NextRequest) {
       recoveryPossible: preserveRecoveryOption === true,
       message: 'E2EE data wiped successfully',
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Device wipe error:', error)
 
     return NextResponse.json(
       {
         error: 'Failed to wipe device E2EE data',
-        message: error.message,
+        message: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)),
       },
       { status: 500 }
     )

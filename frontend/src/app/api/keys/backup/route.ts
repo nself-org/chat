@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     }
 
     logger.error('Backup creation failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -135,7 +135,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     logger.error('Failed to list backups', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -191,7 +191,7 @@ export async function PUT(request: NextRequest) {
     }
 
     logger.error('Backup verification failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -240,7 +240,7 @@ export async function DELETE(request: NextRequest) {
     })
   } catch (error) {
     logger.error('Backup deletion failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(

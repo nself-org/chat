@@ -44,7 +44,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       {
         error: 'Failed to fetch appeal',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -108,7 +108,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       {
         error: 'Failed to update appeal',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -149,7 +149,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       {
         error: 'Failed to withdraw appeal',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

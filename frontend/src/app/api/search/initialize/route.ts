@@ -46,7 +46,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Initialization failed',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Initialization failed',
       },
       { status: 500 }
     )
@@ -70,7 +70,7 @@ export async function GET(): Promise<NextResponse> {
     return NextResponse.json(
       {
         healthy: false,
-        error: error instanceof Error ? error.message : 'Health check failed',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Health check failed',
       },
       { status: 500 }
     )

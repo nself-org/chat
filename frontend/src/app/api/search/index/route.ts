@@ -61,7 +61,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get index status',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to get index status',
       },
       { status: 500 }
     )
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to trigger reindex',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to trigger reindex',
       },
       { status: 500 }
     )
@@ -193,7 +193,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to clear indexes',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to clear indexes',
       },
       { status: 500 }
     )

@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
       report,
     })
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     logger.error('Error generating usage report:', error)
     return NextResponse.json(
       { error: 'Failed to generate usage report', details: errorMessage },
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
       billingPeriodUsage,
     })
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     logger.error('Error generating detailed usage report:', error)
     return NextResponse.json(
       { error: 'Failed to generate usage report', details: errorMessage },

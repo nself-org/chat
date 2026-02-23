@@ -34,10 +34,10 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(tenant)
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error fetching tenant by domain:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch tenant', details: error.message },
+      { error: 'Failed to fetch tenant', details: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) },
       { status: 500 }
     )
   }

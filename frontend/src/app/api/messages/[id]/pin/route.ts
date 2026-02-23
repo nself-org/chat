@@ -105,7 +105,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       {
         success: false,
         error: 'Failed to pin message',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -185,7 +185,7 @@ export async function DELETE(
       {
         success: false,
         error: 'Failed to unpin message',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -234,7 +234,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       {
         success: false,
         error: 'Failed to get pin status',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

@@ -176,7 +176,7 @@ async function handleComplete(request: AuthenticatedRequest) {
   } catch (error) {
     logger.error('File complete error:', error)
     return errorResponse('Failed to complete upload', 'COMPLETE_ERROR', 500, {
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     })
   }
 }

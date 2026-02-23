@@ -94,15 +94,15 @@ export async function POST(request: NextRequest) {
         createdAt: shareLink.createdAt,
       },
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating share link:', error)
 
-    if (error.code === 'RECORDING_ACCESS_DENIED') {
+    if ((error as { code?: string }).code === 'RECORDING_ACCESS_DENIED') {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
-    if (error.code === 'SHARE_LINK_ERROR') {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if ((error as { code?: string }).code === 'SHARE_LINK_ERROR') {
+      return NextResponse.json({ error: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) }, { status: 400 })
     }
 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -174,7 +174,7 @@ export async function GET(request: NextRequest) {
         ? result.link!.maxViews - result.link!.viewCount
         : null,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error validating share link:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

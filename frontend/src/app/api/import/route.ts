@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
         } catch (error) {
           errors.push({
             code: 'USER_IMPORT_ERROR',
-            message: error instanceof Error ? error.message : 'Failed to import user',
+            message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to import user',
             item: user.externalId,
           })
           stats.usersFailed++
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
         } catch (error) {
           errors.push({
             code: 'CHANNEL_IMPORT_ERROR',
-            message: error instanceof Error ? error.message : 'Failed to import channel',
+            message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to import channel',
             item: channel.externalId,
           })
           stats.channelsFailed++
@@ -193,7 +193,7 @@ export async function POST(request: NextRequest) {
         } catch (error) {
           errors.push({
             code: 'MESSAGE_IMPORT_ERROR',
-            message: error instanceof Error ? error.message : 'Failed to import message',
+            message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to import message',
             item: message.externalId,
           })
           stats.messagesFailed++
@@ -234,7 +234,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

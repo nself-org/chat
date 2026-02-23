@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response)
   } catch (error) {
     logger.error('Error getting token gate stats:', error)
-    const message = error instanceof Error ? error.message : 'Internal server error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

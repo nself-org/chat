@@ -44,7 +44,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       {
         error: 'Failed to fetch report',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -96,7 +96,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       {
         error: 'Failed to update report',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       {
         error: 'Failed to add note',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

@@ -243,7 +243,7 @@ async function postSettingsHandler(request: AuthenticatedRequest) {
       if (!errors[path]) {
         errors[path] = []
       }
-      errors[path].push(error.message)
+      errors[path].push((error instanceof Error ? error.message : String(error)))
     }
     return validationErrorResponse(errors)
   }
@@ -318,7 +318,7 @@ async function patchSettingsHandler(request: AuthenticatedRequest) {
       if (!errors[path]) {
         errors[path] = []
       }
-      errors[path].push(error.message)
+      errors[path].push((error instanceof Error ? error.message : String(error)))
     }
     return validationErrorResponse(errors)
   }
@@ -405,8 +405,10 @@ function deepMergeSettings(current: UserSettings, partial: Partial<UserSettings>
     if (key === '_meta') {
       result._meta = { ...current._meta, ...partial._meta }
     } else if (partial[key] !== undefined) {
-      // @ts-expect-error - TypeScript doesn't understand the dynamic key assignment
-      result[key] = { ...current[key], ...partial[key] }
+      const resultAny = result as unknown as Record<string, unknown>
+      const currentAny = current as unknown as Record<string, unknown>
+      const partialAny = partial as unknown as Record<string, unknown>
+      resultAny[key] = { ...currentAny[key] as object, ...partialAny[key] as object }
     }
   }
 

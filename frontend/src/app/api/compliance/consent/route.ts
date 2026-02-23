@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: 'Failed to fetch consents',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: 'Failed to update consent',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -185,7 +185,7 @@ export async function PUT(request: NextRequest) {
       {
         success: false,
         error: 'Failed to update cookie preferences',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

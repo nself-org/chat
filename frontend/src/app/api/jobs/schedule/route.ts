@@ -283,7 +283,7 @@ export async function POST(request: NextRequest) {
       message: 'Schedule created successfully',
     })
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
 
     // Check for duplicate name error
     if (errorMessage.includes('already exists')) {
@@ -393,7 +393,7 @@ export async function PATCH(request: NextRequest) {
       message: 'Schedule updated successfully',
     })
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
 
     if (errorMessage.includes('not found')) {
       return NextResponse.json({ error: errorMessage }, { status: 404 })

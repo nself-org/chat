@@ -71,7 +71,7 @@ async function handleProcess(request: AuthenticatedRequest) {
   } catch (error) {
     logger.error('[File Processing API] Error:', error)
     return errorResponse('Processing failed', 'PROCESSING_ERROR', 500, {
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     })
   }
 }
@@ -106,7 +106,7 @@ async function handleStatus(request: AuthenticatedRequest) {
   } catch (error) {
     logger.error('[File Processing API] Status check failed:', error)
     return errorResponse('Status check failed', 'STATUS_ERROR', 500, {
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     })
   }
 }

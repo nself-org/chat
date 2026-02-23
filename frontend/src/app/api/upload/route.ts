@@ -465,6 +465,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 // ============================================================================
 
 async function handleUploadInit(request: NextRequest): Promise<NextResponse> {
+  // CSRF protection: verify same-origin request
+  // (withCsrfProtection was removed due to build-time crypto issues, so we use a
+  // same-origin check as a lightweight CSRF mitigation for this upload endpoint)
+  const origin = request.headers.get('origin')
+  const host = request.headers.get('host')
+  if (origin && host && !origin.includes(host)) {
+    return unauthorizedResponse('Cross-origin request forbidden')
+  }
+
   // Get authenticated user (optional for some uploads)
   const user = await getAuthenticatedUser(request)
 

@@ -63,6 +63,22 @@ export class CategoryService {
     })
     if (!response.ok) throw new Error('Failed to reorder categories')
   }
+
+  async getCategory(categoryId: string): Promise<ChannelCategory | null> {
+    const response = await fetch(`/api/channels/categories/${categoryId}`)
+    if (response.status === 404) return null
+    if (!response.ok) throw new Error('Failed to fetch category')
+    return response.json()
+  }
+
+  async moveChannel(input: { channelId: string; categoryId: string; position: number }): Promise<void> {
+    const response = await fetch('/api/channels/categories/reorder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...input, workspaceId: this.workspaceId }),
+    })
+    if (!response.ok) throw new Error('Failed to move channel')
+  }
 }
 
 export const categoryService = new CategoryService()

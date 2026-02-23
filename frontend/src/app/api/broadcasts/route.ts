@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: 'Failed to fetch broadcast lists',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -212,11 +212,11 @@ export async function POST(request: NextRequest) {
 
     // Handle specific errors
     if (error instanceof Error) {
-      if (error.message.includes('Maximum')) {
+      if ((error instanceof Error ? error.message : String(error)).includes('Maximum')) {
         return NextResponse.json(
           {
             success: false,
-            error: error.message,
+            error: (error instanceof Error ? error.message : String(error)),
           },
           { status: 400 }
         )
@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: 'Failed to create broadcast list',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

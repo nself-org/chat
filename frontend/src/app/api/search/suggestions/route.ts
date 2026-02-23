@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { Pool } from 'pg'
+import { getAuthPool } from '@/lib/db/pool'
 import { captureError } from '@/lib/sentry-utils'
 
 import { logger } from '@/lib/logger'
@@ -23,14 +23,8 @@ interface SuggestionResponse {
   error?: string
 }
 
-// Create database pool
-const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL ||
-    process.env.NEXT_PUBLIC_GRAPHQL_URL?.replace('/v1/graphql', '') ||
-    'postgresql://postgres:postgres@localhost:5432/postgres',
-  max: 20,
-})
+// Database pool (shared singleton)
+const pool = getAuthPool()
 
 export async function GET(request: NextRequest) {
   try {
@@ -85,6 +79,12 @@ export async function GET(request: NextRequest) {
       params = [`%${query}%`, limit]
     }
 
+    if (!pool) {
+      return NextResponse.json(
+        { success: false, error: 'Database not available' } as SuggestionResponse,
+        { status: 503 }
+      )
+    }
     const client = await pool.connect()
     try {
       const result = await client.query(sql, params)
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get suggestions',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to get suggestions',
       } as SuggestionResponse,
       { status: 500 }
     )

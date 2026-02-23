@@ -61,10 +61,10 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     const tokenGate = await tokenGateService.createTokenGate(channelId, data)
 
     return NextResponse.json({ tokenGate })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating token gate:', error)
     return NextResponse.json(
-      { error: 'Failed to create token gate', details: error.message },
+      { error: 'Failed to create token gate', details: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) },
       { status: 500 }
     )
   }
@@ -89,10 +89,10 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
     }
 
     return NextResponse.json({ tokenGate })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error updating token gate:', error)
     return NextResponse.json(
-      { error: 'Failed to update token gate', details: error.message },
+      { error: 'Failed to update token gate', details: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) },
       { status: 500 }
     )
   }
@@ -113,10 +113,10 @@ export async function DELETE(request: NextRequest, context: { params: Promise<{ 
     await tokenGateService.deleteTokenGate(gateId)
 
     return NextResponse.json({ success: true })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error deleting token gate:', error)
     return NextResponse.json(
-      { error: 'Failed to delete token gate', details: error.message },
+      { error: 'Failed to delete token gate', details: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) },
       { status: 500 }
     )
   }

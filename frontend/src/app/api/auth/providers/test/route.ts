@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: 'Failed to test OAuth providers',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -169,7 +169,7 @@ async function testGoogleProvider(): Promise<ProviderTestResult> {
       configured: true,
       status: 'error',
       message: 'Error testing Google OAuth',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     }
   }
 }
@@ -227,7 +227,7 @@ async function testGitHubProvider(): Promise<ProviderTestResult> {
       configured: true,
       status: 'error',
       message: 'Error testing GitHub OAuth',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     }
   }
 }
@@ -292,7 +292,7 @@ async function testIdMeProvider(): Promise<ProviderTestResult> {
       configured: true,
       status: 'error',
       message: 'Error testing ID.me OAuth',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     }
   }
 }
@@ -356,7 +356,7 @@ async function testFacebookProvider(): Promise<ProviderTestResult> {
       configured: true,
       status: 'error',
       message: 'Error testing Facebook OAuth',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     }
   }
 }
@@ -452,7 +452,7 @@ async function testAppleProvider(): Promise<ProviderTestResult> {
       configured: true,
       status: 'error',
       message: 'Error testing Apple Sign In',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     }
   }
 }

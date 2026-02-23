@@ -91,8 +91,8 @@ export const GET = withBotAuth(async (request: NextRequest) => {
         },
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error fetching user info:', error)
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) || 'Internal server error' }, { status: 500 })
   }
 }, BotPermission.USERS_READ)

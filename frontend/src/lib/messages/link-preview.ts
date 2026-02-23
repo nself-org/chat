@@ -153,6 +153,28 @@ export const DEFAULT_FETCH_TIMEOUT = 10000
 /** Domains that should be blocked from preview */
 export const BLOCKED_DOMAINS = ['localhost', '127.0.0.1', '0.0.0.0']
 
+/** Private IP address patterns for SSRF protection */
+const PRIVATE_IP_PATTERNS = [
+  /^127\./, // Loopback
+  /^10\./, // Private Class A
+  /^172\.(1[6-9]|2[0-9]|3[01])\./, // Private Class B
+  /^192\.168\./, // Private Class C
+  /^169\.254\./, // Link-local
+  /^::1$/, // IPv6 loopback
+  /^fc00:/i, // IPv6 unique local
+  /^fe80:/i, // IPv6 link-local
+  /^0\.0\.0\.0/, // Unspecified
+  /^224\./, // Multicast
+  /^240\./, // Reserved
+]
+
+/**
+ * Check if a hostname looks like a private/internal IP address
+ */
+function isPrivateIpAddress(hostname: string): boolean {
+  return PRIVATE_IP_PATTERNS.some((pattern) => pattern.test(hostname))
+}
+
 /** Domains with special handling */
 export const SPECIAL_DOMAINS: Record<string, string> = {
   'youtube.com': 'YouTube',
@@ -359,7 +381,17 @@ export function isBlockedDomain(url: string): boolean {
   const domain = extractDomain(url)
   if (!domain) return true
 
-  return BLOCKED_DOMAINS.some((blocked) => domain === blocked || domain.endsWith(`.${blocked}`))
+  // Block known blocked domains
+  if (BLOCKED_DOMAINS.some((blocked) => domain === blocked || domain.endsWith(`.${blocked}`))) {
+    return true
+  }
+
+  // Block private IP ranges to prevent SSRF attacks
+  if (isPrivateIpAddress(domain)) {
+    return true
+  }
+
+  return false
 }
 
 /**

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       total: catalog.length,
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to fetch catalog'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to fetch catalog'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }

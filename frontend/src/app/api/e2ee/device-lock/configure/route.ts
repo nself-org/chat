@@ -58,13 +58,13 @@ export async function POST(request: NextRequest) {
       policy: policyConfig,
       message: 'Device lock policy configured successfully',
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Device lock configuration error:', error)
 
     return NextResponse.json(
       {
         error: 'Failed to configure device lock',
-        message: error.message,
+        message: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)),
       },
       { status: 500 }
     )

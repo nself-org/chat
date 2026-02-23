@@ -8,7 +8,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
-import { Pool } from 'pg'
+import { getAuthPool } from '@/lib/db/pool'
 import { withErrorHandler, compose } from '@/lib/api/middleware'
 import { successResponse, badRequestResponse, internalErrorResponse } from '@/lib/api/response'
 import { authConfig } from '@/config/auth.config'
@@ -19,26 +19,7 @@ import { logger } from '@/lib/logger'
 // Database Configuration
 // ============================================================================
 
-let pool: Pool | null = null
 let JWT_SECRET: string | null = null
-
-function initializeDatabaseConnection() {
-  if (pool) return pool
-
-  if (authConfig.useDevAuth || process.env.SKIP_ENV_VALIDATION === 'true') {
-    return null
-  }
-
-  pool = new Pool({
-    host: process.env.DATABASE_HOST!,
-    port: parseInt(process.env.DATABASE_PORT || '5432'),
-    database: process.env.DATABASE_NAME!,
-    user: process.env.DATABASE_USER!,
-    password: process.env.DATABASE_PASSWORD!,
-  })
-
-  return pool
-}
 
 function getJWTSecret() {
   if (JWT_SECRET) return JWT_SECRET
@@ -98,7 +79,7 @@ async function handleVerifyEmail(request: NextRequest): Promise<NextResponse> {
       return badRequestResponse('Invalid token purpose', 'INVALID_TOKEN')
     }
 
-    const dbPool = initializeDatabaseConnection()
+    const dbPool = getAuthPool()
     if (!dbPool) {
       return internalErrorResponse('Database connection not available')
     }

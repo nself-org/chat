@@ -1,8 +1,8 @@
 /**
  * Translation API Route
  *
- * Translates text to target language using a translation service.
- * This is a stub that can be integrated with services like Google Translate, DeepL, etc.
+ * Translates text to target language using LibreTranslate if configured,
+ * with graceful degradation to the original text when no service is available.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -14,51 +14,11 @@ interface TranslationRequest {
   sourceLanguage?: string
 }
 
-/**
- * Detect the language of the text (stub implementation)
- */
-function detectLanguage(_text: string): string {
-  // In production, use a proper language detection library
-  // For now, return 'unknown'
-  return 'unknown'
-}
-
-/**
- * Translate text (stub implementation)
- * In production, integrate with a translation API like:
- * - Google Cloud Translation API
- * - DeepL API
- * - Microsoft Translator
- * - AWS Translate
- */
-async function translateText(
-  text: string,
-  targetLanguage: string,
-  sourceLanguage?: string
-): Promise<{ translatedText: string; sourceLanguage: string }> {
-  // This is a stub implementation
-  // In production, replace with actual API calls
-
-  // For demo purposes, just add a prefix
-  const detectedSource = sourceLanguage || detectLanguage(text)
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  // Mock translation (just add a prefix)
-  const translatedText = `[Translated to ${targetLanguage}] ${text}`
-
-  return {
-    translatedText,
-    sourceLanguage: detectedSource,
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
     const body: TranslationRequest = await request.json()
 
-    const { text, targetLanguage, sourceLanguage } = body
+    const { text, targetLanguage, sourceLanguage = 'auto' } = body
 
     if (!text || !text.trim()) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 })
@@ -81,22 +41,60 @@ export async function POST(request: NextRequest) {
       sourceLanguage,
     })
 
-    const result = await translateText(text, targetLanguage, sourceLanguage)
+    const libreTranslateUrl = process.env.LIBRETRANSLATE_URL
+
+    // Graceful degradation: return original text if no translation service is configured
+    if (!libreTranslateUrl) {
+      logger.debug('LibreTranslate not configured, returning original text', { targetLanguage })
+      return NextResponse.json({
+        translatedText: text,
+        sourceLanguage,
+        targetLanguage,
+      })
+    }
+
+    const response = await fetch(`${libreTranslateUrl}/translate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        q: text,
+        source: sourceLanguage,
+        target: targetLanguage,
+        api_key: process.env.LIBRETRANSLATE_API_KEY || '',
+      }),
+    })
+
+    if (!response.ok) {
+      logger.warn('LibreTranslate request failed, returning original text', {
+        status: response.status,
+        targetLanguage,
+      })
+      return NextResponse.json({
+        translatedText: text,
+        sourceLanguage,
+        targetLanguage,
+      })
+    }
+
+    const data = await response.json()
+
+    const translatedText = data.translatedText || text
+    const detectedLanguage = data.detectedLanguage?.language || sourceLanguage
 
     logger.info('Translation completed', {
-      sourceLanguage: result.sourceLanguage,
+      sourceLanguage: detectedLanguage,
       targetLanguage,
     })
 
     return NextResponse.json({
-      translatedText: result.translatedText,
-      sourceLanguage: result.sourceLanguage,
+      translatedText,
+      sourceLanguage: detectedLanguage,
       targetLanguage,
     })
   } catch (error) {
     logger.error('Translation API error', error instanceof Error ? error : new Error(String(error)))
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error' },
       { status: 500 }
     )
   }

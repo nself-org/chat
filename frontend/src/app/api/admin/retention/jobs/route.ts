@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       total: jobs.length,
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: result })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }

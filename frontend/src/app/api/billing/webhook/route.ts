@@ -69,10 +69,10 @@ export async function POST(request: NextRequest) {
       eventType: result.eventType,
       duration: result.duration,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error processing webhook:', error)
     return NextResponse.json(
-      { error: 'Webhook processing failed', details: error.message },
+      { error: 'Webhook processing failed', details: (error instanceof Error ? error.message : String(error)) },
       { status: 400 }
     )
   }

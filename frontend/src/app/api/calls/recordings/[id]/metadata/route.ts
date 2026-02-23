@@ -69,7 +69,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     const call = recording.call
     const isInitiator = call?.initiator_id === userId
-    const isParticipant = call?.participants?.some((p: any) => p.user_id === userId)
+    const isParticipant = call?.participants?.some((p: { user_id: string }) => p.user_id === userId)
     const isRecorder = recording.recorded_by === userId
 
     if (!isInitiator && !isParticipant && !isRecorder) {

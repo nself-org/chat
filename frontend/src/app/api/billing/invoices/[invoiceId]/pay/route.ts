@@ -64,10 +64,10 @@ export async function POST(request: NextRequest, context: RouteContext) {
         paidAt: result.data!.paidAt?.toISOString(),
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error paying invoice:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

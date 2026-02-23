@@ -68,10 +68,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       permissions,
       processingJobs,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error getting recording:', error)
 
-    if (error.code === 'RECORDING_NOT_FOUND') {
+    if ((error as { code?: string }).code === 'RECORDING_NOT_FOUND') {
       return NextResponse.json({ error: 'Recording not found' }, { status: 404 })
     }
 
@@ -143,14 +143,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       success: true,
       recording,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error updating recording:', error)
 
-    if (error.code === 'RECORDING_NOT_FOUND') {
+    if ((error as { code?: string }).code === 'RECORDING_NOT_FOUND') {
       return NextResponse.json({ error: 'Recording not found' }, { status: 404 })
     }
 
-    if (error.code === 'RECORDING_ACCESS_DENIED') {
+    if ((error as { code?: string }).code === 'RECORDING_ACCESS_DENIED') {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
@@ -224,10 +224,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       { error: `Cannot delete recording in ${recording.status} status` },
       { status: 400 }
     )
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error deleting recording:', error)
 
-    if (error.code === 'RECORDING_NOT_FOUND') {
+    if ((error as { code?: string }).code === 'RECORDING_NOT_FOUND') {
       return NextResponse.json({ error: 'Recording not found' }, { status: 404 })
     }
 

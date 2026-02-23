@@ -112,7 +112,24 @@ export async function GET(request: NextRequest) {
 
     // Calculate totals from daily stats
     const totals = dailyStats.reduce(
-      (acc: any, day: any) => ({
+      (
+        acc: {
+          totalEmbeddings: number
+          totalTokens: number
+          totalCost: number
+          cacheHits: number
+          cacheMisses: number
+          errors: number
+        },
+        day: {
+          total_embeddings: number
+          total_tokens: number
+          estimated_cost: string
+          cache_hit_count: number
+          cache_miss_count: number
+          error_count: number
+        }
+      ) => ({
         totalEmbeddings: acc.totalEmbeddings + day.total_embeddings,
         totalTokens: acc.totalTokens + day.total_tokens,
         totalCost: acc.totalCost + parseFloat(day.estimated_cost),
@@ -194,7 +211,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : 'Failed to get embedding stats',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to get embedding stats',
       },
       { status: 500 }
     )

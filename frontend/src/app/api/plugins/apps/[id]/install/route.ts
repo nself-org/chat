@@ -42,14 +42,14 @@ export async function POST(
     return NextResponse.json(installation, { status: 201 })
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes('not found')) {
-        return NextResponse.json({ error: error.message }, { status: 404 })
+      if ((error instanceof Error ? error.message : String(error)).includes('not found')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 404 })
       }
-      if (error.message.includes('already installed')) {
-        return NextResponse.json({ error: error.message }, { status: 409 })
+      if ((error instanceof Error ? error.message : String(error)).includes('already installed')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 409 })
       }
-      if (error.message.includes('not approved') || error.message.includes('not requested')) {
-        return NextResponse.json({ error: error.message }, { status: 400 })
+      if ((error instanceof Error ? error.message : String(error)).includes('not approved') || (error instanceof Error ? error.message : String(error)).includes('not requested')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 400 })
       }
     }
     logger.error('Failed to install app:', error)
@@ -80,8 +80,8 @@ export async function DELETE(
     const installation = registryService.uninstallApp(installationId)
     return NextResponse.json(installation)
   } catch (error) {
-    if (error instanceof Error && error.message.includes('not found')) {
-      return NextResponse.json({ error: error.message }, { status: 404 })
+    if (error instanceof Error && (error instanceof Error ? error.message : String(error)).includes('not found')) {
+      return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 404 })
     }
     logger.error('Failed to uninstall app:', error)
     return NextResponse.json({ error: 'Failed to uninstall app' }, { status: 500 })
@@ -123,11 +123,11 @@ export async function PATCH(
     return NextResponse.json(installation)
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes('not found')) {
-        return NextResponse.json({ error: error.message }, { status: 404 })
+      if ((error instanceof Error ? error.message : String(error)).includes('not found')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 404 })
       }
-      if (error.message.includes('Cannot')) {
-        return NextResponse.json({ error: error.message }, { status: 400 })
+      if ((error instanceof Error ? error.message : String(error)).includes('Cannot')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 400 })
       }
     }
     logger.error('Failed to update installation:', error)

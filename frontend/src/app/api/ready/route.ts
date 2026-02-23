@@ -78,7 +78,7 @@ async function checkGraphQL(): Promise<{ ready: boolean; message?: string }> {
   } catch (error) {
     return {
       ready: false,
-      message: error instanceof Error ? error.message : 'Connection failed',
+      message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Connection failed',
     }
   }
 }

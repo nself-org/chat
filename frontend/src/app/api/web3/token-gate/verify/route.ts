@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     logger.error('Error verifying token gate access:', error)
-    const message = error instanceof Error ? error.message : 'Internal server error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

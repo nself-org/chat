@@ -541,7 +541,7 @@ async function processImport(
       errors: [
         {
           code: 'IMPORT_FAILED',
-          message: error instanceof Error ? error.message : 'Import failed',
+          message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Import failed',
           recoverable: false,
         },
       ],
@@ -649,7 +649,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
   } catch (error) {
     logger.error('Import failed:', error)
     return internalErrorResponse(
-      error instanceof Error ? error.message : 'Import failed'
+      error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Import failed'
     )
   }
 }

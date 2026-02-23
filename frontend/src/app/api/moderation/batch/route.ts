@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
             processingTime: Date.now() - itemStartTime,
           })
         } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+          const errorMsg = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
           errors.push(`${item.contentId}: ${errorMsg}`)
 
           results.push({
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: 'Failed to process batch',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

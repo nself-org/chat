@@ -60,10 +60,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       url: session.url,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating portal session:', error)
     return NextResponse.json(
-      { error: 'Failed to create portal session', details: error.message },
+      { error: 'Failed to create portal session', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

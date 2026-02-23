@@ -14,6 +14,7 @@ import { z } from 'zod'
 import { apolloClient } from '@/lib/apollo-client'
 import { categoryService } from '@/services/channels'
 import type { UserRole } from '@/types/user'
+import type { UpdateCategoryInput } from '@/types/advanced-channels'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -74,7 +75,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Get category
-    // @ts-expect-error - Method will be implemented in CategoryService
     const category = await categoryService.getCategory(id)
 
     if (!category) {
@@ -96,7 +96,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       {
         success: false,
         error: 'Failed to fetch category',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -156,17 +156,16 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       )
     }
 
-    const updates = validation.data
+    // Cast to UpdateCategoryInput (schema fields are a subset of the type)
+    const updates = validation.data as UpdateCategoryInput
 
     // Check if category exists
-    // @ts-expect-error - Method will be implemented in CategoryService
     const existingCategory = await categoryService.getCategory(id)
     if (!existingCategory) {
       return NextResponse.json({ success: false, error: 'Category not found' }, { status: 404 })
     }
 
     // Update the category
-    // @ts-expect-error - UpdateCategoryInput type will be aligned
     const category = await categoryService.updateCategory(id, updates)
 
     logger.info('PATCH /api/channels/categories/[id] - Category updated', {
@@ -189,7 +188,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       {
         success: false,
         error: 'Failed to update category',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -238,7 +237,6 @@ export async function DELETE(
     }
 
     // Check if category exists
-    // @ts-expect-error - Method will be implemented in CategoryService
     const existingCategory = await categoryService.getCategory(id)
     if (!existingCategory) {
       return NextResponse.json({ success: false, error: 'Category not found' }, { status: 404 })
@@ -268,7 +266,7 @@ export async function DELETE(
       {
         success: false,
         error: 'Failed to delete category',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

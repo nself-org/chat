@@ -117,11 +117,11 @@ export async function PATCH(
     })
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes('not found')) {
-        return NextResponse.json({ error: error.message }, { status: 404 })
+      if ((error instanceof Error ? error.message : String(error)).includes('not found')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 404 })
       }
-      if (error.message.includes('Cannot') || error.message.includes('Invalid')) {
-        return NextResponse.json({ error: error.message }, { status: 400 })
+      if ((error instanceof Error ? error.message : String(error)).includes('Cannot') || (error instanceof Error ? error.message : String(error)).includes('Invalid')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 400 })
       }
     }
     logger.error('Failed to update app:', error)

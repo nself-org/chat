@@ -21,7 +21,7 @@ export async function GET() {
       total: installed.length,
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to fetch installed integrations'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to fetch installed integrations'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to install integration'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to install integration'
     const status = message.includes('not found') ? 404 : 500
     return NextResponse.json(
       { success: false, error: message },

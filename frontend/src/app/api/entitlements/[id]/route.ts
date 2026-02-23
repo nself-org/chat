@@ -138,7 +138,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     if (error instanceof Error) {
       return NextResponse.json(
-        { error: error.message },
+        { error: (error instanceof Error ? error.message : String(error)) },
         { status: 400 }
       )
     }

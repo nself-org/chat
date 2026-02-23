@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
       ...(securityReport && { securityReport }),
     })
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     logger.error('Error generating reconciliation report:', error)
     return NextResponse.json(
       { error: 'Internal server error', details: errorMessage },

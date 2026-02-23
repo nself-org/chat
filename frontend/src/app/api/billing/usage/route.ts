@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       snapshot,
     })
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     logger.error('Error fetching usage:', error)
     return NextResponse.json(
       { error: 'Failed to fetch usage', details: errorMessage },

@@ -94,8 +94,8 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    if (error instanceof Error && error.message.includes('already registered')) {
-      return NextResponse.json({ error: error.message }, { status: 409 })
+    if (error instanceof Error && (error instanceof Error ? error.message : String(error)).includes('already registered')) {
+      return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 409 })
     }
     logger.error('Failed to register app:', error)
     return NextResponse.json(

@@ -177,7 +177,7 @@ export async function POST(request: NextRequest) {
     const statusCode = error instanceof Error && error.name === 'PayoutError' ? 400 : 500
     logger.error('Error in treasury operation:', error instanceof Error ? error : new Error(String(error)))
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error' },
       { status: statusCode }
     )
   }

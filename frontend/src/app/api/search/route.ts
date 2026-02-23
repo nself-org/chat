@@ -368,7 +368,7 @@ async function performSearch(request: SearchRequest, userId?: string): Promise<S
     // Re-throw to let the handler return a proper error response
     // No mock fallback - MeiliSearch is the sole search provider
     throw new Error(
-      `Search service unavailable: ${error instanceof Error ? error.message : 'Unknown error'}`
+      `Search service unavailable: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'}`
     )
   }
 }

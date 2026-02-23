@@ -42,10 +42,10 @@ export async function GET(request: NextRequest, context: RouteContext) {
         metadata: session.metadata,
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error getting checkout session:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }
@@ -70,10 +70,10 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     }
 
     return NextResponse.json({ success: true, expired: true })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error expiring checkout session:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

@@ -170,7 +170,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
 
     // Handle specific errors
     if (error instanceof Error) {
-      if (error.message.includes('unique constraint') || error.message.includes('duplicate')) {
+      if ((error instanceof Error ? error.message : String(error)).includes('unique constraint') || (error instanceof Error ? error.message : String(error)).includes('duplicate')) {
         return conflictResponse('Workspace with this slug already exists', 'WORKSPACE_EXISTS')
       }
     }

@@ -267,8 +267,7 @@ function mergeSettingsWithConflictResolution(
         : 'User preferences prefer client values'
     )
 
-    // @ts-expect-error - TypeScript doesn't understand the dynamic key assignment
-    merged[category] = mergedCategory
+    ;(merged as unknown as Record<string, unknown>)[category] = mergedCategory
     conflicts.push(...categoryConflicts)
   }
 
@@ -380,7 +379,7 @@ async function syncSettingsHandler(request: AuthenticatedRequest) {
       if (!errors[path]) {
         errors[path] = []
       }
-      errors[path].push(error.message)
+      errors[path].push((error instanceof Error ? error.message : String(error)))
     }
     return validationErrorResponse(errors)
   }

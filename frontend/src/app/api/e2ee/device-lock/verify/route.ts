@@ -66,13 +66,13 @@ export async function POST(request: NextRequest) {
       },
       message: 'Device lock verified successfully',
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Device lock verification error:', error)
 
     return NextResponse.json(
       {
         error: 'Failed to verify device lock',
-        message: error.message,
+        message: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)),
       },
       { status: 500 }
     )
@@ -104,13 +104,13 @@ export async function GET(request: NextRequest) {
       success: true,
       status,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Device lock status error:', error)
 
     return NextResponse.json(
       {
         error: 'Failed to get device lock status',
-        message: error.message,
+        message: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)),
       },
       { status: 500 }
     )

@@ -78,7 +78,7 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get status',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to get status',
       } as WorkerResponse,
       { status: 500 }
     )
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Worker operation failed',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Worker operation failed',
       } as WorkerResponse,
       { status: 500 }
     )

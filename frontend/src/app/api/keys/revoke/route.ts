@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     }
 
     logger.error('Key revocation failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     logger.error('Failed to check revocation status', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -186,7 +186,7 @@ export async function PUT(request: NextRequest) {
     }
 
     logger.error('Bulk revocation check failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -245,7 +245,7 @@ export async function DELETE(request: NextRequest) {
     })
   } catch (error) {
     logger.error('Failed to undo revocation', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(

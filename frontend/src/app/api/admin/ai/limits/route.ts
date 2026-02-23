@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get rate limits',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to get rate limits',
       },
       { status: 500 }
     )
@@ -160,7 +160,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to reset rate limits',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to reset rate limits',
       },
       { status: 500 }
     )

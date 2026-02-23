@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     }
 
     logger.error('Key rotation failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -172,7 +172,7 @@ export async function PUT(request: NextRequest) {
     }
 
     logger.error('Failed to schedule rotation', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -221,7 +221,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(history)
   } catch (error) {
     logger.error('Failed to get rotation history', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -265,7 +265,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true, cancelledId: scheduleId })
   } catch (error) {
     logger.error('Failed to cancel scheduled rotation', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(

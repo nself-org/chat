@@ -679,8 +679,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
     const result = await exporter.export(
       options,
       { channels, users, messages },
-      // @ts-expect-error username exists at runtime on authenticated user objects
-      { id: user.id, username: user.username || '', email: user.email || '' }
+      { id: user.id, username: ((user as unknown) as { username?: string }).username || '', email: user.email || '' }
     )
 
     // Return file download
@@ -696,7 +695,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
   } catch (error) {
     logger.error('Export failed:', error)
     return internalErrorResponse(
-      error instanceof Error ? error.message : 'Export failed'
+      error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Export failed'
     )
   }
 }
@@ -799,7 +798,7 @@ async function processExportJob(
     exportJobs.set(jobId, job)
   } catch (error) {
     job.status = 'failed'
-    job.errorMessage = error instanceof Error ? error.message : 'Export failed'
+    job.errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Export failed'
     exportJobs.set(jobId, job)
   }
 }

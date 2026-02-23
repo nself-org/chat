@@ -170,7 +170,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       {
         success: false,
         error: 'Failed to fetch broadcast list',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -261,15 +261,15 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const { id } = await params
     logger.error('PATCH /api/broadcasts/[id] - Error', error as Error, { listId: id })
 
-    if (error instanceof Error && error.message.includes('Maximum')) {
-      return NextResponse.json({ success: false, error: error.message }, { status: 400 })
+    if (error instanceof Error && (error instanceof Error ? error.message : String(error)).includes('Maximum')) {
+      return NextResponse.json({ success: false, error: (error instanceof Error ? error.message : String(error)) }, { status: 400 })
     }
 
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to update broadcast list',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -345,7 +345,7 @@ export async function DELETE(
       {
         success: false,
         error: 'Failed to delete broadcast list',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

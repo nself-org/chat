@@ -49,10 +49,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json(tenant)
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error fetching tenant:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch tenant', details: error.message },
+      { error: 'Failed to fetch tenant', details: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) },
       { status: 500 }
     )
   }
@@ -89,10 +89,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const tenant = await tenantService.updateTenant(id, data)
 
     return NextResponse.json(tenant)
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error updating tenant:', error)
     return NextResponse.json(
-      { error: 'Failed to update tenant', details: error.message },
+      { error: 'Failed to update tenant', details: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) },
       { status: 500 }
     )
   }
@@ -116,10 +116,10 @@ export async function DELETE(
     await tenantService.deleteTenant(id)
 
     return NextResponse.json({ success: true })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error deleting tenant:', error)
     return NextResponse.json(
-      { error: 'Failed to delete tenant', details: error.message },
+      { error: 'Failed to delete tenant', details: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) },
       { status: 500 }
     )
   }

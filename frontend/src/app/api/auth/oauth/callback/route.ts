@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { Pool } from 'pg'
+import { getAuthPool } from '@/lib/db/pool'
 import { withErrorHandler, compose } from '@/lib/api/middleware'
 import { authConfig } from '@/config/auth.config'
 
@@ -15,26 +15,6 @@ import { logger } from '@/lib/logger'
 // ============================================================================
 // Database Configuration
 // ============================================================================
-
-let pool: Pool | null = null
-
-function initializeDatabaseConnection() {
-  if (pool) return pool
-
-  if (authConfig.useDevAuth || process.env.SKIP_ENV_VALIDATION === 'true') {
-    return null
-  }
-
-  pool = new Pool({
-    host: process.env.DATABASE_HOST!,
-    port: parseInt(process.env.DATABASE_PORT || '5432'),
-    database: process.env.DATABASE_NAME!,
-    user: process.env.DATABASE_USER!,
-    password: process.env.DATABASE_PASSWORD!,
-  })
-
-  return pool
-}
 
 // ============================================================================
 // OAuth Callback Handler
@@ -122,7 +102,7 @@ async function handleOAuthCallback(request: NextRequest): Promise<NextResponse> 
         const nhostUser = data.user
 
         // Get or create nchat user
-        const dbPool = initializeDatabaseConnection()
+        const dbPool = getAuthPool()
         if (dbPool) {
           // Check if user exists in nchat
           const userResult = await dbPool.query(

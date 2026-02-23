@@ -183,10 +183,10 @@ export async function POST(request: NextRequest) {
           }
         : undefined,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error processing plan change:', error)
     return NextResponse.json(
-      { error: 'Failed to process plan change', details: error.message },
+      { error: 'Failed to process plan change', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }
@@ -247,10 +247,10 @@ export async function GET(request: NextRequest) {
       availableTransitions,
       currentUsage: tenant.billing.usageTracking,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error fetching plan options:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch plan options', details: error.message },
+      { error: 'Failed to fetch plan options', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

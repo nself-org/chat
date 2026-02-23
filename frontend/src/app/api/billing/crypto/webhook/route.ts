@@ -153,10 +153,10 @@ export async function POST(request: NextRequest) {
     await cryptoPaymentService.processWebhook('coinbase_commerce', event)
 
     return NextResponse.json({ received: true })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error processing Coinbase Commerce webhook:', error)
     return NextResponse.json(
-      { error: 'Webhook processing failed', details: error.message },
+      { error: 'Webhook processing failed', details: (error instanceof Error ? error.message : String(error)) },
       { status: 400 }
     )
   }

@@ -99,8 +99,8 @@ export const GET = withBotAuth(async (request: NextRequest) => {
         },
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error fetching channel info:', error)
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) || 'Internal server error' }, { status: 500 })
   }
 }, BotPermission.CHANNELS_READ)

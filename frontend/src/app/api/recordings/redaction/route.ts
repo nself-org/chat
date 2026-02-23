@@ -103,14 +103,14 @@ export async function POST(request: NextRequest) {
       success: true,
       request: redactionRequest,
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating redaction request:', error)
 
-    if (error.code === 'REDACTION_ERROR') {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if ((error as { code?: string }).code === 'REDACTION_ERROR') {
+      return NextResponse.json({ error: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) }, { status: 400 })
     }
 
-    if (error.code === 'RECORDING_NOT_FOUND') {
+    if ((error as { code?: string }).code === 'RECORDING_NOT_FOUND') {
       return NextResponse.json({ error: 'Recording not found' }, { status: 404 })
     }
 
@@ -158,7 +158,7 @@ export async function GET(request: NextRequest) {
       requests,
       auditLogs,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error getting redactions:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -216,11 +216,11 @@ export async function PUT(request: NextRequest) {
       success: true,
       request: result,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error applying redaction:', error)
 
-    if (error.code === 'REDACTION_ERROR') {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if ((error as { code?: string }).code === 'REDACTION_ERROR') {
+      return NextResponse.json({ error: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) }, { status: 400 })
     }
 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -272,11 +272,11 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'Redaction segment removed',
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error removing redaction segment:', error)
 
-    if (error.code === 'REDACTION_ERROR') {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if ((error as { code?: string }).code === 'REDACTION_ERROR') {
+      return NextResponse.json({ error: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)) }, { status: 400 })
     }
 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

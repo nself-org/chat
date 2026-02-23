@@ -108,7 +108,7 @@ export const POST = withBotAuth(async (request: NextRequest, auth) => {
 
       // Check for unique constraint violation
       const isDuplicateName = errors?.some(
-        (e: any) => e.message.includes('unique constraint') || e.message.includes('duplicate key')
+        (e: { message: string }) => e.message.includes('unique constraint') || e.message.includes('duplicate key')
       )
 
       if (isDuplicateName) {
@@ -137,8 +137,8 @@ export const POST = withBotAuth(async (request: NextRequest, auth) => {
         createdBy: channel.created_by,
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating channel:', error)
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) || 'Internal server error' }, { status: 500 })
   }
 }, BotPermission.CHANNELS_CREATE)

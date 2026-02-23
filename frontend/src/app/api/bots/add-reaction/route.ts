@@ -141,8 +141,8 @@ export const POST = withBotAuth(async (request: NextRequest, auth) => {
         user: reaction.user,
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error adding reaction:', error)
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) || 'Internal server error' }, { status: 500 })
   }
 }, BotPermission.REACTIONS_ADD)

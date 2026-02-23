@@ -219,7 +219,7 @@ export const PATCH = compose(
     }
 
     if (result.error?.code === 'FORBIDDEN') {
-      return forbiddenResponse(result.error.message)
+      return forbiddenResponse(result.error?.message)
     }
 
     return badRequestResponse(
@@ -272,7 +272,7 @@ export const DELETE = compose(
     }
 
     if (result.error?.code === 'FORBIDDEN') {
-      return forbiddenResponse(result.error.message)
+      return forbiddenResponse(result.error?.message)
     }
 
     return badRequestResponse(

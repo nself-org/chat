@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Digest generation failed',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Digest generation failed',
       } as DigestResponse,
       { status: 500 }
     )
@@ -149,7 +149,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get digest info',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to get digest info',
       } as DigestResponse,
       { status: 500 }
     )

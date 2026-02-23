@@ -335,7 +335,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     } catch (error) {
       logger.warn('Failed to fetch LiveKit participants', {
         streamId,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       })
       // Continue with database data only
     }
@@ -419,7 +419,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       {
         success: false,
         error: 'Failed to fetch stream viewers',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     }
 
     logger.error('Recovery initiation failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -177,7 +177,7 @@ export async function PUT(request: NextRequest) {
     }
 
     logger.error('Recovery verification failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -237,7 +237,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     logger.error('Recovery completion failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -276,7 +276,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(recoveryStatus)
   } catch (error) {
     logger.error('Failed to get recovery status', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(
@@ -318,7 +318,7 @@ export async function DELETE(request: NextRequest) {
     })
   } catch (error) {
     logger.error('Failed to regenerate recovery codes', {
-      error: error instanceof Error ? error.message : 'Unknown',
+      error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown',
     })
 
     return NextResponse.json(

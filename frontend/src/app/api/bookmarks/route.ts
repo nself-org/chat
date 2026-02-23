@@ -7,6 +7,112 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@/lib/logger'
 
+const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://api.localhost/v1/graphql'
+const ADMIN_SECRET = process.env.HASURA_ADMIN_SECRET
+
+interface HasuraBookmark {
+  id: string
+  user_id: string
+  message_id: string
+  note: string | null
+  created_at: string
+  message?: {
+    id: string
+    content: string
+    created_at: string
+    channel?: { id: string; name: string }
+    user?: { id: string; display_name: string }
+  }
+}
+
+async function fetchBookmarksFromDatabase(
+  userId: string,
+  limit = 50,
+  offset = 0,
+  channelId?: string
+): Promise<{ bookmarks: HasuraBookmark[]; total: number }> {
+  if (!ADMIN_SECRET) {
+    logger.warn('HASURA_ADMIN_SECRET not set, cannot fetch bookmarks')
+    return { bookmarks: [], total: 0 }
+  }
+
+  const channelFilter = channelId
+    ? ', message: { channel_id: { _eq: $channelId } }'
+    : ''
+
+  const query = `
+    query GetBookmarksREST(
+      $userId: uuid!
+      $limit: Int!
+      $offset: Int!
+      ${channelId ? '$channelId: uuid' : ''}
+    ) {
+      nchat_bookmarks(
+        where: {
+          user_id: { _eq: $userId }
+          message: { is_deleted: { _eq: false }${channelId ? ', channel_id: { _eq: $channelId }' : ''} }
+        }
+        order_by: { created_at: desc }
+        limit: $limit
+        offset: $offset
+      ) {
+        id
+        user_id
+        message_id
+        note
+        created_at
+        message {
+          id
+          content
+          created_at
+          channel {
+            id
+            name
+          }
+          user {
+            id
+            display_name
+          }
+        }
+      }
+      nchat_bookmarks_aggregate(
+        where: {
+          user_id: { _eq: $userId }
+          message: { is_deleted: { _eq: false }${channelFilter} }
+        }
+      ) {
+        aggregate {
+          count
+        }
+      }
+    }
+  `
+
+  const variables: Record<string, unknown> = { userId, limit, offset }
+  if (channelId) variables.channelId = channelId
+
+  const response = await fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-hasura-admin-secret': ADMIN_SECRET,
+    },
+    body: JSON.stringify({ query, variables }),
+  })
+
+  const result = await response.json()
+
+  if (result.errors) {
+    logger.error('GraphQL error fetching bookmarks:', result.errors)
+    return { bookmarks: [], total: 0 }
+  }
+
+  return {
+    bookmarks: result.data?.nchat_bookmarks ?? [],
+    total: result.data?.nchat_bookmarks_aggregate?.aggregate?.count ?? 0,
+  }
+}
+
 // ============================================================================
 // GET /api/bookmarks
 // ============================================================================
@@ -26,13 +132,35 @@ export async function GET(request: NextRequest) {
       return handleExport(userId, export_format, searchParams)
     }
 
-    // Otherwise, return bookmarks list
-    // Note: In a real implementation, this would fetch from the database
-    // For now, we'll return a placeholder response
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50', 10), 100)
+    const offset = parseInt(searchParams.get('offset') || '0', 10)
+    const channelId = searchParams.get('channelId') || undefined
+
+    const { bookmarks, total } = await fetchBookmarksFromDatabase(userId, limit, offset, channelId)
+
     return NextResponse.json({
-      bookmarks: [],
-      total: 0,
-      message: 'Use GraphQL queries for fetching bookmarks',
+      bookmarks: bookmarks.map((b) => ({
+        id: b.id,
+        messageId: b.message_id,
+        userId: b.user_id,
+        note: b.note,
+        bookmarkedAt: b.created_at,
+        message: b.message
+          ? {
+              id: b.message.id,
+              content: b.message.content,
+              createdAt: b.message.created_at,
+              channel: b.message.channel,
+              author: b.message.user
+                ? {
+                    id: b.message.user.id,
+                    displayName: b.message.user.display_name,
+                  }
+                : null,
+            }
+          : null,
+      })),
+      total,
     })
   } catch (error) {
     logger.error('Failed to get bookmarks', error as Error)
@@ -85,7 +213,7 @@ async function handleAddBookmark(data: {
   collectionIds?: string[]
 }) {
   try {
-    const { userId, messageId, note, tags, collectionIds } = data
+    const { userId, messageId, note } = data
 
     if (!userId || !messageId) {
       return NextResponse.json({ error: 'userId and messageId are required' }, { status: 400 })
@@ -93,19 +221,58 @@ async function handleAddBookmark(data: {
 
     logger.info('Adding bookmark', { userId, messageId })
 
-    // In a real implementation, this would use GraphQL or direct DB access
-    // For now, return a success response
+    if (!ADMIN_SECRET) {
+      logger.warn('HASURA_ADMIN_SECRET not set, bookmark not persisted')
+      return NextResponse.json(
+        { error: 'Bookmark service unavailable' },
+        { status: 503 }
+      )
+    }
+
+    const mutation = `
+      mutation AddBookmark($userId: uuid!, $messageId: uuid!, $note: String) {
+        insert_nchat_bookmarks_one(
+          object: { user_id: $userId, message_id: $messageId, note: $note }
+          on_conflict: {
+            constraint: nchat_bookmarks_user_id_message_id_key
+            update_columns: [note]
+          }
+        ) {
+          id
+          user_id
+          message_id
+          note
+          created_at
+        }
+      }
+    `
+
+    const response = await fetch(GRAPHQL_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-hasura-admin-secret': ADMIN_SECRET,
+      },
+      body: JSON.stringify({ query: mutation, variables: { userId, messageId, note } }),
+    })
+
+    const result = await response.json()
+
+    if (result.errors) {
+      logger.error('GraphQL error adding bookmark:', result.errors)
+      return NextResponse.json({ error: 'Failed to add bookmark' }, { status: 500 })
+    }
+
+    const bookmark = result.data?.insert_nchat_bookmarks_one
     return NextResponse.json({
       success: true,
       message: 'Bookmark added successfully',
       bookmark: {
-        id: `bookmark-${Date.now()}`,
-        userId,
-        messageId,
-        note,
-        tags: tags || [],
-        collectionIds: collectionIds || [],
-        bookmarkedAt: new Date().toISOString(),
+        id: bookmark?.id,
+        userId: bookmark?.user_id,
+        messageId: bookmark?.message_id,
+        note: bookmark?.note,
+        bookmarkedAt: bookmark?.created_at,
       },
     })
   } catch (error) {
@@ -114,20 +281,69 @@ async function handleAddBookmark(data: {
   }
 }
 
-async function handleRemoveBookmark(data: { bookmarkId: string }) {
+async function handleRemoveBookmark(data: {
+  bookmarkId?: string
+  userId?: string
+  messageId?: string
+}) {
   try {
-    const { bookmarkId } = data
+    const { bookmarkId, userId, messageId } = data
 
-    if (!bookmarkId) {
-      return NextResponse.json({ error: 'bookmarkId is required' }, { status: 400 })
+    if (!bookmarkId && !(userId && messageId)) {
+      return NextResponse.json(
+        { error: 'bookmarkId or (userId + messageId) is required' },
+        { status: 400 }
+      )
     }
 
-    logger.info('Removing bookmark', { bookmarkId })
+    logger.info('Removing bookmark', { bookmarkId, userId, messageId })
 
-    return NextResponse.json({
-      success: true,
-      message: 'Bookmark removed successfully',
+    if (!ADMIN_SECRET) {
+      return NextResponse.json({ error: 'Bookmark service unavailable' }, { status: 503 })
+    }
+
+    let mutation: string
+    let variables: Record<string, unknown>
+
+    if (bookmarkId) {
+      mutation = `
+        mutation RemoveBookmarkById($id: uuid!) {
+          delete_nchat_bookmarks(where: { id: { _eq: $id } }) {
+            affected_rows
+          }
+        }
+      `
+      variables = { id: bookmarkId }
+    } else {
+      mutation = `
+        mutation RemoveBookmarkByMessage($userId: uuid!, $messageId: uuid!) {
+          delete_nchat_bookmarks(
+            where: { user_id: { _eq: $userId }, message_id: { _eq: $messageId } }
+          ) {
+            affected_rows
+          }
+        }
+      `
+      variables = { userId, messageId }
+    }
+
+    const response = await fetch(GRAPHQL_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-hasura-admin-secret': ADMIN_SECRET,
+      },
+      body: JSON.stringify({ query: mutation, variables }),
     })
+
+    const result = await response.json()
+
+    if (result.errors) {
+      logger.error('GraphQL error removing bookmark:', result.errors)
+      return NextResponse.json({ error: 'Failed to remove bookmark' }, { status: 500 })
+    }
+
+    return NextResponse.json({ success: true, message: 'Bookmark removed successfully' })
   } catch (error) {
     logger.error('Failed to remove bookmark', error as Error)
     throw error
@@ -141,7 +357,7 @@ async function handleUpdateBookmark(data: {
   collectionIds?: string[]
 }) {
   try {
-    const { bookmarkId, note, tags, collectionIds } = data
+    const { bookmarkId, note } = data
 
     if (!bookmarkId) {
       return NextResponse.json({ error: 'bookmarkId is required' }, { status: 400 })
@@ -149,16 +365,56 @@ async function handleUpdateBookmark(data: {
 
     logger.info('Updating bookmark', { bookmarkId })
 
+    if (!ADMIN_SECRET) {
+      return NextResponse.json({ error: 'Bookmark service unavailable' }, { status: 503 })
+    }
+
+    const mutation = `
+      mutation UpdateBookmark($id: uuid!, $note: String) {
+        update_nchat_bookmarks(
+          where: { id: { _eq: $id } }
+          _set: { note: $note }
+        ) {
+          returning {
+            id
+            user_id
+            message_id
+            note
+            created_at
+          }
+        }
+      }
+    `
+
+    const response = await fetch(GRAPHQL_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-hasura-admin-secret': ADMIN_SECRET,
+      },
+      body: JSON.stringify({ query: mutation, variables: { id: bookmarkId, note } }),
+    })
+
+    const result = await response.json()
+
+    if (result.errors) {
+      logger.error('GraphQL error updating bookmark:', result.errors)
+      return NextResponse.json({ error: 'Failed to update bookmark' }, { status: 500 })
+    }
+
+    const updated = result.data?.update_nchat_bookmarks?.returning?.[0]
     return NextResponse.json({
       success: true,
       message: 'Bookmark updated successfully',
-      bookmark: {
-        id: bookmarkId,
-        note,
-        tags,
-        collectionIds,
-        updatedAt: new Date().toISOString(),
-      },
+      bookmark: updated
+        ? {
+            id: updated.id,
+            userId: updated.user_id,
+            messageId: updated.message_id,
+            note: updated.note,
+            bookmarkedAt: updated.created_at,
+          }
+        : null,
     })
   } catch (error) {
     logger.error('Failed to update bookmark', error as Error)
@@ -178,7 +434,7 @@ async function handleExportBookmarks(data: {
   }
 }) {
   try {
-    const { userId, format, options = {} } = data
+    const { userId, format } = data
 
     if (!userId) {
       return NextResponse.json({ error: 'userId is required' }, { status: 400 })
@@ -186,50 +442,27 @@ async function handleExportBookmarks(data: {
 
     logger.info('Exporting bookmarks', { userId, format })
 
-    // In a real implementation, this would fetch bookmarks from the database
-    // and format them according to the requested format
+    // Fetch all bookmarks for export (up to 1000)
+    const { bookmarks, total } = await fetchBookmarksFromDatabase(userId, 1000, 0)
+
     const exportData = {
       exportedAt: new Date().toISOString(),
       format,
-      totalCount: 0,
-      bookmarks: [],
+      totalCount: total,
+      bookmarks: bookmarks.map((b) => ({
+        id: b.id,
+        content: b.message?.content ?? '',
+        bookmarkedAt: b.created_at,
+        note: b.note,
+        tags: [] as string[],
+        channel: b.message?.channel ?? null,
+        author: b.message?.user
+          ? { displayName: b.message.user.display_name }
+          : null,
+      })),
     }
 
-    let content: string
-    let mimeType: string
-    let filename: string
-
-    switch (format) {
-      case 'json':
-        content = JSON.stringify(exportData, null, 2)
-        mimeType = 'application/json'
-        filename = `bookmarks-${Date.now()}.json`
-        break
-      case 'csv':
-        content = convertToCSV(exportData)
-        mimeType = 'text/csv'
-        filename = `bookmarks-${Date.now()}.csv`
-        break
-      case 'markdown':
-        content = convertToMarkdown(exportData)
-        mimeType = 'text/markdown'
-        filename = `bookmarks-${Date.now()}.md`
-        break
-      case 'html':
-        content = convertToHTML(exportData)
-        mimeType = 'text/html'
-        filename = `bookmarks-${Date.now()}.html`
-        break
-      default:
-        return NextResponse.json({ error: 'Unsupported format' }, { status: 400 })
-    }
-
-    return new NextResponse(content, {
-      headers: {
-        'Content-Type': mimeType,
-        'Content-Disposition': `attachment; filename="${filename}"`,
-      },
-    })
+    return formatAndServeExport(exportData, format)
   } catch (error) {
     logger.error('Failed to export bookmarks', error as Error)
     throw error
@@ -238,59 +471,33 @@ async function handleExportBookmarks(data: {
 
 async function handleExport(userId: string, format: string, searchParams: URLSearchParams) {
   try {
-    const includeContent = searchParams.get('includeContent') !== 'false'
-    const includeAttachments = searchParams.get('includeAttachments') === 'true'
-    const includeMetadata = searchParams.get('includeMetadata') === 'true'
-
     logger.info('Exporting bookmarks via GET', { userId, format })
+
+    const { bookmarks, total } = await fetchBookmarksFromDatabase(userId, 1000, 0)
 
     const exportData = {
       exportedAt: new Date().toISOString(),
       format,
-      totalCount: 0,
-      bookmarks: [],
+      totalCount: total,
+      bookmarks: bookmarks.map((b) => ({
+        id: b.id,
+        content: b.message?.content ?? '',
+        bookmarkedAt: b.created_at,
+        note: b.note,
+        tags: [] as string[],
+        channel: b.message?.channel ?? null,
+        author: b.message?.user
+          ? { displayName: b.message.user.display_name }
+          : null,
+      })),
       options: {
-        includeContent,
-        includeAttachments,
-        includeMetadata,
+        includeContent: searchParams.get('includeContent') !== 'false',
+        includeAttachments: searchParams.get('includeAttachments') === 'true',
+        includeMetadata: searchParams.get('includeMetadata') === 'true',
       },
     }
 
-    let content: string
-    let mimeType: string
-    let filename: string
-
-    switch (format) {
-      case 'json':
-        content = JSON.stringify(exportData, null, 2)
-        mimeType = 'application/json'
-        filename = `bookmarks-${Date.now()}.json`
-        break
-      case 'csv':
-        content = convertToCSV(exportData)
-        mimeType = 'text/csv'
-        filename = `bookmarks-${Date.now()}.csv`
-        break
-      case 'markdown':
-        content = convertToMarkdown(exportData)
-        mimeType = 'text/markdown'
-        filename = `bookmarks-${Date.now()}.md`
-        break
-      case 'html':
-        content = convertToHTML(exportData)
-        mimeType = 'text/html'
-        filename = `bookmarks-${Date.now()}.html`
-        break
-      default:
-        return NextResponse.json({ error: 'Unsupported format' }, { status: 400 })
-    }
-
-    return new NextResponse(content, {
-      headers: {
-        'Content-Type': mimeType,
-        'Content-Disposition': `attachment; filename="${filename}"`,
-      },
-    })
+    return formatAndServeExport(exportData, format)
   } catch (error) {
     logger.error('Failed to export bookmarks', error as Error)
     throw error
@@ -298,108 +505,140 @@ async function handleExport(userId: string, format: string, searchParams: URLSea
 }
 
 // ============================================================================
-// Format Converters
+// Format helpers
 // ============================================================================
 
-function convertToCSV(data: any): string {
+interface ExportBookmark {
+  id: string
+  content: string
+  bookmarkedAt: string
+  note: string | null
+  tags: string[]
+  channel: { id: string; name: string } | null
+  author: { displayName: string } | null
+}
+
+interface ExportData {
+  exportedAt: string
+  format: string
+  totalCount: number
+  bookmarks: ExportBookmark[]
+}
+
+function formatAndServeExport(exportData: ExportData, format: string): NextResponse {
+  let content: string
+  let mimeType: string
+  const filename = `bookmarks-${Date.now()}`
+
+  switch (format) {
+    case 'csv':
+      content = convertToCSV(exportData)
+      mimeType = 'text/csv'
+      return new NextResponse(content, {
+        headers: {
+          'Content-Type': mimeType,
+          'Content-Disposition': `attachment; filename="${filename}.csv"`,
+        },
+      })
+    case 'markdown':
+      content = convertToMarkdown(exportData)
+      mimeType = 'text/markdown'
+      return new NextResponse(content, {
+        headers: {
+          'Content-Type': mimeType,
+          'Content-Disposition': `attachment; filename="${filename}.md"`,
+        },
+      })
+    case 'html':
+      content = convertToHTML(exportData)
+      mimeType = 'text/html'
+      return new NextResponse(content, {
+        headers: {
+          'Content-Type': mimeType,
+          'Content-Disposition': `attachment; filename="${filename}.html"`,
+        },
+      })
+    case 'json':
+    default:
+      content = JSON.stringify(exportData, null, 2)
+      return new NextResponse(content, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Disposition': `attachment; filename="${filename}.json"`,
+        },
+      })
+  }
+}
+
+function convertToCSV(data: ExportData): string {
   const headers = ['ID', 'Content', 'Bookmarked At', 'Note', 'Tags', 'Channel', 'Author']
-  const rows = data.bookmarks.map((b: any) => [
-    b.id || '',
-    b.content ? `"${b.content.replace(/"/g, '""')}"` : '',
-    b.bookmarkedAt || '',
-    b.note ? `"${b.note.replace(/"/g, '""')}"` : '',
-    b.tags?.join('; ') || '',
+  const rows = data.bookmarks.map((b) => [
+    b.id,
+    `"${(b.content || '').replace(/"/g, '""')}"`,
+    b.bookmarkedAt,
+    `"${(b.note || '').replace(/"/g, '""')}"`,
+    b.tags.join('; '),
     b.channel?.name || '',
     b.author?.displayName || '',
   ])
-
-  return [headers.join(','), ...rows.map((r: any[]) => r.join(','))].join('\n')
+  return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
 }
 
-function convertToMarkdown(data: any): string {
-  let md = `# Bookmarks Export\n\n`
-  md += `Exported at: ${data.exportedAt}\n`
-  md += `Total bookmarks: ${data.totalCount}\n\n`
-  md += `---\n\n`
-
+function convertToMarkdown(data: ExportData): string {
+  let md = `# Bookmarks Export\n\nExported at: ${data.exportedAt}\nTotal bookmarks: ${data.totalCount}\n\n---\n\n`
   if (data.bookmarks.length === 0) {
-    md += `No bookmarks to export.\n`
+    md += 'No bookmarks to export.\n'
   } else {
-    data.bookmarks.forEach((b: any, index: number) => {
+    data.bookmarks.forEach((b, index) => {
       md += `## ${index + 1}. ${b.channel?.name || 'Unknown Channel'}\n\n`
       md += `**Author:** ${b.author?.displayName || 'Unknown'}\n`
       md += `**Bookmarked:** ${b.bookmarkedAt}\n\n`
-      if (b.content) {
-        md += `${b.content}\n\n`
-      }
-      if (b.note) {
-        md += `> Note: ${b.note}\n\n`
-      }
-      if (b.tags && b.tags.length > 0) {
-        md += `Tags: ${b.tags.map((t: string) => `${t}`).join(', ')}\n\n`
-      }
+      if (b.content) md += `${b.content}\n\n`
+      if (b.note) md += `> Note: ${b.note}\n\n`
+      if (b.tags.length > 0) md += `Tags: ${b.tags.join(', ')}\n\n`
       md += `---\n\n`
     })
   }
-
   return md
 }
 
-function convertToHTML(data: any): string {
-  let html = `<!DOCTYPE html>
+function convertToHTML(data: ExportData): string {
+  const bookmarkItems = data.bookmarks.length === 0
+    ? '<p>No bookmarks to export.</p>'
+    : data.bookmarks
+        .map(
+          (b) => `
+  <div class="bookmark">
+    <div class="bookmark-header">
+      <span><strong>${b.author?.displayName || 'Unknown'}</strong> in #${b.channel?.name || 'unknown'}</span>
+      <span>${b.bookmarkedAt}</span>
+    </div>
+    ${b.content ? `<div class="bookmark-content">${b.content}</div>` : ''}
+    ${b.note ? `<div class="bookmark-note">Note: ${b.note}</div>` : ''}
+    ${
+      b.tags.length > 0
+        ? `<div class="tags">${b.tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div>`
+        : ''
+    }
+  </div>`
+        )
+        .join('\n')
+
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bookmarks Export</title>
   <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem;
-      line-height: 1.6;
-    }
-    .header {
-      border-bottom: 2px solid #e5e7eb;
-      padding-bottom: 1rem;
-      margin-bottom: 2rem;
-    }
-    .bookmark {
-      border: 1px solid #e5e7eb;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-    .bookmark-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
-      color: #6b7280;
-    }
-    .bookmark-content {
-      margin-bottom: 0.5rem;
-    }
-    .bookmark-note {
-      background: #f9fafb;
-      padding: 0.5rem;
-      border-radius: 0.25rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
-      color: #6b7280;
-    }
-    .tags {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .tag {
-      background: #e5e7eb;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      font-size: 0.75rem;
-    }
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; line-height: 1.6; }
+    .header { border-bottom: 2px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .bookmark { border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1rem; margin-bottom: 1rem; }
+    .bookmark-header { display: flex; justify-content: space-between; margin-bottom: .5rem; font-size: .875rem; color: #6b7280; }
+    .bookmark-content { margin-bottom: .5rem; }
+    .bookmark-note { background: #f9fafb; padding: .5rem; border-radius: .25rem; margin-bottom: .5rem; font-size: .875rem; color: #6b7280; }
+    .tags { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .tag { background: #e5e7eb; padding: .25rem .5rem; border-radius: .25rem; font-size: .75rem; }
   </style>
 </head>
 <body>
@@ -408,39 +647,7 @@ function convertToHTML(data: any): string {
     <p>Exported at: ${data.exportedAt}</p>
     <p>Total bookmarks: ${data.totalCount}</p>
   </div>
-`
-
-  if (data.bookmarks.length === 0) {
-    html += `<p>No bookmarks to export.</p>`
-  } else {
-    data.bookmarks.forEach((b: any) => {
-      html += `
-  <div class="bookmark">
-    <div class="bookmark-header">
-      <span><strong>${b.author?.displayName || 'Unknown'}</strong> in #${b.channel?.name || 'unknown'}</span>
-      <span>${b.bookmarkedAt}</span>
-    </div>
-`
-      if (b.content) {
-        html += `    <div class="bookmark-content">${b.content}</div>\n`
-      }
-      if (b.note) {
-        html += `    <div class="bookmark-note">Note: ${b.note}</div>\n`
-      }
-      if (b.tags && b.tags.length > 0) {
-        html += `    <div class="tags">\n`
-        b.tags.forEach((tag: string) => {
-          html += `      <span class="tag">${tag}</span>\n`
-        })
-        html += `    </div>\n`
-      }
-      html += `  </div>\n`
-    })
-  }
-
-  html += `
+  ${bookmarkItems}
 </body>
 </html>`
-
-  return html
 }

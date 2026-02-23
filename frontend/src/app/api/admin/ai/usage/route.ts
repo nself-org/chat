@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get AI usage',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to get AI usage',
       },
       { status: 500 }
     )

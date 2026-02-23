@@ -444,7 +444,7 @@ async function handlePost(request: NextRequest, context: RouteContext): Promise<
       bodyText,
       requestHeaders,
       500,
-      error instanceof Error ? error.message : 'Internal error'
+      error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal error'
     )
 
     return internalErrorResponse('Failed to process webhook')

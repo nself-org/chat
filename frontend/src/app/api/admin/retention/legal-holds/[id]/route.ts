@@ -42,7 +42,7 @@ export async function GET(
 
     return NextResponse.json({ success: true, data: hold })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }
@@ -104,7 +104,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true, data: result.data })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }
@@ -141,7 +141,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, data: result.data })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }

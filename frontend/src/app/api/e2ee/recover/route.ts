@@ -45,13 +45,13 @@ export async function POST(request: NextRequest) {
       status,
       message: 'E2EE recovered successfully',
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('E2EE recovery error:', error)
 
     return NextResponse.json(
       {
         error: 'Failed to recover E2EE',
-        message: error.message,
+        message: (error instanceof Error ? (error instanceof Error ? error.message : String(error)) : String(error)),
       },
       { status: 500 }
     )

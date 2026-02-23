@@ -22,7 +22,7 @@ export async function GET(
     )
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error' },
       { status: 500 }
     )
   }
@@ -50,7 +50,7 @@ export async function PUT(
     )
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error' },
       { status: 500 }
     )
   }
@@ -70,7 +70,7 @@ export async function DELETE(
     )
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error' },
       { status: 500 }
     )
   }

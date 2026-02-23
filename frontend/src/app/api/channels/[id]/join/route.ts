@@ -114,7 +114,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Handle specific errors
     if (error instanceof Error) {
-      if (error.message.includes('unique constraint')) {
+      if ((error instanceof Error ? error.message : String(error)).includes('unique constraint')) {
         return NextResponse.json(
           { success: false, error: 'Already a member of this channel' },
           { status: 409 }
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       {
         success: false,
         error: 'Failed to join channel',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

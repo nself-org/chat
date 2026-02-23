@@ -260,7 +260,7 @@ async function handleUpload(request: AuthenticatedRequest) {
   } catch (error) {
     logger.error('File upload error:', error)
     return errorResponse('Upload failed', 'UPLOAD_ERROR', 500, {
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     })
   }
 }

@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     // Single event
     return handleSingleRecord(body as RecordUsageBody)
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorMessage = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     logger.error('Error recording usage:', error)
     return NextResponse.json(
       { error: 'Failed to record usage', details: errorMessage },

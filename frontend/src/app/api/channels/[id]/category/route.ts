@@ -307,7 +307,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       {
         success: false,
         error: 'Failed to assign channel to category',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -401,7 +401,7 @@ export async function DELETE(
       {
         success: false,
         error: 'Failed to remove channel from category',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

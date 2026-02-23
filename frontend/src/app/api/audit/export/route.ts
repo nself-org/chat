@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: 'Failed to export audit logs',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )
@@ -241,7 +241,7 @@ export async function GET() {
       {
         success: false,
         error: 'Failed to get export options',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

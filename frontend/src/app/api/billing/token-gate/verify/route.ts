@@ -54,10 +54,10 @@ export async function POST(request: NextRequest) {
       bypassedByRole: result.bypassedByRole,
       verification: result.verification,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error verifying token access:', error)
     return NextResponse.json(
-      { error: 'Failed to verify token access', details: error.message },
+      { error: 'Failed to verify token access', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

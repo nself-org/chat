@@ -605,7 +605,7 @@ async function processExportJob(jobId: string, job: ExportJob): Promise<void> {
   } catch (error) {
     logger.error('Export job failed:', error)
     job.status = 'failed'
-    job.error = error instanceof Error ? error.message : 'Export failed'
+    job.error = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Export failed'
     exportJobs.set(jobId, job)
   }
 }

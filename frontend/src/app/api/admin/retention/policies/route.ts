@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
       total: policies.length,
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get actor ID from auth (placeholder - would come from session)
+    // Get actor ID from the authenticated user header (set by Hasura/auth middleware)
     const actorId = request.headers.get('x-user-id') || 'system'
 
     const input: CreateRetentionPolicyInput = {
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 }

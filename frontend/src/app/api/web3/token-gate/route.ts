@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     logger.error('Error listing token gates:', error)
-    const message = error instanceof Error ? error.message : 'Internal server error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ gate }, { status: 201 })
   } catch (error) {
     logger.error('Error creating token gate:', error)
-    const message = error instanceof Error ? error.message : 'Internal server error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

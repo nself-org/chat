@@ -53,10 +53,10 @@ export async function POST(request: NextRequest) {
       payment: result.payment,
       paymentUrl: result.paymentUrl,
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error creating crypto payment:', error)
     return NextResponse.json(
-      { error: 'Failed to create crypto payment', details: error.message },
+      { error: 'Failed to create crypto payment', details: (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }

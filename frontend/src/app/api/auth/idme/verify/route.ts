@@ -108,7 +108,7 @@ async function handleVerifyRequest(request: NextRequest): Promise<NextResponse> 
   } catch (error) {
     logger.error('ID.me verify error:', error)
     return internalErrorResponse(
-      error instanceof Error ? error.message : 'Failed to initiate ID.me verification'
+      error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Failed to initiate ID.me verification'
     )
   }
 }

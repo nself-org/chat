@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Summarization failed',
+        error: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Summarization failed',
       } as SummarizeResponse,
       { status: 500 }
     )

@@ -84,10 +84,9 @@ export const POST = compose(
     const { channelId, categoryId, position } = validation.data
 
     // TODO: Implement moveChannel in CategoryService
-    // @ts-expect-error - Method will be implemented in CategoryService
     const result = await categoryService.moveChannel?.({
       channelId,
-      categoryId,
+      categoryId: categoryId ?? '',
       position,
     })
 

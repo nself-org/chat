@@ -93,7 +93,7 @@ export async function GET(
     return NextResponse.json(response)
   } catch (error) {
     logger.error('Error getting token gate:', error)
-    const message = error instanceof Error ? error.message : 'Internal server error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
@@ -146,7 +146,7 @@ export async function PUT(
     return NextResponse.json({ gate })
   } catch (error) {
     logger.error('Error updating token gate:', error)
-    const message = error instanceof Error ? error.message : 'Internal server error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
@@ -171,7 +171,7 @@ export async function DELETE(
     return NextResponse.json({ success: true })
   } catch (error) {
     logger.error('Error deleting token gate:', error)
-    const message = error instanceof Error ? error.message : 'Internal server error'
+    const message = error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

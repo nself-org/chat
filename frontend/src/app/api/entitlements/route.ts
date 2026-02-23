@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof Error) {
       return NextResponse.json(
-        { error: error.message },
+        { error: (error instanceof Error ? error.message : String(error)) },
         { status: 400 }
       )
     }

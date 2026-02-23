@@ -42,14 +42,14 @@ export async function POST(
     return NextResponse.json(response, { status: 201 })
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes('Invalid client secret')) {
-        return NextResponse.json({ error: error.message }, { status: 401 })
+      if ((error instanceof Error ? error.message : String(error)).includes('Invalid client secret')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 401 })
       }
-      if (error.message.includes('not found')) {
-        return NextResponse.json({ error: error.message }, { status: 404 })
+      if ((error instanceof Error ? error.message : String(error)).includes('not found')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 404 })
       }
-      if (error.message.includes('exceeds') || error.message.includes('not active')) {
-        return NextResponse.json({ error: error.message }, { status: 403 })
+      if ((error instanceof Error ? error.message : String(error)).includes('exceeds') || (error instanceof Error ? error.message : String(error)).includes('not active')) {
+        return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 403 })
       }
     }
     logger.error('Failed to issue tokens:', error)
@@ -119,8 +119,8 @@ export async function DELETE(
     registryService.revokeToken(tokenValue)
     return NextResponse.json({ revoked: true })
   } catch (error) {
-    if (error instanceof Error && error.message.includes('Invalid token')) {
-      return NextResponse.json({ error: error.message }, { status: 404 })
+    if (error instanceof Error && (error instanceof Error ? error.message : String(error)).includes('Invalid token')) {
+      return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) }, { status: 404 })
     }
     logger.error('Failed to revoke token:', error)
     return NextResponse.json({ error: 'Failed to revoke token' }, { status: 500 })

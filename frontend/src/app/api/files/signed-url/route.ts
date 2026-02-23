@@ -169,7 +169,7 @@ async function handleSignedUrl(request: AuthenticatedRequest) {
   } catch (error) {
     logger.error('Signed URL generation error:', error)
     return errorResponse('Failed to generate signed URL', 'SIGNED_URL_ERROR', 500, {
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
     })
   }
 }

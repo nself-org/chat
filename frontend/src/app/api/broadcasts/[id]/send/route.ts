@@ -205,11 +205,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Handle specific errors
     if (error instanceof Error) {
-      if (error.message.includes('Rate limit')) {
+      if ((error instanceof Error ? error.message : String(error)).includes('Rate limit')) {
         return NextResponse.json(
           {
             success: false,
-            error: error.message,
+            error: (error instanceof Error ? error.message : String(error)),
             retryAfter: 60,
           },
           {
@@ -221,19 +221,19 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         )
       }
 
-      if (error.message.includes('not found')) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 404 })
+      if ((error instanceof Error ? error.message : String(error)).includes('not found')) {
+        return NextResponse.json({ success: false, error: (error instanceof Error ? error.message : String(error)) }, { status: 404 })
       }
 
       if (
-        error.message.includes('Only the list owner') ||
-        error.message.includes('Access denied')
+        (error instanceof Error ? error.message : String(error)).includes('Only the list owner') ||
+        (error instanceof Error ? error.message : String(error)).includes('Access denied')
       ) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 403 })
+        return NextResponse.json({ success: false, error: (error instanceof Error ? error.message : String(error)) }, { status: 403 })
       }
 
-      if (error.message.includes('no recipients')) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 400 })
+      if ((error instanceof Error ? error.message : String(error)).includes('no recipients')) {
+        return NextResponse.json({ success: false, error: (error instanceof Error ? error.message : String(error)) }, { status: 400 })
       }
     }
 
@@ -241,7 +241,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       {
         success: false,
         error: 'Failed to send broadcast',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error',
       },
       { status: 500 }
     )

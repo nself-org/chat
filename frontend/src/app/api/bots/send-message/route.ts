@@ -126,8 +126,8 @@ export const POST = withBotAuth(async (request: NextRequest, auth) => {
         user: message.user,
       },
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error('Error sending message:', error)
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: (error instanceof Error ? error.message : String(error)) || 'Internal server error' }, { status: 500 })
   }
 }, BotPermission.MESSAGES_SEND)
