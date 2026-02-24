@@ -68,8 +68,8 @@ export const POST = compose(
   withErrorHandler,
   withLogging,
   withAuth
-)(async (request: AuthenticatedRequest, context: RouteContext<{ id: string }>) => {
-  const { id: tenantId } = await context.params
+)(async (request: AuthenticatedRequest, context: RouteContext) => {
+  const { id: tenantId } = (await context.params) as { id: string }
   const { user } = request
 
   // Only admins and owners can update branding

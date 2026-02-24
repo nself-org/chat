@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { randomInt, randomBytes } from 'crypto'
 import { z } from 'zod'
 import { logger } from '@/lib/logger'
 
