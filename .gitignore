@@ -94,6 +94,9 @@ pnpm-debug.log*
 lerna-debug.log*
 *.log
 logs/
+# Exception: API route directories named 'logs' are source code, not log files
+!frontend/src/app/api/**/logs/
+!frontend/src/app/api/**/logs/**
 
 # -----------------------------------------------------------------------------
 # Runtime Data
