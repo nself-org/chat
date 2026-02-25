@@ -360,7 +360,7 @@ export async function hashPin(
   const derivedBits = await crypto.subtle.deriveBits(
     {
       name: 'PBKDF2',
-      salt: pinSalt.buffer as ArrayBuffer,
+      salt: pinSalt,
       iterations,
       hash: 'SHA-256',
     },

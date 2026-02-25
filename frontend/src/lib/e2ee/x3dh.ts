@@ -281,7 +281,7 @@ export async function generateSignedPreKey(
       hash: 'SHA-256',
     },
     signingKeyPair.privateKey,
-    keyPair.publicKey.buffer as ArrayBuffer
+    keyPair.publicKey
   )
 
   return {
@@ -326,7 +326,7 @@ export async function generateOneTimePreKeys(
 export async function importPublicKey(publicKeyBytes: Uint8Array): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     'raw',
-    publicKeyBytes.buffer as ArrayBuffer,
+    publicKeyBytes,
     {
       name: 'ECDH',
       namedCurve: ECDH_CURVE,
@@ -479,7 +479,7 @@ async function hkdfDerive(
   // Import input key material
   const ikm = await crypto.subtle.importKey(
     'raw',
-    inputKeyMaterial.buffer as ArrayBuffer,
+    inputKeyMaterial,
     'HKDF',
     false,
     ['deriveBits']
@@ -490,8 +490,8 @@ async function hkdfDerive(
     {
       name: 'HKDF',
       hash: HKDF_HASH,
-      salt: salt.buffer as ArrayBuffer,
-      info: info.buffer as ArrayBuffer,
+      salt: salt,
+      info: info,
     },
     ikm,
     length * 8

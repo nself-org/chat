@@ -301,7 +301,7 @@ async function generateSigningKeyPair(): Promise<SenderKeySigningPair> {
 async function importSigningPublicKey(publicKeyBytes: Uint8Array): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     'raw',
-    publicKeyBytes.buffer as ArrayBuffer,
+    publicKeyBytes,
     {
       name: 'ECDSA',
       namedCurve: ECDSA_CURVE,
@@ -352,7 +352,7 @@ async function sign(data: Uint8Array, privateKey: CryptoKey): Promise<Uint8Array
       hash: 'SHA-256',
     },
     privateKey,
-    data.buffer as ArrayBuffer
+    data
   )
   return toUint8Array(signature)
 }
@@ -371,8 +371,8 @@ async function verify(
       hash: 'SHA-256',
     },
     publicKey,
-    signature.buffer as ArrayBuffer,
-    data.buffer as ArrayBuffer
+    signature,
+    data
   )
 }
 
@@ -386,7 +386,7 @@ async function deriveMessageKey(chainKey: Uint8Array): Promise<{
   // Import chain key for HMAC
   const key = await crypto.subtle.importKey(
     'raw',
-    chainKey.buffer as ArrayBuffer,
+    chainKey,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
@@ -394,12 +394,12 @@ async function deriveMessageKey(chainKey: Uint8Array): Promise<{
 
   // Derive new chain key with constant 0x01
   const chainConstant = new Uint8Array([0x01])
-  const newChainKeyBuf = await crypto.subtle.sign('HMAC', key, chainConstant.buffer as ArrayBuffer)
+  const newChainKeyBuf = await crypto.subtle.sign('HMAC', key, chainConstant)
   const newChainKey = toUint8Array(newChainKeyBuf)
 
   // Derive message key with constant 0x02
   const messageConstant = new Uint8Array([0x02])
-  const messageKeyBuf = await crypto.subtle.sign('HMAC', key, messageConstant.buffer as ArrayBuffer)
+  const messageKeyBuf = await crypto.subtle.sign('HMAC', key, messageConstant)
   const messageKey = toUint8Array(messageKeyBuf)
 
   return { newChainKey, messageKey }
@@ -418,7 +418,7 @@ async function aesGcmEncrypt(
 
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key.buffer as ArrayBuffer,
+    key,
     { name: 'AES-GCM' },
     false,
     ['encrypt']
@@ -427,12 +427,12 @@ async function aesGcmEncrypt(
   const encrypted = await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
-      iv: nonce.buffer as ArrayBuffer,
+      iv: nonce,
       tagLength: AES_TAG_LENGTH,
-      additionalData: associatedData?.buffer as ArrayBuffer | undefined,
+      additionalData: associatedData,
     },
     cryptoKey,
-    plaintext.buffer as ArrayBuffer
+    plaintext
   )
 
   return {
@@ -452,7 +452,7 @@ async function aesGcmDecrypt(
 ): Promise<Uint8Array> {
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key.buffer as ArrayBuffer,
+    key,
     { name: 'AES-GCM' },
     false,
     ['decrypt']
@@ -461,12 +461,12 @@ async function aesGcmDecrypt(
   const decrypted = await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
-      iv: nonce.buffer as ArrayBuffer,
+      iv: nonce,
       tagLength: AES_TAG_LENGTH,
-      additionalData: associatedData?.buffer as ArrayBuffer | undefined,
+      additionalData: associatedData,
     },
     cryptoKey,
-    ciphertext.buffer as ArrayBuffer
+    ciphertext
   )
 
   return toUint8Array(decrypted)

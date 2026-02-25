@@ -221,7 +221,7 @@ export async function exportServerPublicKey(
 export async function importServerPublicKey(publicKeyBytes: Uint8Array): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     'raw',
-    publicKeyBytes.buffer as ArrayBuffer,
+    publicKeyBytes,
     { name: 'ECDSA', namedCurve: ECDSA_CURVE },
     true,
     ['verify']
@@ -301,7 +301,7 @@ export async function issueCertificate(
   const signature = await crypto.subtle.sign(
     { name: 'ECDSA', hash: SIGNATURE_HASH },
     serverKeyPair.privateKey,
-    signingContent.buffer as ArrayBuffer
+    signingContent
   )
 
   logger.info('Certificate issued', {
@@ -348,8 +348,8 @@ export async function verifyCertificateSignature(
     const isValid = await crypto.subtle.verify(
       { name: 'ECDSA', hash: SIGNATURE_HASH },
       publicKey,
-      certificate.signature.buffer as ArrayBuffer,
-      signingContent.buffer as ArrayBuffer
+      certificate.signature,
+      signingContent
     )
 
     return isValid

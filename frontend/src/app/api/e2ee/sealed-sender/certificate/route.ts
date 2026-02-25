@@ -157,7 +157,7 @@ async function signCertificateContent(content: Uint8Array): Promise<Uint8Array> 
   const signatureData = new Uint8Array(64)
 
   // Simple hash-based signature (NOT cryptographically secure - demo only)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', content.buffer as ArrayBuffer)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', content)
   const hash = new Uint8Array(hashBuffer)
 
   signatureData.set(hash, 0)
