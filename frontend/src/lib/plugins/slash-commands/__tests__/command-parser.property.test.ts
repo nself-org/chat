@@ -52,8 +52,9 @@ describe('Tokenizer - Property Tests', () => {
   it('should preserve quoted strings', () => {
     fc.assert(
       fc.property(
-        fc.string(),
-        // Exclude " and \ from quoted content — they have special meaning in the tokenizer
+        // Exclude quote chars and \ from both parts to avoid confusing the tokenizer's
+        // quote-state machine (single-quote, double-quote, backtick all open quote contexts)
+        fc.string().filter(s => !s.includes('"') && !s.includes("'") && !s.includes('`') && !s.includes('\\')),
         fc.string().filter(s => !s.includes('"') && !s.includes('\\')),
         (before, quoted) => {
           const input = `${before} "${quoted}"`
