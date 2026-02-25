@@ -131,8 +131,8 @@ const customJestConfig = {
   restoreMocks: true,
   // Verbose output for debugging
   verbose: false,
-  // Fail fast in CI
-  bail: process.env.CI ? 1 : 0,
+  // Run all tests in CI to surface all failures at once (no bail)
+  bail: 0,
   // Test timeout
   testTimeout: 10000,
 }
