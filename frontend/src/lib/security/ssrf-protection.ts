@@ -59,6 +59,19 @@ const DEFAULT_CONFIG: SsrfConfig = {
 // ============================================================================
 
 /**
+ * Extract IPv4 address from WHATWG-normalized IPv4-mapped IPv6 hex format.
+ * The WHATWG URL parser normalizes ::ffff:x.x.x.x to ::ffff:XXXX:XXXX.
+ * e.g., ::ffff:127.0.0.1 → ::ffff:7f00:1
+ */
+function extractIPv4FromMappedIPv6Hex(ip: string): string | null {
+  const m = ip.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i)
+  if (!m) return null
+  const high = parseInt(m[1], 16)
+  const low = parseInt(m[2], 16)
+  return `${(high >> 8) & 0xff}.${high & 0xff}.${(low >> 8) & 0xff}.${low & 0xff}`
+}
+
+/**
  * Check if hostname is localhost
  * Handles both plain hostnames and bracketed IPv6 addresses
  */
@@ -79,7 +92,17 @@ function isLocalhost(hostname: string): boolean {
     '0:0:0:0:0:0:0:1',
   ]
 
-  return localhostPatterns.some((pattern) => normalized === pattern)
+  if (localhostPatterns.some((pattern) => normalized === pattern)) {
+    return true
+  }
+
+  // Handle WHATWG-normalized IPv4-mapped IPv6: ::ffff:7f00:1 = ::ffff:127.0.0.1
+  const ipv4 = extractIPv4FromMappedIPv6Hex(normalized)
+  if (ipv4) {
+    return localhostPatterns.some((p) => ipv4 === p) || /^127\./.test(ipv4)
+  }
+
+  return false
 }
 
 /**
@@ -109,12 +132,19 @@ function isPrivateIP(ip: string): boolean {
     return true
   }
 
-  // Check for IPv4-mapped IPv6 addresses (::ffff:x.x.x.x)
+  // Check for IPv4-mapped IPv6 addresses (::ffff:x.x.x.x dotted-decimal form)
   if (normalized.startsWith('::ffff:')) {
     const ipv4Part = normalized.slice(7)
     if (ipv4Private.some((pattern) => pattern.test(ipv4Part))) {
       return true
     }
+  }
+
+  // Handle WHATWG-normalized IPv4-mapped IPv6: ::ffff:XXXX:XXXX (hex) form
+  // e.g., ::ffff:10.0.0.1 → ::ffff:a00:1
+  const ipv4FromHex = extractIPv4FromMappedIPv6Hex(normalized)
+  if (ipv4FromHex && ipv4Private.some((pattern) => pattern.test(ipv4FromHex))) {
+    return true
   }
 
   // IPv6 private ranges

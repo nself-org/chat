@@ -25,6 +25,7 @@ describe('SSRF Protection - Property Tests', () => {
   // ==========================================================================
 
   describe('Protocol Validation', () => {
+    // fc.webUrl() generates real domain URLs that trigger DNS lookups — needs a longer timeout
     it('should accept HTTP and HTTPS protocols', async () => {
       await fc.assert(
         fc.asyncProperty(
@@ -39,9 +40,9 @@ describe('SSRF Protection - Property Tests', () => {
             }
           }
         ),
-        { numRuns: 500 }
+        { numRuns: 100 }
       )
-    })
+    }, 30000)
 
     it('should reject javascript: protocol', async () => {
       await fc.assert(
@@ -439,7 +440,14 @@ describe('SSRF Protection - Property Tests', () => {
     it('should handle URLs with @ symbol tricks', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.string(),
+          // Filter out URL-structure characters that cause WHATWG parser to
+          // treat them as path/query/fragment delimiters rather than userinfo —
+          // which would change the hostname from 127.0.0.1 to something else.
+          // WHATWG treats both / and \ as path separators for http/https.
+          fc.string().filter(s =>
+            !s.includes('/') && !s.includes('\\') &&
+            !s.includes('#') && !s.includes('?') && !s.includes('\0')
+          ),
           async (decoy) => {
             // Attacker tries to hide real host after @
             const url = `http://${decoy}@127.0.0.1/`
@@ -557,6 +565,7 @@ describe('SSRF Protection - Property Tests', () => {
       )
     })
 
+    // fc.webUrl() generates real domain URLs that trigger DNS lookups — needs a longer timeout
     it('should be consistent on repeated calls', async () => {
       await fc.assert(
         fc.asyncProperty(
@@ -567,8 +576,8 @@ describe('SSRF Protection - Property Tests', () => {
             expect(result1.valid).toBe(result2.valid)
           }
         ),
-        { numRuns: 500 }
+        { numRuns: 100 }
       )
-    })
+    }, 30000)
   })
 })
