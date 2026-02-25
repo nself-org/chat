@@ -174,7 +174,7 @@ jobs:
 
       - name: Run tests
         run: |
-          NODE_OPTIONS='--max-old-space-size=4096' npx jest --no-coverage --forceExit --maxWorkers=1
+          NODE_OPTIONS='--max-old-space-size=4096' npx jest --no-coverage --forceExit --maxWorkers=2
         env:
           CI: true
           NEXT_PUBLIC_USE_DEV_AUTH: 'true'
