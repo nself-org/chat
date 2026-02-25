@@ -109,15 +109,12 @@ const createChannelResult = (overrides?: Partial<ChannelSearchResult>): ChannelS
 
 describe('Search Store', () => {
   beforeEach(() => {
-    // Clear all state including persisted data
     act(() => {
-      const store = useSearchStore.getState()
-      // Clear recent and saved searches manually since reset preserves them
-      store.clearRecentSearches()
-      while (store.savedSearches.length > 0) {
-        store.removeSavedSearch(store.savedSearches[0].id)
-      }
-      store.reset()
+      // Reset persisted arrays directly — avoid stale snapshot infinite loop
+      // (capturing getState() once and using .savedSearches.length in a while loop
+      // never terminates because the snapshot reference never updates)
+      useSearchStore.setState({ savedSearches: [], recentSearches: [] })
+      useSearchStore.getState().reset()
     })
   })
 

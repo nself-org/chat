@@ -55,10 +55,10 @@ dist/
 *.pfx
 *.cer
 *.crt
-secrets/
-.secrets/
-credentials/
-.credentials/
+/secrets/
+/.secrets/
+/credentials/
+/.credentials/
 
 # -----------------------------------------------------------------------------
 # IDE & Editor
