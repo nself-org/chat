@@ -596,17 +596,20 @@ describe('Polls Module', () => {
 
   describe('formatPollDuration', () => {
     it('should format days', () => {
-      const future = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+      // Add 1-hour buffer so Math.floor doesn't round down to 2 days due to ms elapsed
+      const future = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 60 * 60 * 1000)
       expect(formatPollDuration(future)).toBe('3 days')
     })
 
     it('should format hours', () => {
-      const future = new Date(Date.now() + 5 * 60 * 60 * 1000)
+      // Add 5-minute buffer so Math.floor doesn't round down to 4 hours
+      const future = new Date(Date.now() + 5 * 60 * 60 * 1000 + 5 * 60 * 1000)
       expect(formatPollDuration(future)).toBe('5 hours')
     })
 
     it('should format minutes', () => {
-      const future = new Date(Date.now() + 30 * 60 * 1000)
+      // Add 30-second buffer so Math.floor doesn't round down to 29 minutes
+      const future = new Date(Date.now() + 30 * 60 * 1000 + 30 * 1000)
       expect(formatPollDuration(future)).toBe('30 minutes')
     })
 
@@ -616,7 +619,8 @@ describe('Polls Module', () => {
     })
 
     it('should use singular for 1 day', () => {
-      const future = new Date(Date.now() + 24 * 60 * 60 * 1000)
+      // Add 1-hour buffer so Math.floor doesn't round down to 0 days
+      const future = new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 60 * 1000)
       expect(formatPollDuration(future)).toBe('1 day')
     })
   })
