@@ -187,6 +187,7 @@ describe('E2EE Backup Service', () => {
       expect(result.encryptedMasterKey).toBeUndefined()
     })
 
+    // SecurityLevel.MAXIMUM = 1,000,000 PBKDF2 iterations — slow in CI, needs longer timeout
     it('respects security level', async () => {
       const result = await service.createBackup({
         passphrase: 'secure-passphrase-123', securityLevel: SecurityLevel.STANDARD,
@@ -194,7 +195,7 @@ describe('E2EE Backup Service', () => {
       })
 
       expect(result.backup).toBeDefined()
-    })
+    }, 60000)
 
     it('rejects invalid passphrase', async () => {
       await expect(
@@ -375,14 +376,16 @@ describe('E2EE Backup Service', () => {
       expect(history).toHaveLength(0)
     })
 
+    // 2x STANDARD (310k iterations each) = ~6-8s in CI — needs longer timeout
     it('tracks multiple backups', async () => {
       await service.createBackup({ passphrase: 'secure-passphrase-123', securityLevel: SecurityLevel.STANDARD })
       await service.createBackup({ passphrase: 'secure-passphrase-123', securityLevel: SecurityLevel.STANDARD })
 
       const history = service.getBackupHistory()
       expect(history.length).toBe(2)
-    })
+    }, 60000)
 
+    // 2x STANDARD (310k iterations each) = ~6-8s in CI — needs longer timeout
     it('returns most recent first', async () => {
       await service.createBackup({
         passphrase: 'secure-passphrase-123', securityLevel: SecurityLevel.STANDARD,
@@ -399,7 +402,7 @@ describe('E2EE Backup Service', () => {
 
       const history = service.getBackupHistory()
       expect(history[0].description).toBe('second')
-    })
+    }, 60000)
 
     it('gets last backup metadata', async () => {
       await service.createBackup({
@@ -431,6 +434,7 @@ describe('E2EE Backup Service', () => {
       await service.initialize(keyProvider, keyConsumer)
     })
 
+    // createBackup + regenerateRecoveryKey each do PBKDF2 — needs longer timeout
     it('regenerates recovery key', async () => {
       await service.createBackup({
         passphrase: 'secure-passphrase-123', securityLevel: SecurityLevel.STANDARD,
@@ -442,7 +446,7 @@ describe('E2EE Backup Service', () => {
 
       expect(result.recoveryKey).toBeDefined()
       expect(result.encryptedMasterKey).toBeDefined()
-    })
+    }, 60000)
 
     it('rejects wrong passphrase for regeneration', async () => {
       await service.createBackup({
