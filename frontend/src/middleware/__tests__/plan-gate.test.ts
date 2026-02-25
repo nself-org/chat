@@ -4,7 +4,7 @@
  * Tests for plan-based feature access middleware.
  */
 
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import {
   checkPlanGate,
   ROUTE_FEATURE_MAP,
@@ -260,7 +260,7 @@ describe('Plan Gate Middleware', () => {
       mockGetTenantId.mockReturnValue(null)
 
       const handler = jest.fn().mockResolvedValue(
-        new Response(JSON.stringify({ success: true }), { status: 200 })
+        NextResponse.json({ success: true }, { status: 200 })
       )
 
       const gatedHandler = withPlanGate(handler, { feature: 'videoCalls' })
