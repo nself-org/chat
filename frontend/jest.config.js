@@ -131,10 +131,10 @@ const customJestConfig = {
   restoreMocks: true,
   // Verbose output for debugging
   verbose: false,
-  // Run all tests in CI to surface all failures at once (no bail)
-  bail: 0,
-  // Test timeout
-  testTimeout: 10000,
+  // Fail fast in CI — bail after 1 failure to keep run times short
+  bail: process.env.CI ? 1 : 0,
+  // Test timeout — 5s in CI (fail fast), 10s locally
+  testTimeout: process.env.CI ? 5000 : 10000,
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
