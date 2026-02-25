@@ -172,13 +172,18 @@ export function sanitizeText(text: string): string {
  * Sanitize filename (remove path traversal attempts)
  */
 export function sanitizeFilename(filename: string): string {
-  // Remove path separators FIRST, then remove .., to prevent bypass via
-  // sequences like ".../" which become ".." after "/" removal.
-  return filename
-    .replace(/[/\\]/g, '') // Remove / and \ first (prevents separator-based bypass)
-    .replace(/\.\./g, '') // Remove ..
+  // Remove separators and invalid chars first, then remove .. iteratively.
+  // Removing .. before special chars is wrong: ".:../" → remove / → ".:..." →
+  // remove .. → ".:." → remove : → ".." (bypass). Iterate until stable.
+  let result = filename
+    .replace(/[/\\]/g, '') // Remove path separators
     .replace(/[<>:"|?*]/g, '') // Remove invalid filename characters
     .trim()
+  // Remove .. iteratively until stable (other removals can expose new .. sequences)
+  while (result.includes('..')) {
+    result = result.replace(/\.\./g, '')
+  }
+  return result
 }
 
 /**
