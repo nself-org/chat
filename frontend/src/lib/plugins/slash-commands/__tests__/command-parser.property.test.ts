@@ -53,7 +53,8 @@ describe('Tokenizer - Property Tests', () => {
     fc.assert(
       fc.property(
         fc.string(),
-        fc.string(),
+        // Exclude " and \ from quoted content — they have special meaning in the tokenizer
+        fc.string().filter(s => !s.includes('"') && !s.includes('\\')),
         (before, quoted) => {
           const input = `${before} "${quoted}"`
           const tokens = tokenize(input)

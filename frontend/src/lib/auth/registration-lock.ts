@@ -353,14 +353,14 @@ export async function hashPin(
   const encoder = new TextEncoder()
   const pinBuffer = encoder.encode(pin)
 
-  const keyMaterial = await crypto.subtle.importKey('raw', pinBuffer, 'PBKDF2', false, [
+  const keyMaterial = await crypto.subtle.importKey('raw', pinBuffer as unknown as ArrayBuffer, 'PBKDF2', false, [
     'deriveBits',
   ])
 
   const derivedBits = await crypto.subtle.deriveBits(
     {
       name: 'PBKDF2',
-      salt: pinSalt,
+      salt: pinSalt as unknown as ArrayBuffer,
       iterations,
       hash: 'SHA-256',
     },

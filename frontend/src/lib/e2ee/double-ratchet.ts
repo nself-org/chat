@@ -285,7 +285,7 @@ async function generateRatchetKeyPair(): Promise<RatchetKeyPair> {
 async function importPublicKey(publicKeyBytes: Uint8Array): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     'raw',
-    publicKeyBytes,
+    publicKeyBytes as unknown as ArrayBuffer,
     {
       name: 'ECDH',
       namedCurve: ECDH_CURVE,
@@ -349,7 +349,7 @@ async function hkdfDerive(
 ): Promise<Uint8Array> {
   const ikm = await crypto.subtle.importKey(
     'raw',
-    inputKeyMaterial,
+    inputKeyMaterial as unknown as ArrayBuffer,
     'HKDF',
     false,
     ['deriveBits']
@@ -359,8 +359,8 @@ async function hkdfDerive(
     {
       name: 'HKDF',
       hash: HKDF_HASH,
-      salt: salt,
-      info: info,
+      salt: salt as unknown as ArrayBuffer,
+      info: info as unknown as ArrayBuffer,
     },
     ikm,
     length * 8
@@ -395,7 +395,7 @@ async function kdfChainKey(chainKey: Uint8Array): Promise<[Uint8Array, Uint8Arra
   // Import chain key for HMAC
   const key = await crypto.subtle.importKey(
     'raw',
-    chainKey,
+    chainKey as unknown as ArrayBuffer,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
@@ -425,7 +425,7 @@ async function aesGcmEncrypt(
 
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key as unknown as ArrayBuffer,
     { name: 'AES-GCM' },
     false,
     ['encrypt']
@@ -436,10 +436,10 @@ async function aesGcmEncrypt(
       name: 'AES-GCM',
       iv: nonce,
       tagLength: AES_TAG_LENGTH,
-      additionalData: associatedData,
+      additionalData: associatedData as unknown as ArrayBuffer,
     },
     cryptoKey,
-    plaintext
+    plaintext as unknown as ArrayBuffer
   )
 
   return {
@@ -459,7 +459,7 @@ async function aesGcmDecrypt(
 ): Promise<Uint8Array> {
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key as unknown as ArrayBuffer,
     { name: 'AES-GCM' },
     false,
     ['decrypt']
@@ -468,12 +468,12 @@ async function aesGcmDecrypt(
   const decrypted = await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
-      iv: nonce,
+      iv: nonce as unknown as ArrayBuffer,
       tagLength: AES_TAG_LENGTH,
-      additionalData: associatedData,
+      additionalData: associatedData as unknown as ArrayBuffer,
     },
     cryptoKey,
-    ciphertext
+    ciphertext as unknown as ArrayBuffer
   )
 
   return toUint8Array(decrypted)

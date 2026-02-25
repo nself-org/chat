@@ -301,7 +301,7 @@ async function generateSigningKeyPair(): Promise<SenderKeySigningPair> {
 async function importSigningPublicKey(publicKeyBytes: Uint8Array): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     'raw',
-    publicKeyBytes,
+    publicKeyBytes as unknown as ArrayBuffer,
     {
       name: 'ECDSA',
       namedCurve: ECDSA_CURVE,
@@ -352,7 +352,7 @@ async function sign(data: Uint8Array, privateKey: CryptoKey): Promise<Uint8Array
       hash: 'SHA-256',
     },
     privateKey,
-    data
+    data as unknown as ArrayBuffer
   )
   return toUint8Array(signature)
 }
@@ -371,8 +371,8 @@ async function verify(
       hash: 'SHA-256',
     },
     publicKey,
-    signature,
-    data
+    signature as unknown as ArrayBuffer,
+    data as unknown as ArrayBuffer
   )
 }
 
@@ -386,7 +386,7 @@ async function deriveMessageKey(chainKey: Uint8Array): Promise<{
   // Import chain key for HMAC
   const key = await crypto.subtle.importKey(
     'raw',
-    chainKey,
+    chainKey as unknown as ArrayBuffer,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
@@ -418,7 +418,7 @@ async function aesGcmEncrypt(
 
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key as unknown as ArrayBuffer,
     { name: 'AES-GCM' },
     false,
     ['encrypt']
@@ -429,10 +429,10 @@ async function aesGcmEncrypt(
       name: 'AES-GCM',
       iv: nonce,
       tagLength: AES_TAG_LENGTH,
-      additionalData: associatedData,
+      additionalData: associatedData as unknown as ArrayBuffer,
     },
     cryptoKey,
-    plaintext
+    plaintext as unknown as ArrayBuffer
   )
 
   return {
@@ -452,7 +452,7 @@ async function aesGcmDecrypt(
 ): Promise<Uint8Array> {
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key as unknown as ArrayBuffer,
     { name: 'AES-GCM' },
     false,
     ['decrypt']
@@ -461,12 +461,12 @@ async function aesGcmDecrypt(
   const decrypted = await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
-      iv: nonce,
+      iv: nonce as unknown as ArrayBuffer,
       tagLength: AES_TAG_LENGTH,
-      additionalData: associatedData,
+      additionalData: associatedData as unknown as ArrayBuffer,
     },
     cryptoKey,
-    ciphertext
+    ciphertext as unknown as ArrayBuffer
   )
 
   return toUint8Array(decrypted)

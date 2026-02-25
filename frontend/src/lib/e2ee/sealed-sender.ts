@@ -197,7 +197,7 @@ function generateRandomBytes(length: number): Uint8Array {
 async function importPublicKey(publicKeyBytes: Uint8Array): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     'raw',
-    publicKeyBytes,
+    publicKeyBytes as unknown as ArrayBuffer,
     { name: 'ECDH', namedCurve: ECDH_CURVE },
     true,
     []
@@ -269,7 +269,7 @@ async function hkdfDerive(
 ): Promise<Uint8Array> {
   const ikm = await crypto.subtle.importKey(
     'raw',
-    inputKeyMaterial,
+    inputKeyMaterial as unknown as ArrayBuffer,
     'HKDF',
     false,
     ['deriveBits']
@@ -279,8 +279,8 @@ async function hkdfDerive(
     {
       name: 'HKDF',
       hash: 'SHA-256',
-      salt: salt,
-      info: info,
+      salt: salt as unknown as ArrayBuffer,
+      info: info as unknown as ArrayBuffer,
     },
     ikm,
     length * 8
@@ -300,7 +300,7 @@ async function encryptAESGCM(
 ): Promise<Uint8Array> {
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key as unknown as ArrayBuffer,
     { name: 'AES-GCM' },
     false,
     ['encrypt']
@@ -309,12 +309,12 @@ async function encryptAESGCM(
   const encrypted = await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
-      iv: nonce,
+      iv: nonce as unknown as ArrayBuffer,
       tagLength: AUTH_TAG_LENGTH * 8,
-      additionalData: additionalData,
+      additionalData: additionalData as unknown as ArrayBuffer,
     },
     cryptoKey,
-    plaintext
+    plaintext as unknown as ArrayBuffer
   )
 
   return new Uint8Array(encrypted)
@@ -331,7 +331,7 @@ async function decryptAESGCM(
 ): Promise<Uint8Array> {
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key as unknown as ArrayBuffer,
     { name: 'AES-GCM' },
     false,
     ['decrypt']
@@ -340,12 +340,12 @@ async function decryptAESGCM(
   const decrypted = await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
-      iv: nonce,
+      iv: nonce as unknown as ArrayBuffer,
       tagLength: AUTH_TAG_LENGTH * 8,
-      additionalData: additionalData,
+      additionalData: additionalData as unknown as ArrayBuffer,
     },
     cryptoKey,
-    ciphertext
+    ciphertext as unknown as ArrayBuffer
   )
 
   return new Uint8Array(decrypted)
