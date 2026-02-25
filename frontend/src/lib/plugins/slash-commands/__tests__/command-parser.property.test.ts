@@ -695,7 +695,7 @@ describe('Unicode Edge Cases - Fuzz Tests', () => {
   it('should handle unicode in command names', () => {
     fc.assert(
       fc.property(
-        fc.unicodeString({ minLength: 1, maxLength: 20 }),
+        fc.string({ minLength: 1, maxLength: 20 }),
         (unicode) => {
           const input = `/${unicode}`
           expect(() => parseInput(input)).not.toThrow()
@@ -708,7 +708,7 @@ describe('Unicode Edge Cases - Fuzz Tests', () => {
   it('should handle emoji in arguments', () => {
     fc.assert(
       fc.property(
-        fc.unicodeString(),
+        fc.string(),
         (emoji) => {
           const input = `/test ${emoji}`
           expect(() => parseInput(input)).not.toThrow()

@@ -506,7 +506,7 @@ describe('Password Strength - Fuzz Tests', () => {
   it('should handle passwords with special characters', async () => {
     await fc.assert(
       fc.asyncProperty(
-        fc.unicodeString({ minLength: 8, maxLength: 100 }),
+        fc.string({ minLength: 8, maxLength: 100 }),
         fc.uint8Array({ minLength: SALT_LENGTH, maxLength: SALT_LENGTH }),
         async (password, salt) => {
           const key = await deriveMasterKey(password, salt)

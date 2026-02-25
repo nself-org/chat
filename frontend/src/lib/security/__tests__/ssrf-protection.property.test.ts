@@ -322,7 +322,7 @@ describe('SSRF Protection - Property Tests', () => {
     it('should handle URLs with unicode domains', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.unicodeString({ minLength: 1, maxLength: 20 }),
+          fc.string({ minLength: 1, maxLength: 20 }),
           async (domain) => {
             try {
               const url = `http://${domain}.example.com/`

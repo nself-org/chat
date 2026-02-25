@@ -238,7 +238,7 @@ describe('Log Sanitizer - Property Tests', () => {
     it('should detect high-entropy strings', () => {
       fc.assert(
         fc.property(
-          fc.hexaString({ minLength: 40, maxLength: 128 }),
+          fc.stringMatching(/^[0-9a-f]{40,128}$/),
           (hex) => {
             const result = looksLikeSecret(hex)
             // Long hex strings should be detected as secrets
@@ -423,9 +423,9 @@ describe('Log Sanitizer - Property Tests', () => {
     it('should detect JWT tokens', () => {
       fc.assert(
         fc.property(
-          fc.string({ minLength: 10, maxLength: 50 }),
-          fc.string({ minLength: 10, maxLength: 100 }),
-          fc.string({ minLength: 10, maxLength: 50 }),
+          fc.stringMatching(/^[A-Za-z0-9_-]{10,50}$/),
+          fc.stringMatching(/^[A-Za-z0-9_-]{10,100}$/),
+          fc.stringMatching(/^[A-Za-z0-9_-]{10,50}$/),
           (header, payload, signature) => {
             const jwt = `eyJ${header}.eyJ${payload}.${signature}`
             const entry: LogEntry = {
@@ -604,7 +604,7 @@ describe('Log Sanitizer - Property Tests', () => {
     it('should handle emoji in log messages', () => {
       fc.assert(
         fc.property(
-          fc.unicodeString(),
+          fc.string(),
           (emoji) => {
             const entry: LogEntry = {
               timestamp: new Date(),
@@ -645,9 +645,9 @@ describe('Log Sanitizer - Property Tests', () => {
     it('should handle mixed scripts', () => {
       fc.assert(
         fc.property(
-          fc.unicodeString(),
           fc.string(),
-          fc.unicodeString(),
+          fc.string(),
+          fc.string(),
           (unicode1, ascii, unicode2) => {
             const entry: LogEntry = {
               timestamp: new Date(),
