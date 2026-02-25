@@ -102,6 +102,11 @@ function createMockKeyConsumer(): KeyDataConsumer {
 }
 
 describe('E2EE Backup Service', () => {
+  // All tests use PBKDF2 key derivation which is intentionally slow.
+  // STANDARD = 310k iterations (~3-4s in CI), MAXIMUM = 1M iterations (>10s).
+  // Set a generous timeout for the entire suite including beforeEach hooks.
+  jest.setTimeout(60000)
+
   let service: E2EEBackupService
   let config: BackupServiceConfig
   let storage: MockStorage
