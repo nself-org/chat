@@ -440,17 +440,19 @@ describe('RecordingPipelineService', () => {
     })
 
     it('should filter recordings by date range', async () => {
-      const now = new Date()
-      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      const startDate = new Date(Date.now() - 24 * 60 * 60 * 1000) // yesterday
 
       await service.startRecording(
         { callId: 'call-1', channelId, source: 'call' },
         userId
       )
 
+      // Capture endDate AFTER startRecording so the recording's createdAt falls within range
+      const endDate = new Date(Date.now() + 60 * 1000) // 1 minute in future for safety
+
       const { recordings } = await service.listRecordings({
-        startDate: yesterday.toISOString(),
-        endDate: now.toISOString(),
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
       })
 
       expect(recordings.length).toBeGreaterThan(0)
