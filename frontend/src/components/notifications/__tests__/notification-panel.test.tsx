@@ -33,21 +33,18 @@ jest.mock('../notification-item', () => ({
     onClick: () => void
     onArchive: () => void
   }) => (
-    <div data-testid={`notification-${notification.id}`}>
+    // Mirror real NotificationItem: onClick on the outer element so
+    // fireEvent.click(getByTestId('notification-X')) triggers the handler correctly.
+    <div
+      data-testid={`notification-${notification.id}`}
+      onClick={onClick}
+    >
+      <span>{notification.title}</span>
       <button
         type="button"
-        onClick={onClick}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            onClick()
-          }
-        }}
-        className="w-full text-left border-none bg-transparent cursor-pointer"
+        data-testid={`archive-${notification.id}`}
+        onClick={(e) => { e.stopPropagation(); onArchive() }}
       >
-        <span>{notification.title}</span>
-      </button>
-      <button type="button" data-testid={`archive-${notification.id}`} onClick={onArchive}>
         Archive
       </button>
     </div>
