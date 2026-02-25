@@ -370,7 +370,8 @@ export function maskString(
   preserveSuffix: number = 0
 ): string {
   if (value.length <= preservePrefix + preserveSuffix) {
-    return maskChar.repeat(value.length)
+    // Always return at least one mask character (even for empty input)
+    return maskChar.repeat(Math.max(1, value.length))
   }
 
   const prefix = value.substring(0, preservePrefix)
