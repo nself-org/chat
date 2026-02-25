@@ -164,8 +164,8 @@ export function getCsrfToken(request: NextRequest): string | null {
     if (verified) return verified
   }
 
-  // Check cookie
-  const cookieToken = request.cookies.get(CSRF_CONFIG.COOKIE_NAME)?.value
+  // Check cookie (use optional chaining: cookies may be undefined in test environments)
+  const cookieToken = request.cookies?.get(CSRF_CONFIG.COOKIE_NAME)?.value
 
   if (cookieToken) {
     const verified = verifyToken(cookieToken)
