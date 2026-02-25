@@ -185,8 +185,8 @@ describe('Plan Helper Functions', () => {
       expect(savings).toBeGreaterThan(0)
       expect(savings).toBeLessThan(100)
 
-      // Free tier has no savings
-      expect(calculateYearlySavings('free')).toBe(0)
+      // Free tier has no yearly pricing — function returns null, not 0
+      expect(calculateYearlySavings('free')).toBeNull()
     })
   })
 
