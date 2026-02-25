@@ -48,6 +48,9 @@ jest.mock('@/config/auth.config', () => ({
       maxAge: 30 * 24 * 60 * 60,
     },
   },
+  // Required exports from auth-context.tsx import
+  isTwoFactorRequired: jest.fn().mockReturnValue(false),
+  verifySecurityConfiguration: jest.fn(),
 }))
 
 // Mock current user state - starts as null, reset in beforeEach
