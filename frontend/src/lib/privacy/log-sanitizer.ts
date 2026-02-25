@@ -638,8 +638,13 @@ export class LogSanitizer {
   private sanitizeObject(
     obj: Record<string, unknown>,
     result: SanitizationResult,
-    path: string = ''
+    path: string = '',
+    seen: Set<object> = new Set()
   ): Record<string, unknown> {
+    if (seen.has(obj)) {
+      return { '[circular]': true }
+    }
+    seen.add(obj)
     const sanitized: Record<string, unknown> = {}
 
     for (const [key, value] of Object.entries(obj)) {
@@ -662,7 +667,7 @@ export class LogSanitizer {
 
       // Handle nested objects
       if (typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
-        sanitized[key] = this.sanitizeObject(value as Record<string, unknown>, result, fieldPath)
+        sanitized[key] = this.sanitizeObject(value as Record<string, unknown>, result, fieldPath, seen)
         continue
       }
 

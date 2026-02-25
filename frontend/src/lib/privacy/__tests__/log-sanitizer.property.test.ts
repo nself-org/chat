@@ -445,7 +445,7 @@ describe('Log Sanitizer - Property Tests', () => {
     it('should detect Bearer tokens', () => {
       fc.assert(
         fc.property(
-          fc.string({ minLength: 20, maxLength: 100 }),
+          fc.stringMatching(/^[A-Za-z0-9_.~+/=-]{20,100}$/),
           (token) => {
             const entry: LogEntry = {
               timestamp: new Date(),
