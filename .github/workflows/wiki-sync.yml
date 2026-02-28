@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.wiki/**'
+      - '.github/wiki/**'
   workflow_dispatch:
 
 jobs:
@@ -34,5 +34,5 @@ jobs:
         if: steps.wiki-check.outputs.exists == 'true'
         uses: Andrew-Chen-Wang/github-wiki-action@v4
         with:
-          path: .wiki/
+          path: .github/wiki/
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'docs/**'
+      - '.github/wiki/**'
   workflow_dispatch:
 
 permissions:
@@ -40,7 +40,7 @@ jobs:
       - name: Sync docs to wiki
         run: |
           # Copy all markdown files from docs/ to wiki/
-          cp -r main/docs/* wiki/ 2>/dev/null || true
+          cp -r main/.github/wiki/* wiki/ 2>/dev/null || true
 
           # Ensure _Sidebar.md exists
           if [ ! -f wiki/_Sidebar.md ]; then
@@ -49,7 +49,7 @@ jobs:
 
           # Ensure Home.md exists
           if [ ! -f wiki/Home.md ]; then
-            cp main/docs/Home.md wiki/Home.md 2>/dev/null || echo "# nself-chat Documentation" > wiki/Home.md
+            cp main/.github/wiki/Home.md wiki/Home.md 2>/dev/null || echo "# nself-chat Documentation" > wiki/Home.md
           fi
 
       - name: Push to wiki
