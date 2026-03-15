@@ -799,9 +799,9 @@ export class CalendarConnector extends BaseConnector {
       case 'weekly': {
         if (diffDays % (7 * recurrence.interval) > 6) return false
         if (recurrence.daysOfWeek) {
-          return recurrence.daysOfWeek.includes(check.getDay())
+          return recurrence.daysOfWeek.includes(check.getUTCDay())
         }
-        return check.getDay() === start.getDay()
+        return check.getUTCDay() === start.getUTCDay()
       }
       case 'monthly':
         return check.getDate() === start.getDate() &&

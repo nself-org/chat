@@ -516,8 +516,12 @@ export async function rotateKeyPair(
  * Checks if key rotation is needed based on age
  */
 export function isKeyRotationNeeded(metadata: KeyMetadata, maxAgeInDays: number = 30): boolean {
-  const ageInMs = Date.now() - metadata.createdAt.getTime()
-  const ageInDays = ageInMs / (1000 * 60 * 60 * 24)
+  // Use UTC calendar days to avoid DST-induced off-by-one errors near boundaries
+  const today = new Date()
+  const created = new Date(metadata.createdAt)
+  today.setUTCHours(0, 0, 0, 0)
+  created.setUTCHours(0, 0, 0, 0)
+  const ageInDays = (today.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
   return ageInDays >= maxAgeInDays
 }
 
