@@ -352,16 +352,17 @@ describe('createDefaultAutoDeleteConfig', () => {
 
 describe('calculateNextRunTime', () => {
   it('should calculate next run time for today if time has not passed', () => {
-    // Pin to a fixed time so the test is timezone-independent
-    const pinned = new Date('2024-06-15T10:00:00')
+    // Pin to a Wednesday so excludeWeekends doesn't skip days
+    const pinned = new Date('2024-06-12T10:00:00Z')
     jest.useFakeTimers().setSystemTime(pinned)
 
     const config = createDefaultAutoDeleteConfig()
     config.scheduleTime = '23:59' // Late in the day
+    config.excludeWeekends = false // Ensure no day-skipping
 
     const result = calculateNextRunTime(config)
 
-    expect(result.getDate()).toBe(15)
+    expect(result.getDate()).toBe(12)
     expect(result.getHours()).toBe(23)
     expect(result.getMinutes()).toBe(59)
 
