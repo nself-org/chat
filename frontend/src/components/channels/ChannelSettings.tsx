@@ -43,6 +43,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { ChannelPermissions } from './ChannelPermissions'
 import { ChannelMembers } from './ChannelMembers'
+import { EncryptionBadge } from '@/components/security/encryption-badge'
 import type { Channel, ChannelType } from '@/stores/channel-store'
 import { DEFAULT_CATEGORIES } from '@/lib/channels/channel-categories'
 import { CATEGORY_COLORS } from '@/lib/channels/channel-categories'
@@ -83,6 +84,7 @@ export function ChannelSettings({
     categoryId: channel.categoryId || '',
     color: channel.color || CATEGORY_COLORS[0],
     isDefault: channel.isDefault,
+    isEncrypted: (channel as Channel & { isEncrypted?: boolean }).isEncrypted ?? false,
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -101,11 +103,14 @@ export function ChannelSettings({
         categoryId: formData.categoryId || null,
         color: formData.color,
         isDefault: formData.isDefault,
-      })
+        isEncrypted: formData.isEncrypted,
+      } as Partial<Channel>)
     } finally {
       setIsSaving(false)
     }
   }
+
+  const channelIsEncrypted = (channel as Channel & { isEncrypted?: boolean }).isEncrypted ?? false
 
   const hasChanges =
     formData.name !== channel.name ||
@@ -114,7 +119,8 @@ export function ChannelSettings({
     formData.type !== channel.type ||
     formData.categoryId !== (channel.categoryId || '') ||
     formData.color !== (channel.color || CATEGORY_COLORS[0]) ||
-    formData.isDefault !== channel.isDefault
+    formData.isDefault !== channel.isDefault ||
+    formData.isEncrypted !== channelIsEncrypted
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -280,6 +286,28 @@ export function ChannelSettings({
                   checked={formData.isDefault}
                   onCheckedChange={(checked) =>
                     setFormData((prev) => ({ ...prev, isDefault: checked }))
+                  }
+                  disabled={!isAdmin}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <Label>End-to-End Encryption</Label>
+                    {formData.isEncrypted && (
+                      <EncryptionBadge level="encrypted" size="sm" showTooltip={false} />
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Encrypt all messages in this channel. Members must exchange keys before reading
+                    messages.
+                  </p>
+                </div>
+                <Switch
+                  checked={formData.isEncrypted}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, isEncrypted: checked }))
                   }
                   disabled={!isAdmin}
                 />

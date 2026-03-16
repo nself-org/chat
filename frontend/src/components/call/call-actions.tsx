@@ -8,11 +8,50 @@
 'use client'
 
 import * as React from 'react'
+import { Phone, Video } from 'lucide-react'
 import { CallButton } from './call-button'
+import { FeatureGate } from '@/components/features/feature-gate'
+import { Button } from '@/components/ui/button'
 import { useCall } from '@/hooks/use-call'
 import { useToast } from '@/hooks/use-toast'
 
 import { logger } from '@/lib/logger'
+
+// =============================================================================
+// Upgrade Prompt Button
+// =============================================================================
+
+interface UpgradeCallButtonProps {
+  callType: 'voice' | 'video'
+  variant?: 'default' | 'ghost' | 'outline'
+  size?: 'sm' | 'md' | 'lg' | 'icon'
+  showLabel?: boolean
+}
+
+function UpgradeCallButton({
+  callType,
+  variant = 'ghost',
+  size = 'icon',
+  showLabel = false,
+}: UpgradeCallButtonProps) {
+  const Icon = callType === 'voice' ? Phone : Video
+  const label = callType === 'voice' ? 'Voice Call' : 'Video Call'
+  const upgradeTitle = 'Requires Starter plan or higher'
+
+  return (
+    <Button
+      variant={variant as 'default' | 'ghost' | 'outline'}
+      size={size === 'md' ? 'default' : (size as 'sm' | 'lg' | 'icon')}
+      disabled
+      aria-label={upgradeTitle}
+      title={upgradeTitle}
+      className="opacity-40 cursor-not-allowed"
+    >
+      <Icon className="h-4 w-4" />
+      {showLabel && <span className="ml-2">{label}</span>}
+    </Button>
+  )
+}
 
 // =============================================================================
 // Types
@@ -54,6 +93,7 @@ export function CallActions({
   showLabels = false,
   className,
 }: CallActionsProps) {
+  const livekitEnabled = Boolean(process.env.NEXT_PUBLIC_LIVEKIT_URL)
   const { initiateVoiceCall, initiateVideoCall, isInCall } = useCall()
   const { toast } = useToast()
 
@@ -94,24 +134,40 @@ export function CallActions({
   return (
     <div className={className}>
       {showVoiceCall && (
-        <CallButton
-          callType="voice"
-          variant={variant}
-          size={size}
-          showLabel={showLabels}
-          onInitiateCall={handleVoiceCall}
-          disabled={isInCall}
-        />
+        <FeatureGate
+          category="voice"
+          feature="calls"
+          fallback={<UpgradeCallButton callType="voice" variant={variant} size={size} showLabel={showLabels} />}
+        >
+          {livekitEnabled && (
+            <CallButton
+              callType="voice"
+              variant={variant}
+              size={size}
+              showLabel={showLabels}
+              onInitiateCall={handleVoiceCall}
+              disabled={isInCall}
+            />
+          )}
+        </FeatureGate>
       )}
       {showVideoCall && (
-        <CallButton
-          callType="video"
-          variant={variant}
-          size={size}
-          showLabel={showLabels}
-          onInitiateCall={handleVideoCall}
-          disabled={isInCall}
-        />
+        <FeatureGate
+          category="video"
+          feature="calls"
+          fallback={<UpgradeCallButton callType="video" variant={variant} size={size} showLabel={showLabels} />}
+        >
+          {livekitEnabled && (
+            <CallButton
+              callType="video"
+              variant={variant}
+              size={size}
+              showLabel={showLabels}
+              onInitiateCall={handleVideoCall}
+              disabled={isInCall}
+            />
+          )}
+        </FeatureGate>
       )}
     </div>
   )

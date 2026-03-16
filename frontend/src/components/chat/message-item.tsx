@@ -36,6 +36,7 @@ interface MessageItemProps {
   onRemoveReaction?: (messageId: string, emoji: string) => void
   onPin?: (messageId: string) => void
   onUnpin?: (messageId: string) => void
+  onForward?: (message: Message) => void
   onScrollToMessage?: (messageId: string) => void
   onRetryMessage?: (messageId: string) => void
   className?: string
@@ -59,6 +60,7 @@ export const MessageItem = memo(function MessageItem({
   onRemoveReaction,
   onPin,
   onUnpin,
+  onForward,
   onScrollToMessage,
   onRetryMessage,
   className,
@@ -116,6 +118,9 @@ export const MessageItem = memo(function MessageItem({
         case 'unpin':
           onUnpin?.(message.id)
           break
+        case 'forward':
+          onForward?.(message)
+          break
         case 'copy':
           // Already handled in context menu
           break
@@ -124,7 +129,7 @@ export const MessageItem = memo(function MessageItem({
           break
       }
     },
-    [message, onReply, onThread, onEdit, onDelete, onReact, onPin, onUnpin]
+    [message, onReply, onThread, onEdit, onDelete, onReact, onPin, onUnpin, onForward]
   )
 
   const handleReact = useCallback(

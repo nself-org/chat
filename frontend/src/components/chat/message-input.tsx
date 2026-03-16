@@ -51,6 +51,8 @@ import { useChannelTyping } from '@/hooks/use-channel-typing'
 import { ReplyPreview, EditPreview } from './reply-preview'
 import { GifPicker } from './GifPicker'
 import { StickerPicker } from './StickerPicker'
+import { InlineCommandMenu } from '@/components/commands/slash-command-menu'
+import type { SlashCommand } from '@/lib/commands'
 import type { Message, MentionSuggestion } from '@/types/message'
 import type { TenorGif } from '@/lib/tenor-client'
 import type { Sticker as StickerType } from '@/hooks/use-stickers'
@@ -131,6 +133,8 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(funct
   const [showStickerPicker, setShowStickerPicker] = useState(false)
   const [attachments, setAttachments] = useState<File[]>([])
   const [showFormatting, setShowFormatting] = useState(false)
+  const [showSlashMenu, setShowSlashMenu] = useState(false)
+  const [slashQuery, setSlashQuery] = useState('')
   const lastTypingTimeRef = useRef<number>(0)
 
   const { user } = useAuth()
@@ -196,6 +200,18 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(funct
     editable: !disabled,
     onUpdate: ({ editor }) => {
       const content = editor.getText()
+
+      // Slash command detection: check if the current paragraph starts with /
+      const { $from } = editor.state.selection
+      const lineText = $from.parent.textContent
+      if (lineText.startsWith('/')) {
+        const query = lineText.slice(1)
+        setSlashQuery(query)
+        setShowSlashMenu(true)
+      } else {
+        setShowSlashMenu(false)
+        setSlashQuery('')
+      }
 
       // Trigger typing indicator with debounce
       handleTypingChange(content)
@@ -304,6 +320,25 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(funct
   // Handle keyboard shortcuts
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
+      // When slash menu is open, let it handle navigation and selection keys
+      if (showSlashMenu) {
+        if (
+          e.key === 'ArrowDown' ||
+          e.key === 'ArrowUp' ||
+          e.key === 'Tab' ||
+          e.key === 'Enter'
+        ) {
+          e.preventDefault()
+          return
+        }
+        if (e.key === 'Escape') {
+          e.preventDefault()
+          setShowSlashMenu(false)
+          setSlashQuery('')
+          return
+        }
+      }
+
       // Send on Enter (without shift)
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault()
@@ -321,7 +356,7 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(funct
         return
       }
     },
-    [handleSend, editingMessage, replyingTo, onCancelEdit, onCancelReply]
+    [showSlashMenu, handleSend, editingMessage, replyingTo, onCancelEdit, onCancelReply]
   )
 
   // Handle emoji selection
@@ -368,6 +403,27 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(funct
       }
     },
     [onSendSticker]
+  )
+
+  // Handle slash command selection
+  const handleSlashCommandSelect = useCallback(
+    (command: SlashCommand) => {
+      if (!editor) return
+
+      // Delete the /query text from the current paragraph
+      const { $from } = editor.state.selection
+      const start = $from.start()
+      editor
+        .chain()
+        .deleteRange({ from: start, to: $from.pos })
+        .insertContent(`/${command.name} `)
+        .focus()
+        .run()
+
+      setShowSlashMenu(false)
+      setSlashQuery('')
+    },
+    [editor]
   )
 
   // Remove attachment
@@ -445,6 +501,18 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(funct
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Slash command menu */}
+          <InlineCommandMenu
+            isVisible={showSlashMenu}
+            filter={slashQuery}
+            onSelect={handleSlashCommandSelect}
+            onDismiss={() => {
+              setShowSlashMenu(false)
+              setSlashQuery('')
+            }}
+            context={{ channelId }}
+          />
 
           {/* Editor */}
           <EditorContent
