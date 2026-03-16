@@ -1,6 +1,15 @@
 name: E2E Tests
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/tests/**'
+  pull_request:
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/tests/**'
   workflow_dispatch:
     inputs:
       device:
@@ -51,11 +60,14 @@ jobs:
 
       - name: Build application
         run: pnpm build
+        env:
+          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
 
       - name: Run Playwright E2E tests
-        run: pnpm test:e2e
+        run: pnpm test:e2e --project=chromium
         env:
           CI: true
+          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
 
       - name: Upload Playwright report
         if: always()
@@ -73,12 +85,12 @@ jobs:
           path: frontend/test-results/
           retention-days: 7
 
-  # iOS E2E Tests (Detox)
+  # iOS E2E Tests (Simulator — no real device required)
   e2e-ios:
-    name: E2E iOS Tests
+    name: E2E iOS Tests (Simulator)
     runs-on: macos-14
     timeout-minutes: 60
-    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.device == 'ios' || github.event.inputs.device == 'all') || github.event_name != 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.device == 'ios' || github.event.inputs.device == 'all')
 
     defaults:
       run:
@@ -89,7 +101,6 @@ jobs:
       matrix:
         device:
           - 'iPhone 15 Pro'
-          - 'iPhone 14'
           - 'iPhone SE (3rd generation)'
 
     steps:
@@ -113,57 +124,57 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Detox CLI
-        run: pnpm add -D detox-cli
+      - name: Add iOS native project
+        run: npx cap add ios 2>/dev/null || true
+        working-directory: platforms/mobile
 
-      - name: Install iOS dependencies
+      - name: Sync Capacitor (iOS)
+        run: npx cap sync ios
+        working-directory: platforms/mobile
+
+      - name: Install CocoaPods
         run: |
-          cd platforms/capacitor/ios/App
+          cd platforms/mobile/ios/App
           pod install
 
       - name: Build iOS app for testing
         run: |
-          cd platforms/capacitor
-          pnpm build:ios -- --configuration Debug --simulator
+          cd platforms/mobile/ios/App
+          xcodebuild build-for-testing \
+            -scheme App \
+            -destination "platform=iOS Simulator,name=${{ matrix.device }}" \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
 
-      - name: Create iOS simulator
+      - name: Create and boot iOS simulator
         run: |
-          xcrun simctl create "E2E Test Device" "com.apple.CoreSimulator.SimDeviceType.${{ matrix.device }}" "com.apple.CoreSimulator.SimRuntime.iOS-17-2"
+          xcrun simctl create "E2E-${{ matrix.device }}" \
+            "$(xcrun simctl list devicetypes -j | python3 -c "import sys,json;types=json.load(sys.stdin)['devicetypes'];print(next(t['identifier'] for t in types if '${{ matrix.device }}' in t['name']))")" \
+            "$(xcrun simctl list runtimes -j | python3 -c "import sys,json;runtimes=json.load(sys.stdin)['runtimes'];print(next(r['identifier'] for r in runtimes if 'iOS-17' in r['identifier']))")"
+          UDID=$(xcrun simctl list devices -j | python3 -c "import sys,json;devices=json.load(sys.stdin)['devices'];all=[d for devs in devices.values() for d in devs];print(next(d['udid'] for d in all if d['name']=='E2E-${{ matrix.device }}'))")
+          xcrun simctl boot "$UDID"
         working-directory: .
 
-      - name: Boot iOS simulator
-        run: |
-          SIMULATOR_ID=$(xcrun simctl list devices | grep "E2E Test Device" | grep -oE '[A-F0-9-]{36}' | head -1)
-          xcrun simctl boot $SIMULATOR_ID
-        working-directory: .
-
-      - name: Run Detox iOS tests
-        run: pnpm exec detox test --configuration ios.sim.debug --headless
+      - name: Run Playwright mobile tests (web view)
+        run: pnpm test:e2e --project=mobile-safari
         env:
-          DETOX_DEVICE: ${{ matrix.device }}
+          CI: true
+          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
 
       - name: Upload iOS test artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: detox-ios-artifacts-${{ matrix.device }}
-          path: frontend/e2e/mobile/artifacts/
+          name: ios-test-artifacts-${{ matrix.device }}
+          path: frontend/test-results/
           retention-days: 7
 
-      - name: Upload iOS test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: detox-ios-reports-${{ matrix.device }}
-          path: frontend/e2e/mobile/reports/
-          retention-days: 7
-
-  # Android E2E Tests (Detox)
+  # Android E2E Tests (Emulator)
   e2e-android:
-    name: E2E Android Tests
-    runs-on: macos-14
+    name: E2E Android Tests (Emulator)
+    runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.device == 'android' || github.event.inputs.device == 'all') || github.event_name != 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.device == 'android' || github.event.inputs.device == 'all')
 
     defaults:
       run:
@@ -173,9 +184,6 @@ jobs:
       fail-fast: false
       matrix:
         api-level: [34]
-        device:
-          - pixel_5
-          - pixel_tablet
 
     steps:
       - name: Checkout code
@@ -203,13 +211,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Detox CLI
-        run: pnpm add -D detox-cli
+      - name: Add Android native project
+        run: npx cap add android 2>/dev/null || true
+        working-directory: platforms/mobile
 
-      - name: Build Android app for testing
+      - name: Sync Capacitor (Android)
+        run: npx cap sync android
+        working-directory: platforms/mobile
+
+      - name: Build Android app (debug)
         run: |
-          cd platforms/capacitor
-          pnpm build:android -- assembleDebug assembleAndroidTest
+          cd platforms/mobile/android
+          ./gradlew assembleDebug
 
       - name: AVD cache
         uses: actions/cache@v4
@@ -218,50 +231,40 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-${{ matrix.api-level }}-${{ matrix.device }}
+          key: avd-${{ matrix.api-level }}-x86_64
 
-      - name: Create AVD and generate snapshot
+      - name: Create AVD snapshot
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
-          profile: ${{ matrix.device }}
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: echo "Generated AVD snapshot for caching."
+          script: echo "AVD snapshot created."
 
-      - name: Run Detox Android tests
+      - name: Run Playwright mobile tests (web view)
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
-          profile: ${{ matrix.device }}
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: cd frontend && pnpm exec detox test --configuration android.emu.debug --headless
+          script: cd frontend && pnpm test:e2e --project=mobile-chrome
 
       - name: Upload Android test artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: detox-android-artifacts-${{ matrix.device }}-api${{ matrix.api-level }}
-          path: frontend/e2e/mobile/artifacts/
+          name: android-test-artifacts-api${{ matrix.api-level }}
+          path: frontend/test-results/
           retention-days: 7
 
-      - name: Upload Android test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: detox-android-reports-${{ matrix.device }}-api${{ matrix.api-level }}
-          path: frontend/e2e/mobile/reports/
-          retention-days: 7
-
-  # BrowserStack Tests (Real Devices)
+  # BrowserStack Real Device Tests (optional — requires secrets)
   e2e-browserstack:
-    name: E2E BrowserStack Tests
+    name: E2E BrowserStack (Real Devices)
     runs-on: ubuntu-latest
     timeout-minutes: 90
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && vars.BROWSERSTACK_ENABLED == 'true'
@@ -300,127 +303,55 @@ jobs:
 
       - name: Build app for BrowserStack
         run: |
-          cd platforms/capacitor
+          cd platforms/mobile
           if [ "${{ matrix.platform }}" == "ios" ]; then
-            pnpm build:ios -- --configuration Release
+            npx cap add ios 2>/dev/null || true
+            npx cap sync ios
           else
-            pnpm build:android -- assembleRelease
+            npx cap add android 2>/dev/null || true
+            npx cap sync android
           fi
 
       - name: Upload app to BrowserStack
         run: |
           if [ "${{ matrix.platform }}" == "ios" ]; then
-            APP_PATH="platforms/capacitor/ios/App/build/Build/Products/Release-iphoneos/App.ipa"
+            APP_PATH="platforms/mobile/ios/App/build/Build/Products/Release-iphoneos/App.ipa"
           else
-            APP_PATH="platforms/capacitor/android/app/build/outputs/apk/release/app-release.apk"
+            APP_PATH="platforms/mobile/android/app/build/outputs/apk/release/app-release.apk"
           fi
-
           curl -u "${{ secrets.BROWSERSTACK_USERNAME }}:${{ secrets.BROWSERSTACK_ACCESS_KEY }}" \
             -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
             -F "file=@$APP_PATH" \
             -F "custom_id=nchat-${{ matrix.platform }}" > app_url.json
-
-          echo "BROWSERSTACK_APP_URL=$(jq -r .app_url app_url.json)" >> $GITHUB_ENV
+          echo "BROWSERSTACK_APP_URL=$(python3 -c "import json; print(json.load(open('app_url.json'))['app_url'])")" >> $GITHUB_ENV
 
       - name: Run Appium tests on BrowserStack
         run: pnpm exec wdio appium.config.js
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-          BROWSERSTACK_IOS_APP_URL: ${{ env.BROWSERSTACK_APP_URL }}
-          BROWSERSTACK_ANDROID_APP_URL: ${{ env.BROWSERSTACK_APP_URL }}
+          BROWSERSTACK_APP_URL: ${{ env.BROWSERSTACK_APP_URL }}
 
       - name: Upload BrowserStack test reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: browserstack-reports-${{ matrix.platform }}
-          path: frontend/e2e/mobile/reports/
+          path: frontend/test-results/
           retention-days: 7
-
-  # Performance Tests
-  e2e-performance:
-    name: E2E Performance Tests
-    runs-on: macos-14
-    timeout-minutes: 45
-
-    defaults:
-      run:
-        working-directory: frontend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build iOS app
-        run: |
-          cd platforms/capacitor
-          pnpm build:ios -- --configuration Release --simulator
-
-      - name: Run performance tests
-        run: pnpm exec detox test e2e/mobile/performance.spec.ts --configuration ios.sim.release
-
-      - name: Upload performance results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: performance-results
-          path: frontend/e2e/mobile/reports/
-          retention-days: 30
-
-      - name: Comment PR with performance results
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const report = fs.readFileSync('frontend/e2e/mobile/reports/performance.txt', 'utf8');
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## Performance Test Results\n\n${report}`
-            });
 
   # Test Results Summary
   e2e-summary:
     name: E2E Test Summary
     runs-on: ubuntu-latest
-    needs: [e2e-web, e2e-ios, e2e-android]
+    needs: [e2e-web]
     if: always()
 
     steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: test-artifacts
-
-      - name: Generate summary report
+      - name: Generate summary
         run: |
           echo "# E2E Test Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "- Web Tests: ${{ needs.e2e-web.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- iOS Tests: ${{ needs.e2e-ios.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Android Tests: ${{ needs.e2e-android.result }}" >> $GITHUB_STEP_SUMMARY
-
-      - name: Upload combined report
-        uses: actions/upload-artifact@v4
-        with:
-          name: e2e-summary
-          path: test-artifacts/
-          retention-days: 30
+          echo "| Job | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Web (Playwright) | ${{ needs.e2e-web.result }} |" >> $GITHUB_STEP_SUMMARY

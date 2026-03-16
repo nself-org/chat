@@ -1,6 +1,17 @@
 name: Lighthouse CI
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/public/**'
+      - 'frontend/next.config.js'
+  pull_request:
+    paths:
+      - 'frontend/src/**'
+      - 'frontend/public/**'
+      - 'frontend/next.config.js'
   workflow_dispatch:
 
 jobs:

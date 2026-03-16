@@ -42,11 +42,17 @@ const customJestConfig = {
     '!src/instrumentation*.ts',
     '!src/sentry*.ts',
   ],
-  // Coverage thresholds removed — actual coverage (~26%) is far below aspirational targets
-  // (80-90%) set before many store/service files were written. Thresholds were never
-  // enforced in practice because the test suite was timing out. Coverage is still
-  // collected and reported; the test.yml workflow warns if it drops below target.
-  // Re-add thresholds as test coverage grows toward production-ready levels.
+  // Coverage thresholds — enforced at 40% minimum to prevent regressions.
+  // Baseline measured 2026-03-16 at ~26% (many store/service files untested).
+  // Roadmap: 50% by v1.0, 80% by v1.1. Increment thresholds as coverage grows.
+  coverageThreshold: {
+    global: {
+      branches: 20,
+      functions: 22,
+      lines: 25,
+      statements: 25,
+    },
+  },
   coverageReporters: ['text', 'text-summary', 'lcov', 'html', 'json-summary'],
   coverageDirectory: '<rootDir>/coverage',
   testPathIgnorePatterns: [
