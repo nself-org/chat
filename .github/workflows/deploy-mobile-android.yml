@@ -96,11 +96,11 @@ jobs:
           NODE_ENV: production
 
       - name: Sync Capacitor
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         run: npx cap sync android
 
       - name: Decode Android keystore
-        working-directory: frontend/platforms/capacitor/android
+        working-directory: frontend/platforms/mobile/android
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
@@ -108,7 +108,7 @@ jobs:
           ls -la app/release.keystore
 
       - name: Create keystore properties
-        working-directory: frontend/platforms/capacitor/android
+        working-directory: frontend/platforms/mobile/android
         env:
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -122,7 +122,7 @@ jobs:
           EOF
 
       - name: Build Android release
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         env:
           NCHAT_RELEASE_STORE_FILE: app/release.keystore
           NCHAT_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -140,7 +140,7 @@ jobs:
 
       - name: Upload to Play Store (Internal)
         if: inputs.track == 'internal' || contains(github.ref, 'internal')
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         env:
           PLAY_STORE_JSON_KEY: /tmp/play-store-key.json
         run: |
@@ -148,7 +148,7 @@ jobs:
 
       - name: Upload to Play Store (Alpha)
         if: inputs.track == 'alpha'
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         env:
           PLAY_STORE_JSON_KEY: /tmp/play-store-key.json
         run: |
@@ -156,7 +156,7 @@ jobs:
 
       - name: Upload to Play Store (Beta)
         if: inputs.track == 'beta'
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         env:
           PLAY_STORE_JSON_KEY: /tmp/play-store-key.json
         run: |
@@ -164,7 +164,7 @@ jobs:
 
       - name: Upload to Play Store (Production)
         if: inputs.track == 'production'
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         env:
           PLAY_STORE_JSON_KEY: /tmp/play-store-key.json
         run: |
@@ -176,9 +176,9 @@ jobs:
         with:
           name: android-release-${{ steps.version.outputs.version }}-${{ steps.version.outputs.version_code }}
           path: |
-            frontend/platforms/capacitor/dist/android/*.aab
-            frontend/platforms/capacitor/dist/android/*.apk
-            frontend/platforms/capacitor/android/app/build/outputs/mapping/release/mapping.txt
+            frontend/platforms/mobile/dist/android/*.aab
+            frontend/platforms/mobile/dist/android/*.apk
+            frontend/platforms/mobile/android/app/build/outputs/mapping/release/mapping.txt
           retention-days: 30
 
       - name: Upload build logs
@@ -187,8 +187,8 @@ jobs:
         with:
           name: android-build-logs-${{ github.run_number }}
           path: |
-            frontend/platforms/capacitor/fastlane/report.xml
-            frontend/platforms/capacitor/android/app/build/reports
+            frontend/platforms/mobile/fastlane/report.xml
+            frontend/platforms/mobile/android/app/build/reports
           retention-days: 7
 
       - name: Cleanup sensitive files
@@ -196,8 +196,8 @@ jobs:
         working-directory: .
         run: |
           rm -f /tmp/play-store-key.json
-          rm -f frontend/platforms/capacitor/android/app/release.keystore
-          rm -f frontend/platforms/capacitor/android/keystore.properties
+          rm -f frontend/platforms/mobile/android/app/release.keystore
+          rm -f frontend/platforms/mobile/android/keystore.properties
 
       - name: Notify on success
         if: success()

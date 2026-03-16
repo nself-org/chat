@@ -88,11 +88,11 @@ jobs:
           NODE_ENV: production
 
       - name: Sync Capacitor
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         run: npx cap sync ios
 
       - name: Install CocoaPods dependencies
-        working-directory: frontend/platforms/capacitor/ios/App
+        working-directory: frontend/platforms/mobile/ios/App
         run: |
           pod install --repo-update
           pod update
@@ -104,7 +104,7 @@ jobs:
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
           DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         run: |
           fastlane match appstore --readonly
 
@@ -115,7 +115,7 @@ jobs:
           DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
           APP_STORE_CONNECT_API_KEY_PATH: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         run: |
           fastlane ios release
 
@@ -124,7 +124,7 @@ jobs:
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APP_STORE_CONNECT_API_KEY_PATH: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         run: |
           fastlane ios beta
 
@@ -133,7 +133,7 @@ jobs:
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APP_STORE_CONNECT_API_KEY_PATH: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
-        working-directory: frontend/platforms/capacitor
+        working-directory: frontend/platforms/mobile
         run: |
           fastlane ios deploy
 
@@ -143,8 +143,8 @@ jobs:
         with:
           name: ios-ipa-${{ steps.version.outputs.version }}-${{ steps.version.outputs.build_number }}
           path: |
-            frontend/platforms/capacitor/dist/ios/*.ipa
-            frontend/platforms/capacitor/dist/ios/*.dSYM.zip
+            frontend/platforms/mobile/dist/ios/*.ipa
+            frontend/platforms/mobile/dist/ios/*.dSYM.zip
           retention-days: 30
 
       - name: Upload build logs
@@ -153,8 +153,8 @@ jobs:
         with:
           name: ios-build-logs-${{ github.run_number }}
           path: |
-            frontend/platforms/capacitor/fastlane/report.xml
-            frontend/platforms/capacitor/ios/App/build/Logs
+            frontend/platforms/mobile/fastlane/report.xml
+            frontend/platforms/mobile/ios/App/build/Logs
           retention-days: 7
 
       - name: Notify on success
