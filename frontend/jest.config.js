@@ -8,7 +8,9 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testEnvironment: 'jest-environment-jsdom',
+  // Custom JSDOM environment that patches canvas resolution before JSDOM loads.
+  // See jest.jsdom-env.js for details on the Next.js 15 + canvas incompatibility.
+  testEnvironment: '<rootDir>/jest.jsdom-env.js',
   moduleNameMapper: {
     // App internal paths (flat structure - no workspace packages)
     '^@/(.*)$': '<rootDir>/src/$1',
