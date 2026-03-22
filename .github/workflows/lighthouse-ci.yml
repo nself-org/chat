@@ -7,11 +7,17 @@ on:
       - 'frontend/src/**'
       - 'frontend/public/**'
       - 'frontend/next.config.js'
+      - 'frontend/.lighthouserc.*'
+      - 'frontend/package.json'
+      - '.github/workflows/lighthouse-ci.yml'
   pull_request:
     paths:
       - 'frontend/src/**'
       - 'frontend/public/**'
       - 'frontend/next.config.js'
+      - 'frontend/.lighthouserc.*'
+      - 'frontend/package.json'
+      - '.github/workflows/lighthouse-ci.yml'
   workflow_dispatch:
 
 jobs:
