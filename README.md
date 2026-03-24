@@ -60,7 +60,7 @@ cd backend && ./scripts/seed.sh
 
 - **Docker Desktop** (20.10+) - [Install Docker](https://www.docker.com/get-started)
 - **Node.js** (20.0+) - [Install Node](https://nodejs.org/)
-- **nSelf CLI** (0.9.9+) - Install: `curl -sSL https://install.nself.org | bash`
+- **nSelf CLI** (1.0.0+) - Install: `curl -sSL https://install.nself.org | bash`
 
 ---
 

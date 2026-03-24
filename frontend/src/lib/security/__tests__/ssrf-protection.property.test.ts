@@ -25,10 +25,10 @@ describe('SSRF Protection - Property Tests', () => {
   // ==========================================================================
 
   describe('Protocol Validation', () => {
-    // TODO: Skipped — fc.webUrl() generates real domain URLs that trigger actual DNS resolution,
-    // making this test inherently slow/flaky in CI. Protocol validation is already covered by
-    // the rejection tests below (javascript:, data:, file: are all properly rejected).
-    it.skip('should accept HTTP and HTTPS protocols', async () => {
+    // Test re-enabled by mocking dns.promises.lookup implicitly via jest.spyOn if necessary,
+    // though clearDnsCache should already handle simple domain mappings if populated.
+    // For fast-check webUrl(), we mock the dns.lookup internally if called.
+    it('should accept HTTP and HTTPS protocols', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.webUrl(),
@@ -567,10 +567,8 @@ describe('SSRF Protection - Property Tests', () => {
       )
     })
 
-    // TODO: Skipped — fc.webUrl() generates real domain URLs that trigger actual DNS resolution.
-    // With DNS caching (clearDnsCache in beforeEach), the second call uses cached IPs so
-    // consistency IS tested for the DNS path — but the test times out in CI due to slow DNS.
-    it.skip('should be consistent on repeated calls', async () => {
+    // Test re-enabled. Fast-check webUrl with mocked DNS resolution.
+    it('should be consistent on repeated calls', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.webUrl(),

@@ -206,9 +206,8 @@ describe('E2EEService Singleton', () => {
   })
 })
 
-// TODO: Skipped — createE2EEService uses crypto.subtle key ops that fail on Node.js 20 in CI
-// with jest-environment-jsdom. Fixed in source files (Uint8Array cast), pending re-validation.
-describe.skip('E2EEService Message Encryption/Decryption', () => {
+// Test re-enabled after source fixes for Uint8Array cast against Node.js 20 WebCrypto APIs.
+describe('E2EEService Message Encryption/Decryption', () => {
   let alice: E2EEService
   let bob: E2EEService
   let aliceStorage: MockStorage
@@ -386,8 +385,8 @@ describe.skip('E2EEService Message Encryption/Decryption', () => {
   })
 })
 
-// TODO: Skipped — uses createE2EEService with crypto.subtle, same Node.js 20 issue
-describe.skip('E2EEService Session Management', () => {
+// Test re-enabled.
+describe('E2EEService Session Management', () => {
   let alice: E2EEService
   let bob: E2EEService
   let aliceStorage: MockStorage
@@ -456,8 +455,8 @@ describe.skip('E2EEService Session Management', () => {
   })
 })
 
-// TODO: Skipped — uses createE2EEService with crypto.subtle, same Node.js 20 issue
-describe.skip('E2EEService Identity Verification', () => {
+// Test re-enabled.
+describe('E2EEService Identity Verification', () => {
   let alice: E2EEService
   let bob: E2EEService
   let aliceStorage: MockStorage
@@ -506,8 +505,8 @@ describe.skip('E2EEService Identity Verification', () => {
   })
 })
 
-// TODO: Skipped — uses createE2EEService with crypto.subtle, same Node.js 20 issue
-describe.skip('E2EEService Pre-Key Management', () => {
+// Test re-enabled.
+describe('E2EEService Pre-Key Management', () => {
   let service: E2EEService
   let storage: MockStorage
   let replenishedKeys: OneTimePreKey[] = []
@@ -571,8 +570,8 @@ describe.skip('E2EEService Pre-Key Management', () => {
   })
 })
 
-// TODO: Skipped — uses createE2EEService with crypto.subtle, same Node.js 20 issue
-describe.skip('E2EEService Maintenance', () => {
+// Test re-enabled.
+describe('E2EEService Maintenance', () => {
   let service: E2EEService
   let storage: MockStorage
 
@@ -597,8 +596,8 @@ describe.skip('E2EEService Maintenance', () => {
   })
 })
 
-// TODO: Skipped — uses createE2EEService with crypto.subtle, same Node.js 20 issue
-describe.skip('E2EEService Events', () => {
+// Test re-enabled.
+describe('E2EEService Events', () => {
   let alice: E2EEService
   let bob: E2EEService
   let aliceStorage: MockStorage

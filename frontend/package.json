@@ -1,6 +1,6 @@
 {
   "name": "@nself-chat/web",
-  "version": "0.9.9",
+  "version": "1.0.0",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "description": "nself-chat - White-label team communication platform",
@@ -95,6 +95,7 @@
     "@types/papaparse": "^5.5.2",
     "@types/qrcode.react": "^3.0.0",
     "bcryptjs": "^3.0.2",
+    "blurhash": "^2.0.5",
     "canvas": "^2.11.2",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
@@ -185,6 +186,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/canvas-confetti": "^1.9.0",
     "@types/dompurify": "^3.2.0",
+    "@types/fluent-ffmpeg": "^2.1.28",
     "@types/inquirer": "^9.0.9",
     "@types/jest": "^29.5.14",
     "@types/jest-axe": "^3.5.9",

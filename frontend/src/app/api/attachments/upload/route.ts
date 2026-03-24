@@ -20,6 +20,23 @@ import { gql } from '@apollo/client'
 import { getUploadService } from '@/services/files/upload.service'
 import { getValidationService } from '@/services/files/validation.service'
 import crypto from 'crypto'
+import ffmpeg from 'fluent-ffmpeg'
+// @ts-expect-error - No types available
+import ffmpegStatic from 'ffmpeg-static'
+// @ts-expect-error - No types available
+import ffprobeStatic from 'ffprobe-static'
+import { writeFile, unlink } from 'fs/promises'
+import path from 'path'
+import os from 'os'
+import sharp from 'sharp'
+import { encode } from 'blurhash'
+
+if (ffmpegStatic) {
+  ffmpeg.setFfmpegPath(ffmpegStatic)
+}
+if (ffprobeStatic && ffprobeStatic.path) {
+  ffmpeg.setFfprobePath(ffprobeStatic.path)
+}
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -125,22 +142,75 @@ function generateStorageKey(fileName: string, userId: string): string {
 }
 
 async function extractImageMetadata(
-  _buffer: Buffer
+  buffer: Buffer
 ): Promise<{ width?: number; height?: number; blurhash?: string }> {
-  // Image metadata extraction requires sharp library
-  // Integrate sharp for production use: npm install sharp
-  // See: https://sharp.pixelplumbing.com/api-input#metadata
-  return {}
+  try {
+    const image = sharp(buffer)
+    const metadata = await image.metadata()
+    
+    let hash: string | undefined
+    if (metadata.width && metadata.height) {
+      const { data, info } = await image
+        .raw()
+        .ensureAlpha()
+        .resize(32, 32, { fit: 'inside' })
+        .toBuffer({ resolveWithObject: true })
+        
+      hash = encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4)
+    }
+
+    return {
+      width: metadata.width,
+      height: metadata.height,
+      blurhash: hash
+    }
+  } catch (err) {
+    logger.warn('Image metadata extraction failed', { error: err instanceof Error ? err.message : String(err) })
+    return {}
+  }
 }
 
 async function extractVideoMetadata(
-  _buffer: Buffer
+  buffer: Buffer
 ): Promise<{ width?: number; height?: number; duration?: number; needsTranscoding: boolean }> {
-  // Video metadata extraction and transcoding requires ffprobe + fluent-ffmpeg.
-  // ffmpeg-static is not in package.json. Mark for async transcoding instead.
-  // When ffmpeg-static is added: `npm install ffmpeg-static fluent-ffmpeg @types/fluent-ffmpeg`
-  // and replace this stub with actual metadata extraction and a job-queue dispatch.
-  return { needsTranscoding: true }
+  const tempId = crypto.randomBytes(8).toString('hex')
+  const tempPath = path.join(os.tmpdir(), `video-${tempId}.tmp`)
+  
+  try {
+    await writeFile(tempPath, buffer)
+    
+    return await new Promise((resolve) => {
+      ffmpeg.ffprobe(tempPath, (err, metadata) => {
+        if (err) {
+          logger.warn('Video metadata extraction failed', { error: err.message })
+          resolve({ needsTranscoding: true })
+          return
+        }
+        
+        const videoStream = metadata.streams.find(s => s.codec_type === 'video')
+        if (!videoStream) {
+          resolve({ needsTranscoding: true })
+          return
+        }
+        
+        resolve({
+          width: videoStream.width,
+          height: videoStream.height,
+          duration: metadata.format.duration ? Math.round(metadata.format.duration) : undefined,
+          needsTranscoding: true 
+        })
+      })
+    })
+  } catch (err) {
+    logger.warn('Video temp file failed', { error: err instanceof Error ? err.message : String(err) })
+    return { needsTranscoding: true }
+  } finally {
+    try {
+      await unlink(tempPath)
+    } catch {
+      // ignore
+    }
+  }
 }
 
 // ============================================================================
