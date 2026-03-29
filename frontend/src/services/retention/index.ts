@@ -4,7 +4,7 @@
  * Central export for retention policy management and execution services.
  *
  * @module services/retention
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Retention Policy Service

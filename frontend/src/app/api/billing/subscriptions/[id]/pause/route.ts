@@ -4,7 +4,7 @@
  * POST /api/billing/subscriptions/[id]/pause - Pause subscription
  *
  * @module @/app/api/billing/subscriptions/[id]/pause/route
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

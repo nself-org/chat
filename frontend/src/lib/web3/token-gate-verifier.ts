@@ -5,7 +5,7 @@
  * Supports multi-chain verification with caching and grace period handling.
  *
  * @module @/lib/web3/token-gate-verifier
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

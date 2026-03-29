@@ -21,7 +21,7 @@
  *   - Markdown formatting (bold, italic, code, spoiler, quote)
  *
  * @module lib/skins/platforms/discord/behavior
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { BehaviorPreset } from '../../types'

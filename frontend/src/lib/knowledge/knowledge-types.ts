@@ -5,7 +5,7 @@
  * Supports chatbot integration and search functionality.
  *
  * @module lib/knowledge/knowledge-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

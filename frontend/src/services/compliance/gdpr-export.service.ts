@@ -5,7 +5,7 @@
  * Handles comprehensive user data export with multiple format support.
  *
  * @module services/compliance/gdpr-export.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { v4 as uuidv4 } from 'uuid'

@@ -5,7 +5,7 @@
  * Displays conflict count and last sync time.
  *
  * @module components/sync/SyncStatusIndicator
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

@@ -6,7 +6,7 @@
  * and sync with Stripe's billing meters.
  *
  * @module @/services/billing/usage-billing.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import Stripe from 'stripe'

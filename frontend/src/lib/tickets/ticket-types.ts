@@ -5,7 +5,7 @@
  * Provides complete lifecycle management for support tickets.
  *
  * @module lib/tickets/ticket-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { LivechatChannel, ConversationPriority, Conversation, Agent, Visitor } from '@/services/livechat/types'

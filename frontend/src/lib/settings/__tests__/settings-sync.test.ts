@@ -4,7 +4,7 @@
  * Tests for the settings synchronization module with real API operations.
  *
  * @module lib/settings/__tests__/settings-sync.test
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

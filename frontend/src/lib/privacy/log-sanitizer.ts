@@ -11,7 +11,7 @@
  * Integrates with the logging system to automatically sanitize output.
  *
  * @module lib/privacy/log-sanitizer
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

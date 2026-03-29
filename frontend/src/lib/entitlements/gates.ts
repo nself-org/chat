@@ -5,7 +5,7 @@
  * Gates evaluate complex conditions that can't be expressed as simple boolean/numeric values.
  *
  * @module @/lib/entitlements/gates
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier } from '@/types/subscription.types'

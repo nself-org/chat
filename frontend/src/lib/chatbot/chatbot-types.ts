@@ -5,7 +5,7 @@
  * Supports automated responses, intent detection, and bot-to-human handoff.
  *
  * @module lib/chatbot/chatbot-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { FAQEntry } from '@/lib/knowledge/knowledge-types'

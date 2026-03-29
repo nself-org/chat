@@ -11,7 +11,7 @@
  * Provides full parity with Telegram/WhatsApp/Signal/Slack/Discord profile features.
  *
  * @module hooks/use-profile
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import * as React from 'react'

@@ -4,7 +4,7 @@
  * Tests for retention policy inheritance and resolution logic.
  *
  * @module lib/retention/__tests__/policy-inheritance.test
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

@@ -9,7 +9,7 @@
  * and can be used for initial state sync.
  *
  * @module graphql/realtime/typing
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { gql } from '@apollo/client'

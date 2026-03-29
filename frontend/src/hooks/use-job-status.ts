@@ -7,7 +7,7 @@
  * Provides polling-based updates until job completes or fails.
  *
  * @module hooks/use-job-status
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react'

@@ -5,7 +5,7 @@
  * Provides conflict detection, resolution, and history access.
  *
  * @module hooks/use-conflict-resolution
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

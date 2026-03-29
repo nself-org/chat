@@ -5,7 +5,7 @@
  * Handles verification, caching, grace periods, and access revocation.
  *
  * @module @/services/web3/token-gate.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

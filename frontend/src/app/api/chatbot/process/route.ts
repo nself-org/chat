@@ -4,7 +4,7 @@
  * POST /api/chatbot/process - Process a visitor message and get bot response
  *
  * @module api/chatbot/process
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

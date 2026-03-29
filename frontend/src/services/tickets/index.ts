@@ -5,7 +5,7 @@
  * Provides complete ticket lifecycle management.
  *
  * @module services/tickets
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Ticket Service

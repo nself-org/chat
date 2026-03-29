@@ -5,7 +5,7 @@
  * refreshing channels, and resolving conflicts.
  *
  * @module services/realtime/sync.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { realtimeClient, RealtimeConnectionState } from './realtime-client'

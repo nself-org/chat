@@ -8,7 +8,7 @@
  * - Geographic impossibility detection (haversine)
  *
  * @module @/lib/billing/abuse/anti-sharing
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

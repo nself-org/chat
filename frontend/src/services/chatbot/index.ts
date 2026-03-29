@@ -4,7 +4,7 @@
  * Central export for chatbot and handoff management.
  *
  * @module services/chatbot
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Chatbot Service

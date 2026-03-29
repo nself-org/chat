@@ -5,7 +5,7 @@
  * Supports multiple resolution strategies: last-write-wins, merge, manual, server-wins.
  *
  * @module services/realtime/conflict-resolution.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { UserSettings } from '@/graphql/settings'

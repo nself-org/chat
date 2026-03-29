@@ -6,7 +6,7 @@
  * Form for managing user privacy settings with visibility controls.
  *
  * @module components/profile/privacy-settings-form
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import * as React from 'react'

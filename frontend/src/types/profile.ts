@@ -12,7 +12,7 @@
  * - Profile discovery (search, QR code)
  *
  * @module types/profile
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

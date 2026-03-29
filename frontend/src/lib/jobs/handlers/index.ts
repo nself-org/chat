@@ -5,7 +5,7 @@
  * These handlers process background jobs in the nchat application.
  *
  * @module lib/jobs/handlers
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Scheduled Messages Handler

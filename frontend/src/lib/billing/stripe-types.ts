@@ -5,7 +5,7 @@
  * idempotent checkout, webhook handling, refunds, and invoices.
  *
  * @module @/lib/billing/stripe-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier, BillingInterval, Currency } from '@/types/subscription.types'

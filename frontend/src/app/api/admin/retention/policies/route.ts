@@ -5,7 +5,7 @@
  * POST - Create a new retention policy
  *
  * @module app/api/admin/retention/policies
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

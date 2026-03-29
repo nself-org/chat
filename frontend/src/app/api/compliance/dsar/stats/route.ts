@@ -4,7 +4,7 @@
  * Compliance dashboard statistics for DSAR management.
  *
  * @module api/compliance/dsar/stats
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

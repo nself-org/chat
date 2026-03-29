@@ -9,7 +9,7 @@
  * - Reminder configuration
  *
  * @module hooks/use-meeting-scheduler
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

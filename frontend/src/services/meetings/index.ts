@@ -2,7 +2,7 @@
  * Meetings Service - Exports
  *
  * @module services/meetings
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 export {

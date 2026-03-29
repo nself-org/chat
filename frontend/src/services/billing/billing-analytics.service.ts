@@ -6,7 +6,7 @@
  * Provides report generation in JSON and CSV formats.
  *
  * @module @/services/billing/billing-analytics.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { Currency } from '@/types/subscription.types'

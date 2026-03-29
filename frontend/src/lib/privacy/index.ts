@@ -6,7 +6,7 @@
  * and user privacy controls.
  *
  * @module lib/privacy
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Metadata Minimizer

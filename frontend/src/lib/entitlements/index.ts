@@ -5,7 +5,7 @@
  * Provides inheritance, caching, and custom gate support.
  *
  * @module @/lib/entitlements
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Types

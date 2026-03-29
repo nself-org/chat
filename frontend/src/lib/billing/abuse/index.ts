@@ -5,7 +5,7 @@
  * for the nchat billing system.
  *
  * @module @/lib/billing/abuse
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Types

@@ -12,7 +12,7 @@
  * - Manual reconnect button
  *
  * @module components/realtime/connection-status
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { useEffect, useState } from 'react'

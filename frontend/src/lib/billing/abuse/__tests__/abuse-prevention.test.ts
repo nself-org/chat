@@ -5,7 +5,7 @@
  * and the unified abuse prevention engine.
  *
  * @module @/lib/billing/abuse/__tests__/abuse-prevention.test
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

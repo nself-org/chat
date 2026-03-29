@@ -5,7 +5,7 @@
  * RSVP handling, and notification scheduling.
  *
  * @module services/meetings/meeting.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { v4 as uuid } from 'uuid'

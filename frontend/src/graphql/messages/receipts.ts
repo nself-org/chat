@@ -5,7 +5,7 @@
  * Supports sent, delivered, and read status tracking for messages.
  *
  * @module graphql/messages/receipts
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { gql } from '@apollo/client'

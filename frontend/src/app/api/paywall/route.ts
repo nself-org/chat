@@ -4,7 +4,7 @@
  * Endpoints for checking paywall restrictions and getting upgrade information.
  *
  * @module @/app/api/paywall
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

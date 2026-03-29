@@ -5,7 +5,7 @@
  * Provides event recording, aggregation, threshold monitoring, and alerts.
  *
  * @module @/lib/billing/usage-tracker
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { logger } from '@/lib/logger'

@@ -17,7 +17,7 @@
  *   - Grouped media messages with rounded corners
  *
  * @module lib/skins/platforms/telegram/visual
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

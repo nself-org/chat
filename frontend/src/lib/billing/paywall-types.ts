@@ -5,7 +5,7 @@
  * Integrates with the entitlement system to provide consistent access control.
  *
  * @module @/lib/billing/paywall-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier, PlanFeatures } from '@/types/subscription.types'

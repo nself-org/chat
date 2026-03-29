@@ -6,7 +6,7 @@
  * Includes privacy controls for presence visibility.
  *
  * @module services/realtime/presence.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { realtimeClient, RealtimeError } from './realtime-client'

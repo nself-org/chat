@@ -6,7 +6,7 @@
  * Displays user avatar with fallback to initials, supports upload and edit modes.
  *
  * @module components/profile/profile-avatar
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import * as React from 'react'

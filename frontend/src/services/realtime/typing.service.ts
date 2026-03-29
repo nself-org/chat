@@ -14,7 +14,7 @@
  * - Redis pub/sub compatible (no database persistence)
  *
  * @module services/realtime/typing.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { realtimeClient } from './realtime-client'

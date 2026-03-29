@@ -5,7 +5,7 @@
  * checkout, payment intents, refunds, invoices, and reconciliation.
  *
  * @module @/services/billing/stripe-payment.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import Stripe from 'stripe'

@@ -13,7 +13,7 @@
  * - Debounced input handling
  *
  * @module hooks/use-realtime-typing
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

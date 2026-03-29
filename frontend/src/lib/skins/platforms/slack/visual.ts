@@ -16,7 +16,7 @@
  *   - Green (#007A5A / #2BAC76) for primary action buttons
  *
  * @module lib/skins/platforms/slack/visual
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

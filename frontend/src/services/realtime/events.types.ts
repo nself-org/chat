@@ -6,7 +6,7 @@
  * and Socket.io clients.
  *
  * @module services/realtime/events.types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

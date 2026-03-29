@@ -4,7 +4,7 @@
  * Enterprise-grade compliance services for GDPR, CCPA, and data protection.
  *
  * @module services/compliance
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Types

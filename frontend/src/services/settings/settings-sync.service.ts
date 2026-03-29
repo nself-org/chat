@@ -5,7 +5,7 @@
  * Includes conflict detection, resolution, and merge strategies.
  *
  * @module services/settings/settings-sync.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { ApolloClient } from '@apollo/client'

@@ -15,7 +15,7 @@
  *   - Keyboard navigation tokens
  *
  * @module lib/skins/accessibility
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { VisualSkin, SkinColorPalette } from './types'

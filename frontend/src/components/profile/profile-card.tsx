@@ -7,7 +7,7 @@
  * Supports viewing other users' profiles with privacy-aware display.
  *
  * @module components/profile/profile-card
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import * as React from 'react'

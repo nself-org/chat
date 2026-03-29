@@ -5,7 +5,7 @@
  * Supports ERC-20, ERC-721, and ERC-1155 tokens across multiple chains.
  *
  * @module @/lib/web3/token-gate-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // =============================================================================

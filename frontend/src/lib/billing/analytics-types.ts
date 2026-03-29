@@ -5,7 +5,7 @@
  * entitlement drift detection, finance reconciliation, and report generation.
  *
  * @module @/lib/billing/analytics-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier, BillingInterval, Currency } from '@/types/subscription.types'

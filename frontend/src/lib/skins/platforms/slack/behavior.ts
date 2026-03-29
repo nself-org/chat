@@ -23,7 +23,7 @@
  *   - No stickers, voice messages, or stories
  *
  * @module lib/skins/platforms/slack/behavior
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { BehaviorPreset } from '../../types'

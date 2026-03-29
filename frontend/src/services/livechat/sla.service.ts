@@ -11,7 +11,7 @@
  * - SLA metrics and reporting
  *
  * @module services/livechat/sla.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

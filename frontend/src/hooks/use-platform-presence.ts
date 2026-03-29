@@ -5,7 +5,7 @@
  * Signal, Slack, and Discord semantics.
  *
  * @module hooks/use-platform-presence
- * @version 0.9.0
+ * @version 1.0.0
  */
 
 'use client'

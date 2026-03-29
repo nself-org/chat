@@ -8,7 +8,7 @@
  * DELETE /api/messages/[id]/ttl - Clear TTL (make permanent)
  *
  * @module api/messages/[id]/ttl
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

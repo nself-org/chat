@@ -9,7 +9,7 @@
  * - Optimistic UI updates
  * - Background sync
  *
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals'

@@ -4,7 +4,7 @@
  * Central export for knowledge base and FAQ management.
  *
  * @module services/knowledge
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Knowledge Base Service

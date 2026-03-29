@@ -6,7 +6,7 @@
  * and reconciliation.
  *
  * @module @/services/billing/payment-security.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

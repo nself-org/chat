@@ -11,7 +11,7 @@
  * - Compliance checks
  *
  * @module @/lib/billing/payout-policy
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createHmac } from 'crypto'

@@ -5,7 +5,7 @@
  * Handles the complete lifecycle of data subject requests.
  *
  * @module services/compliance/dsar.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { v4 as uuidv4 } from 'uuid'

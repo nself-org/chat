@@ -5,7 +5,7 @@
  * Provides presence tracking, custom status management, and idle detection.
  *
  * @module hooks/use-realtime-presence
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

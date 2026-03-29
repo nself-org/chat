@@ -14,7 +14,7 @@
  *   - Tab-based navigation (mobile) / sidebar-based (desktop)
  *
  * @module lib/skins/platforms/whatsapp/visual
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

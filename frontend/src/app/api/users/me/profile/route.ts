@@ -7,7 +7,7 @@
  * PATCH /api/users/me/profile - Update current user's profile
  *
  * @module app/api/users/me/profile
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

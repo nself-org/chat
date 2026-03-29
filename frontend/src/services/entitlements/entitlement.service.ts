@@ -5,7 +5,7 @@
  * Handles CRUD operations for grants and runtime entitlement checks.
  *
  * @module @/services/entitlements/entitlement.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { v4 as uuidv4 } from 'uuid'

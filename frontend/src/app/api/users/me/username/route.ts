@@ -7,7 +7,7 @@
  * PATCH /api/users/me/username - Change username
  *
  * @module app/api/users/me/username
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

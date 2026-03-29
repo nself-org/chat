@@ -4,7 +4,7 @@
  * RESTful API for GDPR/CCPA DSAR workflow management.
  *
  * @module api/compliance/dsar
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

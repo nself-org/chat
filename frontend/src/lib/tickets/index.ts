@@ -4,7 +4,7 @@
  * Central export for ticket type definitions.
  *
  * @module lib/tickets
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 export * from './ticket-types'

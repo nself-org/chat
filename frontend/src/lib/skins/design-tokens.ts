@@ -16,7 +16,7 @@
  *   - Dark mode overrides (all color-dependent tokens swapped)
  *
  * @module lib/skins/design-tokens
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { VisualSkin, SkinColorPalette } from './types'

@@ -8,7 +8,7 @@
  * the feature category, priority, and which config controls it.
  *
  * @module lib/skins/platforms/slack/parity-checklist
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

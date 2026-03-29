@@ -5,7 +5,7 @@
  * proration calculation, and audit logging.
  *
  * @module @/lib/billing/subscription-state-machine
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { v4 as uuidv4 } from 'uuid'

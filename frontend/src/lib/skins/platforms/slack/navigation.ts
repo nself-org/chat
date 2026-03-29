@@ -30,7 +30,7 @@
  *   - Shows thread context + replies
  *
  * @module lib/skins/platforms/slack/navigation
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

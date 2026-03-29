@@ -22,7 +22,7 @@
  *   - ui: UI and navigation elements
  *
  * @module lib/skins/platforms/discord/parity-checklist
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

@@ -22,7 +22,7 @@
  * Discord is fundamentally a desktop-first application with dark mode as default.
  *
  * @module lib/skins/platforms/discord/navigation
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

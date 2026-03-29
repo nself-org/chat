@@ -18,7 +18,7 @@
  *   - No bottom tabs
  *
  * @module lib/skins/platforms/telegram/navigation
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

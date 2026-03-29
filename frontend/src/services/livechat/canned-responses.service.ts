@@ -9,7 +9,7 @@
  * - Tag-based organization
  *
  * @module services/livechat/canned-responses.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

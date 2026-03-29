@@ -5,7 +5,7 @@
  * Handles creation, plan changes, pause/resume, and cancellation.
  *
  * @module @/services/billing/subscription.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { v4 as uuidv4 } from 'uuid'

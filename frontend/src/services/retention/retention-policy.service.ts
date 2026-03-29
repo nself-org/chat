@@ -5,7 +5,7 @@
  * Provides CRUD operations for policies and evaluation of retention rules.
  *
  * @module services/retention/retention-policy.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

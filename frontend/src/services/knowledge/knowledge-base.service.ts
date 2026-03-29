@@ -12,7 +12,7 @@
  * - Version history tracking
  *
  * @module services/knowledge/knowledge-base.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

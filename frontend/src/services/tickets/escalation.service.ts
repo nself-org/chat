@@ -9,7 +9,7 @@
  * - Escalation history tracking
  *
  * @module services/tickets/escalation.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

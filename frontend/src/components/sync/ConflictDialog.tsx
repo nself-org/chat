@@ -5,7 +5,7 @@
  * Displays side-by-side diff and resolution options.
  *
  * @module components/sync/ConflictDialog
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

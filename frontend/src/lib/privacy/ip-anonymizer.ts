@@ -11,7 +11,7 @@
  * Compliant with GDPR, CCPA, and other privacy regulations.
  *
  * @module lib/privacy/ip-anonymizer
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

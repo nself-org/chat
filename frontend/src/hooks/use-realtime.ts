@@ -5,7 +5,7 @@
  * Manages connection lifecycle, authentication, and provides access to all realtime features.
  *
  * @module hooks/use-realtime
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

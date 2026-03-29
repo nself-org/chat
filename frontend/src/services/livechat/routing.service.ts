@@ -9,7 +9,7 @@
  * - Priority-based routing
  *
  * @module services/livechat/routing.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

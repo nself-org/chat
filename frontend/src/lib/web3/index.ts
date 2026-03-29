@@ -4,7 +4,7 @@
  * Exports all Web3-related types, utilities, and services.
  *
  * @module @/lib/web3
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Token Gate Types

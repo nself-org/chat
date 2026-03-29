@@ -5,7 +5,7 @@
  * typing indicators, presence, and other real-time functionality.
  *
  * @module graphql/realtime
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 export * from './typing'

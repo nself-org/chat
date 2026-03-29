@@ -5,7 +5,7 @@
  * Provides Rocket.Chat-style live help functionality.
  *
  * @module services/livechat
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Types

@@ -4,7 +4,7 @@
  * Comprehensive tests for the retention policy service.
  *
  * @module services/retention/__tests__/retention-policy.service.test
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

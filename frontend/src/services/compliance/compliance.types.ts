@@ -5,7 +5,7 @@
  * DSAR (Data Subject Access Request) workflows, and data deletion.
  *
  * @module services/compliance/compliance.types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

@@ -6,7 +6,7 @@
  * behavioral semantics.
  *
  * @module lib/skins/visual-skins
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

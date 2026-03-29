@@ -5,7 +5,7 @@
  * Integrates with the nself-plugins jobs plugin (BullMQ-based).
  *
  * @module services/jobs
- * @version 0.9.1
+ * @version 1.0.0
  *
  * @example
  * ```typescript

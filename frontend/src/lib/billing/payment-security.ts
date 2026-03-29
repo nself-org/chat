@@ -9,7 +9,7 @@
  * - Payment reconciliation checks (ledger consistency, orphan detection)
  *
  * @module @/lib/billing/payment-security
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createHmac, timingSafeEqual, randomBytes } from 'crypto'

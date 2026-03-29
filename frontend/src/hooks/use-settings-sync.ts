@@ -5,7 +5,7 @@
  * Provides settings sync, conflict resolution, and status tracking.
  *
  * @module hooks/use-settings-sync
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

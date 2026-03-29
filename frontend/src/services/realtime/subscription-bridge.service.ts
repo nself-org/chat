@@ -12,7 +12,7 @@
  * 4. Handles reconnection and resubscription logic
  *
  * @module services/realtime/subscription-bridge.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { ApolloClient, NormalizedCacheObject, Observable } from '@apollo/client'

@@ -19,7 +19,7 @@
  *   - Voice/Video messages (circular video messages)
  *
  * @module lib/skins/platforms/telegram/behavior
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { BehaviorPreset } from '../../types'

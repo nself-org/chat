@@ -5,7 +5,7 @@
  * pause/resume, and cancellation with feedback.
  *
  * @module @/lib/billing/subscription-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier, BillingInterval, Currency } from '@/types/subscription.types'

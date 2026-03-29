@@ -4,7 +4,7 @@
  * Tests for conflict detection and resolution strategies.
  *
  * @module services/realtime/__tests__/conflict-resolution.service.test
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

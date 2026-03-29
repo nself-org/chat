@@ -5,7 +5,7 @@
  * PUT /api/chatbot - Update chatbot configuration
  *
  * @module api/chatbot
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

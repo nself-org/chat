@@ -6,7 +6,7 @@
  * and reconciliation scenarios.
  *
  * @module @/lib/billing/__tests__/payment-security.test
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

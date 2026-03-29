@@ -4,7 +4,7 @@
  * Handles GET and PATCH requests for user presence privacy settings.
  *
  * @module app/api/users/me/presence-settings
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

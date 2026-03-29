@@ -16,7 +16,7 @@
  * - Querying payout history
  *
  * @module @/services/billing/payout.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { logger } from '@/lib/logger'

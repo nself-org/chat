@@ -10,7 +10,7 @@
  * Target: 80+ items across 12 categories
  *
  * @module lib/skins/platforms/telegram/parity-checklist
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

@@ -4,7 +4,7 @@
  * Tests for settings synchronization and conflict resolution.
  *
  * @module services/settings/__tests__/settings-sync.service.test
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { ApolloClient, InMemoryCache } from '@apollo/client'

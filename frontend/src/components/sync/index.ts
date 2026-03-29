@@ -4,7 +4,7 @@
  * Components for conflict resolution and sync status display.
  *
  * @module components/sync
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 export { ConflictDialog } from './ConflictDialog'

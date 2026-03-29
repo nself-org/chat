@@ -19,7 +19,7 @@
  *   - Send button appears when text entered; mic/video-camera otherwise
  *
  * @module lib/skins/platforms/telegram/composer
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

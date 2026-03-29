@@ -10,7 +10,7 @@
  * - Multi-chain support (ETH, BTC, Polygon) with abstraction for more
  *
  * @module @/lib/billing/crypto-payment-flow
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createHmac } from 'crypto'

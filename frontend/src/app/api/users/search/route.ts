@@ -6,7 +6,7 @@
  * GET /api/users/search?q=<query> - Search for users
  *
  * @module app/api/users/search
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

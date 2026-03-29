@@ -5,7 +5,7 @@
  * reminder scheduling, and timezone handling.
  *
  * @module services/meetings/calendar.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { v4 as uuid } from 'uuid'

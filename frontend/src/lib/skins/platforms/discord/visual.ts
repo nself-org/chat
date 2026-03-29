@@ -16,7 +16,7 @@
  *   - Embed messages with left-color border
  *
  * @module lib/skins/platforms/discord/visual
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

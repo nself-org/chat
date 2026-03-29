@@ -15,7 +15,7 @@
  *   - Spring-based animation parameters
  *
  * @module lib/skins/motion
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { buildTransitionTokens, type TransitionTokens } from './design-tokens'

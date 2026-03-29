@@ -4,7 +4,7 @@
  * Service layer for subscription management, usage billing, and payment processing.
  *
  * @module @/services/billing
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Subscription Service

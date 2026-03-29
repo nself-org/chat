@@ -7,7 +7,7 @@
  * Provides reactive state for pending operations, conflicts, and sync status.
  *
  * @module hooks/use-offline-reconciliation
- * @version 0.9.0
+ * @version 1.0.0
  */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'

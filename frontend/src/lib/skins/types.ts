@@ -6,7 +6,7 @@
  * with optional overrides.
  *
  * @module lib/skins/types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

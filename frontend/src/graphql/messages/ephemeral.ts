@@ -5,7 +5,7 @@
  * with server-side TTL enforcement.
  *
  * @module graphql/messages/ephemeral
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { gql } from '@apollo/client'

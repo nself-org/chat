@@ -9,7 +9,7 @@
  * - Seat utilization scoring
  *
  * @module @/lib/billing/abuse/seat-abuse
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

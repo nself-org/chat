@@ -6,7 +6,7 @@
  * POST /api/privacy/settings/reset - Reset to default settings
  *
  * @module app/api/privacy/settings
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

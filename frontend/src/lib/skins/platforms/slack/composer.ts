@@ -20,7 +20,7 @@
  *   - Composer border with focus ring
  *
  * @module lib/skins/platforms/slack/composer
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

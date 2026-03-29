@@ -5,7 +5,7 @@
  * treasury management, and audit logging for treasury operations.
  *
  * @module @/lib/billing/payout-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

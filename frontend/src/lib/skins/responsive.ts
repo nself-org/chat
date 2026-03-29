@@ -14,7 +14,7 @@
  *   - Container query support tokens
  *
  * @module lib/skins/responsive
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { VisualSkin } from './types'

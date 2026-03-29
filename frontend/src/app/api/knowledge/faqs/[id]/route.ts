@@ -6,7 +6,7 @@
  * DELETE /api/knowledge/faqs/[id] - Delete an FAQ
  *
  * @module api/knowledge/faqs/[id]
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

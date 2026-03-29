@@ -7,7 +7,7 @@
  * "Discord look + Slack behavior".
  *
  * @module lib/skins/composite-profiles
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { CompositeProfile } from './types'

@@ -5,7 +5,7 @@
  * Handles resolution of entitlements from parent to child scopes.
  *
  * @module @/lib/entitlements/entitlement-graph
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier } from '@/types/subscription.types'

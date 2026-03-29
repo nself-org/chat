@@ -5,7 +5,7 @@
  * for subscription events and batch scanning for periodic audits.
  *
  * @module @/services/billing/abuse-prevention.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier } from '@/types/subscription.types'

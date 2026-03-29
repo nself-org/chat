@@ -7,7 +7,7 @@
  * DELETE /api/users/me/photo - Delete profile photo
  *
  * @module app/api/users/me/photo
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

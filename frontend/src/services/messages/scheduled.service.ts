@@ -5,7 +5,7 @@
  * Integrates with the jobs system for delayed message delivery.
  *
  * @module services/messages/scheduled.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'

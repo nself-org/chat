@@ -11,7 +11,7 @@
  *   - Runtime switching without page reload
  *
  * @module lib/skins/skin-engine
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

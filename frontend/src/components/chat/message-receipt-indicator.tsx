@@ -5,7 +5,7 @@
  * Slack, and Discord visual styles.
  *
  * @module components/chat/message-receipt-indicator
- * @version 0.9.0
+ * @version 1.0.0
  */
 
 'use client'

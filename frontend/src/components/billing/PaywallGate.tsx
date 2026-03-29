@@ -5,7 +5,7 @@
  * upgrade prompts. Wraps content with entitlement checks.
  *
  * @module @/components/billing/PaywallGate
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

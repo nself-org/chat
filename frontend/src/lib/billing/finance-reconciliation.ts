@@ -5,7 +5,7 @@
  * Detects discrepancies, timing differences, and missing entries.
  *
  * @module @/lib/billing/finance-reconciliation
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { Currency } from '@/types/subscription.types'

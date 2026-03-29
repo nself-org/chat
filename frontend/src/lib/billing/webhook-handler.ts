@@ -5,7 +5,7 @@
  * and comprehensive event handling for Stripe webhooks.
  *
  * @module @/lib/billing/webhook-handler
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import Stripe from 'stripe'

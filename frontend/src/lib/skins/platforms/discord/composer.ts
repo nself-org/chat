@@ -21,7 +21,7 @@
  *   - Voice message recording
  *
  * @module lib/skins/platforms/discord/composer
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

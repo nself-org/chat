@@ -4,7 +4,7 @@
  * POST - Preview retention execution (dry run with details)
  *
  * @module app/api/admin/retention/preview
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

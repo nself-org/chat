@@ -5,7 +5,7 @@
  * All monetary amounts use integer cents to avoid floating-point precision issues.
  *
  * @module @/lib/billing/customer-analytics
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier, BillingInterval } from '@/types/subscription.types'

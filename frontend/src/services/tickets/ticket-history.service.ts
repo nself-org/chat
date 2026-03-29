@@ -9,7 +9,7 @@
  * - History export
  *
  * @module services/tickets/ticket-history.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

@@ -11,7 +11,7 @@
  * - Monitor sync progress
  *
  * @module components/offline/offline-queue-viewer
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { useState, useEffect } from 'react'

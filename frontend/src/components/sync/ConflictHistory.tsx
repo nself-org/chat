@@ -5,7 +5,7 @@
  * Allows users to review past conflict resolutions.
  *
  * @module components/sync/ConflictHistory
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 'use client'

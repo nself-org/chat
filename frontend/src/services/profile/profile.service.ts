@@ -9,7 +9,7 @@
  * - Profile discovery (search, QR code)
  *
  * @module services/profile
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { logger } from '@/lib/logger'

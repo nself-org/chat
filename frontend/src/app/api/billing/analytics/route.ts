@@ -6,7 +6,7 @@
  * Returns billing analytics data for a given type and date range.
  *
  * @module @/app/api/billing/analytics/route
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

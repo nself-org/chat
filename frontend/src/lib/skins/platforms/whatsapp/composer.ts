@@ -15,7 +15,7 @@
  *   - Paste support for images
  *
  * @module lib/skins/platforms/whatsapp/composer
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

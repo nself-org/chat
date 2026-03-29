@@ -5,7 +5,7 @@
  * Provides comprehensive state machine for message delivery lifecycle.
  *
  * @module lib/messaging/delivery-state
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { create } from 'zustand'

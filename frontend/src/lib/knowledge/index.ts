@@ -4,7 +4,7 @@
  * Central export for knowledge base types and utilities.
  *
  * @module lib/knowledge
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 export * from './knowledge-types'

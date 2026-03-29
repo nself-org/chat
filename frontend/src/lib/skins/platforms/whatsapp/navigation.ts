@@ -17,7 +17,7 @@
  *   - Right panel for chat view
  *
  * @module lib/skins/platforms/whatsapp/navigation
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

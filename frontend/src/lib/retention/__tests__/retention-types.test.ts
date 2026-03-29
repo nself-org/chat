@@ -4,7 +4,7 @@
  * Tests for retention type definitions and utility functions.
  *
  * @module lib/retention/__tests__/retention-types.test
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import {

@@ -5,7 +5,7 @@
  * Includes plan enforcement, crypto payments, token gating, and treasury controls.
  *
  * @module @/lib/billing
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // Stripe Billing Service

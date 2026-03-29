@@ -5,7 +5,7 @@
  * Slack, and Discord visual styles.
  *
  * @module components/presence/platform-presence-indicator
- * @version 0.9.0
+ * @version 1.0.0
  */
 
 'use client'

@@ -5,7 +5,7 @@
  * Provides methods to add, get, retry, and cancel jobs.
  *
  * @module services/jobs/queue.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { Queue, QueueEvents, Job, JobsOptions, type ConnectionOptions } from 'bullmq'

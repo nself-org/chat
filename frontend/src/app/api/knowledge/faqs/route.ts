@@ -5,7 +5,7 @@
  * POST /api/knowledge/faqs - Create a new FAQ
  *
  * @module api/knowledge/faqs
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

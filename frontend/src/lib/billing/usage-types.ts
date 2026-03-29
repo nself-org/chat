@@ -5,7 +5,7 @@
  * alerts, thresholds, and billing period calculations.
  *
  * @module @/lib/billing/usage-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier, Currency } from '@/types/subscription.types'

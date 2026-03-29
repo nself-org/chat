@@ -5,7 +5,7 @@
  * Supports boolean, numeric, and tier-based entitlements with inheritance.
  *
  * @module @/lib/entitlements/entitlement-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier } from '@/types/subscription.types'

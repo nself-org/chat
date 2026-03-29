@@ -11,7 +11,7 @@
  * - Amount anomaly detection
  *
  * @module @/lib/billing/abuse/payment-heuristics
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

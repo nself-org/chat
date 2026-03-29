@@ -5,7 +5,7 @@
  * Provides automatic retry with exponential backoff on reconnection.
  *
  * @module services/realtime/offline-queue
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { realtimeClient, RealtimeConnectionState } from './realtime-client'

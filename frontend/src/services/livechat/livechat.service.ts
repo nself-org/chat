@@ -13,7 +13,7 @@
  * - Queue management
  *
  * @module services/livechat/livechat.service
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { createLogger } from '@/lib/logger'

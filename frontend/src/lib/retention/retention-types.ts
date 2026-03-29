@@ -6,7 +6,7 @@
  * policy inheritance and override rules.
  *
  * @module lib/retention/retention-types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 // ============================================================================

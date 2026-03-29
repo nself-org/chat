@@ -4,7 +4,7 @@
  * POST - Check if deletion is blocked for a context
  *
  * @module app/api/admin/retention/check
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

@@ -5,7 +5,7 @@
  * Provides helpers for checking access, formatting messages, and managing upgrades.
  *
  * @module @/lib/billing/paywall-utils
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { PlanTier, PlanFeatures } from '@/types/subscription.types'

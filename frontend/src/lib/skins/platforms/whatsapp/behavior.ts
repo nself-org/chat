@@ -18,7 +18,7 @@
  *   - No rich text/markdown (plain text with basic formatting)
  *
  * @module lib/skins/platforms/whatsapp/behavior
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { BehaviorPreset } from '../../types'

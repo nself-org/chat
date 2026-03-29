@@ -6,7 +6,7 @@
  * GET /api/users/me/qrcode - Generate QR code for profile sharing
  *
  * @module app/api/users/me/qrcode
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

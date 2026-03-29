@@ -13,7 +13,7 @@
  * This is the single entry point for initializing and managing all realtime features.
  *
  * @module services/realtime/realtime-integration
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { realtimeClient, type RealtimeClientConfig } from './realtime-client'

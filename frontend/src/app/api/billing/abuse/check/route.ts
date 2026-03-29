@@ -6,7 +6,7 @@
  * Runs an abuse check on an account and returns the abuse report.
  *
  * @module @/app/api/billing/abuse/check/route
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

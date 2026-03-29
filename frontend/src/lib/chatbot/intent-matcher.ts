@@ -5,7 +5,7 @@
  * Uses pattern matching, keyword extraction, and fuzzy matching.
  *
  * @module lib/chatbot/intent-matcher
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type {

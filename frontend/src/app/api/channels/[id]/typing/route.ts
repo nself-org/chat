@@ -7,7 +7,7 @@
  * POST /api/channels/[id]/typing - Signal typing start/stop in channel
  *
  * @module app/api/channels/[id]/typing
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

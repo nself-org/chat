@@ -5,7 +5,7 @@
  * Integrates with the nself-plugins jobs plugin (BullMQ-based).
  *
  * @module services/jobs/types
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import type { JobsOptions } from 'bullmq'

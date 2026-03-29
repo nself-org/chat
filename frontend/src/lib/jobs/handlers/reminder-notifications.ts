@@ -11,7 +11,7 @@
  * - Snooze handling
  *
  * @module lib/jobs/handlers/reminder-notifications
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { Job } from 'bullmq'

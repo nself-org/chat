@@ -7,7 +7,7 @@
  * PATCH /api/users/me/privacy - Update current user's privacy settings
  *
  * @module app/api/users/me/privacy
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'

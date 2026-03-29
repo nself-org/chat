@@ -6,7 +6,7 @@
  * DELETE /api/knowledge/articles/[id] - Delete an article
  *
  * @module api/knowledge/articles/[id]
- * @version 0.9.1
+ * @version 1.0.0
  */
 
 import { NextRequest, NextResponse } from 'next/server'
