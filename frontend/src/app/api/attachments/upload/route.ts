@@ -21,7 +21,6 @@ import { getUploadService } from '@/services/files/upload.service'
 import { getValidationService } from '@/services/files/validation.service'
 import crypto from 'crypto'
 import ffmpeg from 'fluent-ffmpeg'
-// @ts-expect-error - No types available
 import ffmpegStatic from 'ffmpeg-static'
 // @ts-expect-error - No types available
 import ffprobeStatic from 'ffprobe-static'

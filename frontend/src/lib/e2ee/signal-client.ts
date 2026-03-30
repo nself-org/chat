@@ -170,6 +170,9 @@ export async function processPreKeyBundle(
   }
 
   // Create prekey bundle - identity_key should be PublicKey
+  // Generate ephemeral Kyber key for API compatibility (not used for PQ features)
+  const kyberKeyPair = SignalClient.KEMKeyPair.generate()
+  const kyberSig = new Uint8Array(64) // dummy signature
   const prekeyBundle = SignalClient.PreKeyBundle.new(
     bundle.registrationId,
     parseInt(bundle.deviceId, 10),
@@ -178,7 +181,10 @@ export async function processPreKeyBundle(
     bundle.signedPreKey.keyId,
     signedPreKey,
     Buffer.from(bundle.signedPreKey.signature),
-    remoteIdentityKey
+    remoteIdentityKey,
+    1, // kyber_prekey_id
+    kyberKeyPair.getPublicKey(),
+    kyberSig
   )
 
   // Process bundle to create session
@@ -248,7 +254,7 @@ export async function decryptMessage(
     // Use provided KyberPreKeyStore or create a dummy one for backwards compatibility
     const kyberStore = kyberPreKeyStore || new InMemoryKyberPreKeyStore()
 
-    plaintext = await SignalClient.signalDecryptPreKey(
+    plaintext = Buffer.from(await SignalClient.signalDecryptPreKey(
       prekeyMessage,
       remoteAddress,
       sessionStore,
@@ -256,16 +262,16 @@ export async function decryptMessage(
       preKeyStore,
       signedPreKeyStore,
       kyberStore
-    )
+    ))
   } else {
     const signalMessage = SignalClient.SignalMessage.deserialize(Buffer.from(encryptedMessage.body))
 
-    plaintext = await SignalClient.signalDecrypt(
+    plaintext = Buffer.from(await SignalClient.signalDecrypt(
       signalMessage,
       remoteAddress,
       sessionStore,
       identityKeyStore
-    )
+    ))
   }
 
   return new Uint8Array(plaintext)
@@ -358,14 +364,15 @@ class InMemoryIdentityKeyStore extends SignalClient.IdentityKeyStore {
   async saveIdentity(
     address: SignalClient.ProtocolAddress,
     key: SignalClient.PublicKey
-  ): Promise<boolean> {
+  ): Promise<SignalClient.IdentityChange> {
     const identifier = address.name()
     const existing = this.trustedKeys.get(identifier)
 
     this.trustedKeys.set(identifier, key)
 
-    // Return true if this is a new key or key has changed (compare returns 0 if equal)
-    return !existing || existing.compare(key) !== 0
+    return !existing || existing.equals(key)
+      ? SignalClient.IdentityChange.NewOrUnchanged
+      : SignalClient.IdentityChange.ReplacedExisting
   }
 
   async isTrustedIdentity(
@@ -380,8 +387,7 @@ class InMemoryIdentityKeyStore extends SignalClient.IdentityKeyStore {
       return true // Trust on first use (TOFU)
     }
 
-    // compare returns 0 if keys are equal
-    return trusted.compare(key) === 0
+    return trusted.equals(key)
   }
 
   async getIdentity(address: SignalClient.ProtocolAddress): Promise<SignalClient.PublicKey | null> {

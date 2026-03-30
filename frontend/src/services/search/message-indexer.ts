@@ -436,13 +436,13 @@ export class MessageIndexer {
       const stats = await index.getStats()
 
       // Get pending tasks
-      const tasks = await client.getTasks({
+      const tasks = await client.tasks.getTasks({
         indexUids: [INDEXES.MESSAGES],
         statuses: ['enqueued', 'processing'],
       })
 
       // Get last completed task
-      const completedTasks = await client.getTasks({
+      const completedTasks = await client.tasks.getTasks({
         indexUids: [INDEXES.MESSAGES],
         statuses: ['succeeded'],
         limit: 1,
@@ -478,13 +478,13 @@ export class MessageIndexer {
 
     // Then wait for MeiliSearch tasks
     const client = getMeiliClient()
-    const tasks = await client.getTasks({
+    const tasks = await client.tasks.getTasks({
       indexUids: [INDEXES.MESSAGES],
       statuses: ['enqueued', 'processing'],
     })
 
     for (const task of tasks.results) {
-      await client.waitForTask(task.uid, { timeOutMs: timeout })
+      await client.tasks.waitForTask(task.uid, { timeout: timeout })
     }
   }
 

@@ -309,9 +309,9 @@ class DatabaseIdentityKeyStore extends SignalClient.IdentityKeyStore {
   async saveIdentity(
     address: SignalClient.ProtocolAddress,
     key: SignalClient.PublicKey
-  ): Promise<boolean> {
+  ): Promise<SignalClient.IdentityChange> {
     // Store trusted identity keys
-    return true
+    return SignalClient.IdentityChange.NewOrUnchanged
   }
 
   async isTrustedIdentity(

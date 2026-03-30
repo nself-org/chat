@@ -348,11 +348,10 @@ export async function waitForIndexTasks(timeout = 30000): Promise<void> {
 
   for (const indexName of Object.values(INDEXES)) {
     try {
-      const index = client.index(indexName)
-      const tasks = await index.getTasks({ limit: 10, statuses: ['enqueued', 'processing'] })
+      const tasks = await client.tasks.getTasks({ limit: 10, indexUids: [indexName], statuses: ['enqueued', 'processing'] })
 
       for (const task of tasks.results) {
-        await client.waitForTask(task.uid, { timeOutMs: timeout })
+        await client.tasks.waitForTask(task.uid, { timeout: timeout })
       }
     } catch (error) {
       // Index might not exist yet, ignore

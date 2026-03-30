@@ -112,7 +112,7 @@ export class IndexService {
 
         if (createTask) {
           taskIds.push(createTask.taskUid)
-          await this.client.waitForTask(createTask.taskUid, { timeOutMs: 10000 })
+          await this.client.tasks.waitForTask(createTask.taskUid, { timeout: 10000 })
         }
 
         // Update index settings
@@ -193,8 +193,8 @@ export class IndexService {
         numberOfDocuments: stats.numberOfDocuments,
         isIndexing: stats.isIndexing,
         fieldDistribution: stats.fieldDistribution,
-        createdAt: info.createdAt.toISOString(),
-        updatedAt: info.updatedAt.toISOString(),
+        createdAt: typeof info.createdAt === 'string' ? info.createdAt : new Date(info.createdAt).toISOString(),
+        updatedAt: typeof info.updatedAt === 'string' ? info.updatedAt : new Date(info.updatedAt).toISOString(),
       }
     } catch {
       return null
@@ -245,12 +245,12 @@ export class IndexService {
 
       // Get pending and failed tasks
       const [pendingTasks, failedTasks] = await Promise.all([
-        this.client.getTasks({
+        this.client.tasks.getTasks({
           indexUids: [indexName],
           statuses: ['enqueued', 'processing'],
           limit: 100,
         }),
-        this.client.getTasks({
+        this.client.tasks.getTasks({
           indexUids: [indexName],
           statuses: ['failed'],
           limit: 1,
@@ -258,7 +258,7 @@ export class IndexService {
       ])
 
       // Get last successful task
-      const successfulTasks = await this.client.getTasks({
+      const successfulTasks = await this.client.tasks.getTasks({
         indexUids: [indexName],
         statuses: ['succeeded'],
         limit: 1,
@@ -517,7 +517,7 @@ export class IndexService {
    * Wait for a task to complete
    */
   async waitForTask(taskId: number, timeout = 30000): Promise<Task> {
-    return this.client.waitForTask(taskId, { timeOutMs: timeout })
+    return this.client.tasks.waitForTask(taskId, { timeout: timeout })
   }
 
   /**
@@ -525,13 +525,13 @@ export class IndexService {
    */
   async waitForAllTasks(timeout = 60000): Promise<void> {
     for (const indexName of Object.values(INDEXES)) {
-      const tasks = await this.client.getTasks({
+      const tasks = await this.client.tasks.getTasks({
         indexUids: [indexName],
         statuses: ['enqueued', 'processing'],
       })
 
       for (const task of tasks.results) {
-        await this.client.waitForTask(task.uid, { timeOutMs: timeout })
+        await this.client.tasks.waitForTask(task.uid, { timeout: timeout })
       }
     }
   }
@@ -540,14 +540,14 @@ export class IndexService {
    * Get task status
    */
   async getTaskStatus(taskId: number): Promise<Task> {
-    return this.client.getTask(taskId)
+    return this.client.tasks.getTask(taskId)
   }
 
   /**
    * Get pending tasks for an index
    */
   async getPendingTasks(indexName: IndexName): Promise<Task[]> {
-    const tasks = await this.client.getTasks({
+    const tasks = await this.client.tasks.getTasks({
       indexUids: [indexName],
       statuses: ['enqueued', 'processing'],
     })

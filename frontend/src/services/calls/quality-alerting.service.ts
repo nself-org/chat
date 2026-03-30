@@ -710,7 +710,7 @@ export class CallQualityAlertingService {
     logger.info('[QualityAlerting] Email alert logged (mail plugin required for delivery)', {
       recipients,
       severity: alert.severity,
-      title: alert.title,
+      title: alert.type,
     })
   }
 
