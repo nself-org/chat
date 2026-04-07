@@ -1,4 +1,4 @@
-# nChat Test Scripts
+# ɳChat Test Scripts
 
 Utility scripts for test coverage analysis and test file generation.
 

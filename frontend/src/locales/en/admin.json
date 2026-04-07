@@ -221,7 +221,7 @@
   },
   "setup": {
     "title": "Setup Wizard",
-    "welcome": "Welcome to nChat Setup",
+    "welcome": "Welcome to ɳChat Setup",
     "letsGetStarted": "Let's get your workspace set up!",
     "step": "Step {{current}} of {{total}}",
     "ownerInfo": "Owner Information",

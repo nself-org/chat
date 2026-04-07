@@ -1,6 +1,6 @@
 # ɳChat
 
-**Self-hosted team communication platform built on nSelf.**
+**Self-hosted team communication platform built on ɳSelf.**
 
 Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `1.0.0`
 
@@ -10,7 +10,7 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev/)
 
-Powered by [nSelf CLI](https://github.com/nself-org/cli) for backend infrastructure.
+Powered by [ɳSelf CLI](https://github.com/nself-org/cli) for backend infrastructure.
 
 ---
 
@@ -87,11 +87,11 @@ nself-chat/
 
 ---
 
-## What is nChat?
+## What is ɳChat?
 
 Build your own Slack, Discord, or Teams alternative. Clone it, customize it with the 12-step setup wizard, and deploy it on your own infrastructure.
 
-**100% powered by nSelf CLI** for backend infrastructure: PostgreSQL, Hasura GraphQL, Nhost Auth, MinIO Storage, Redis, MeiliSearch, LiveKit, and a monitoring stack.
+**100% powered by ɳSelf CLI** for backend infrastructure: PostgreSQL, Hasura GraphQL, Nhost Auth, MinIO Storage, Redis, MeiliSearch, LiveKit, and a monitoring stack.
 
 ### Core Features (free, always on)
 
@@ -197,12 +197,12 @@ Try the full stack with Pro Plugins active: **[chat.nself.org](https://chat.nsel
 
 ---
 
-## Part of nSelf
+## Part of ɳSelf
 
-- [nSelf CLI](https://github.com/nself-org/cli) - Self-hosted backend platform
-- [nAdmin](https://github.com/nself-org/admin) - Admin dashboard
-- [nChat](https://github.com/nself-org/chat) - Real-time chat (this project)
-- [nPlugins](https://github.com/nself-org/plugins) - Plugin marketplace
+- [ɳSelf CLI](https://github.com/nself-org/cli) - Self-hosted backend platform
+- [ɳSelf Admin](https://github.com/nself-org/admin) - Admin dashboard
+- [ɳChat](https://github.com/nself-org/chat) - Real-time chat (this project)
+- [ɳSelf Plugins](https://github.com/nself-org/plugins) - Plugin marketplace
 
 Learn more at [nself.org](https://nself.org)
 

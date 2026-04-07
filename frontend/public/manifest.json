@@ -1,6 +1,6 @@
 {
-  "name": "nChat - Team Communication",
-  "short_name": "nChat",
+  "name": "ɳChat - Team Communication",
+  "short_name": "ɳChat",
   "description": "Slack-like team chat with Telegram features, white-label customizable",
   "start_url": "/",
   "scope": "/",
