@@ -2,19 +2,19 @@
 
 Welcome to the **nself-chat** documentation! A production-ready, white-label team communication platform with multi-platform support (Web, iOS, Android, Desktop).
 
-**Version**: 0.9.2 | **Status**: Production Ready | **Last Updated**: February 10, 2026
+**Version**: 1.0.0 | **Status**: Production Ready | **Last Updated**: April 17, 2026
 
 ---
 
 ## Plugin Requirements
 
-ɳChat's advanced features run on **ɳSelf Pro Plugins** — AI moderation, voice/video calls, analytics, Stripe billing, GDPR/HIPAA compliance, live streaming, and more.
+ɳChat's advanced features run on **ɳSelf Pro Plugins**: AI moderation, voice/video calls, analytics, Stripe billing, GDPR/HIPAA compliance, live streaming, and more.
 
 **Pro Plugins license: starting at $0.99/month ($9.99/year)** at [nself.org/pricing](https://nself.org/pricing). Set `NSELF_PLUGIN_LICENSE_KEY` in your backend `.env` and `nself start` installs them automatically.
 
 Without a license: core messaging, auth, storage, and search work using the 15 free plugins. You can also implement any Pro Plugin's functionality as a [Custom Service](https://docs.nself.org/custom-services) (CS_1–CS_10).
 
-See the [live demo](https://chat.nself.org) — it runs the full stack with Pro Plugins active.
+See the [live demo](https://chat.nself.org). It runs the full stack with Pro Plugins active.
 
 ---
 
@@ -34,7 +34,7 @@ See the [live demo](https://chat.nself.org) — it runs the full stack with Pro 
 
 ---
 
-## 🏗️ Project Structure (v0.9.2)
+## 🏗️ Project Structure (v1.0.0)
 
 nself-chat follows the **nself-family clean organization pattern**:
 
@@ -73,7 +73,7 @@ nself-chat/
 - ✅ Shared authentication with SSO
 - ✅ Multi-platform support (Web, iOS, Android, Desktop)
 
-**New in v0.9.2:** Per-app RBAC/ACL system enables users to have different roles in different applications sharing the same backend. See [ARCHITECTURE.md](ARCHITECTURE.md) for monorepo setup.
+**Per-app RBAC/ACL system** enables users to have different roles in different applications sharing the same backend. See [ARCHITECTURE.md](ARCHITECTURE.md) for monorepo setup.
 
 ---
 
@@ -300,6 +300,7 @@ See [Quick Reference](Quick-Reference.md) for complete command list.
 
 ## 📝 Version History
 
+- **v1.0.0** (2026-04-17) - Stable release; aligned with nSelf CLI 1.0.6
 - **v0.9.2** (2026-02-10) - Monorepo restructure, security hardening, complete docs
 - **v0.9.1** (2026-02-03) - WebRTC, channels, OAuth, email integration
 - **v0.9.0** (2026-02-01) - Multi-tenancy, billing, AI moderation
@@ -307,6 +308,14 @@ See [Quick Reference](Quick-Reference.md) for complete command list.
 - **v0.7.0** (2026-01-30) - Vector search, bot framework
 
 See [CHANGELOG](CHANGELOG.md) for complete version history.
+
+---
+
+## Brand
+
+ɳChat (display) is the user-facing brand. `nchat` (system) is the package name; `chat/` is the repo path. Brand assets are shared across nSelf — see master brand kit at `~/Sites/nself/.claude/docs/brand/` (PPI master) and the [Brand Spec (F15)](https://github.com/nself-org/clawde/blob/main/.claude/docs/sport/F15-BRAND-SPEC.md) for color, typography, and naming rules.
+
+Primary color: Indigo `#6366F1`. Background: `#0F0F1A`.
 
 ---
 

@@ -29,14 +29,15 @@
 ### Security & Privacy
 
 - [🔐 E2EE](features/E2EE-Complete)
-- [🔒 2FA](security/2FA-Implementation-Summary)
-- [🔐 PIN Lock](security/PIN-LOCK-SYSTEM)
+
+(See **🔐 Security** section below for 2FA, PIN Lock, and security audits.)
 
 ### Interactive
 
 - [🎨 GIFs & Stickers](features/GIF-Sticker-Implementation)
 - [📊 Polls](features/Polls-Implementation)
-- [🔍 Search](reference/Search-Quick-Start)
+
+(Search lives in **📚 Reference** below.)
 
 ### Extensibility
 
@@ -194,6 +195,6 @@
 
 <div align="center">
 
-**v0.5.0** • **2026**
+**v1.0.0** • **2026**
 
 </div>
