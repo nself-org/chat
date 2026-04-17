@@ -197,12 +197,33 @@ Try the full stack with Pro Plugins active: **[chat.nself.org](https://chat.nsel
 
 ---
 
+## Architecture
+
+Next.js 15 + React 19 frontend talking to a self-hosted nSelf backend (PostgreSQL + Hasura GraphQL + Nhost Auth + MinIO + MeiliSearch) over GraphQL subscriptions and Socket.io for real-time. Pro features (voice/video, recording, advanced moderation, bots) install as nSelf plugins at build time when a license key is present.
+
+See [Architecture Overview](.github/wiki/Architecture-Overview.md) for the full deep-dive.
+
+---
+
+## Contributing
+
+Contributions welcome. See [Contributing Guide](.github/wiki/CONTRIBUTING.md) for setup, coding standards, and PR workflow.
+
+Before opening a PR:
+
+- Run `pnpm lint` and `pnpm type-check` in `frontend/`
+- Run `pnpm test` (unit) and `pnpm test:e2e` (Playwright) where relevant
+- Confirm backend boots clean with `cd backend && nself start`
+
+---
+
 ## Part of ɳSelf
 
 - [ɳSelf CLI](https://github.com/nself-org/cli) - Self-hosted backend platform
 - [ɳSelf Admin](https://github.com/nself-org/admin) - Admin dashboard
-- [ɳChat](https://github.com/nself-org/chat) - Real-time chat (this project)
-- [ɳSelf Plugins](https://github.com/nself-org/plugins) - Plugin marketplace
+- [ɳSelf Plugins](https://github.com/nself-org/plugins) - 25 free MIT plugins
+- [ɳSelf Pro Plugins](https://github.com/nself-org/plugins-pro) - License-gated pro plugins (livekit, recording, moderation, bots, realtime, auth, chat)
+- [chat.nself.org](https://chat.nself.org) - Hosted community chat (separate, simpler app at `web/chat/` — not this repo)
 
 Learn more at [nself.org](https://nself.org)
 

@@ -2,7 +2,7 @@
 
 **nself-chat System Architecture** - High-level design and technical overview.
 
-**Version**: 0.9.2 | **Last Updated**: February 10, 2026
+**Version**: 1.0.0 | **Last Updated**: April 17, 2026
 
 ---
 
@@ -23,7 +23,7 @@ nself-chat is a production-ready, white-label team communication platform built 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        nself-chat v0.9.2                        │
+│                        nself-chat v1.0.0                        │
 │                    Multi-Platform Chat System                   │
 └─────────────────────────────────────────────────────────────────┘
                               ▲
@@ -143,7 +143,7 @@ nself-chat/
 
 ### nself CLI Stack
 
-The backend uses [nself CLI](https://nself.org) v0.4.2 for a complete BaaS (Backend as a Service) stack.
+The backend uses [nself CLI](https://nself.org) v1.0.6 for a complete BaaS (Backend as a Service) stack.
 
 **Core Services** (required):
 
