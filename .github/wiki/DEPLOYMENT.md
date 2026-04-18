@@ -1260,8 +1260,10 @@ cp backups/20260130/frontend-env .env.production
 4. **Restart Services**:
 
 ```bash
-docker compose down
-docker compose up -d
+# nSelf-First: use the CLI, not raw compose.
+cd backend
+nself stop
+nself start
 ```
 
 #### Recovery Time Objective (RTO)
