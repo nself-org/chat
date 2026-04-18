@@ -505,5 +505,5 @@ kubectl logs -n nself-chat -l app.kubernetes.io/name=nself-chat
 
 ## Related Documentation
 
-- [Docker Deployment](./Docker.md)
-- [Kubernetes Deployment](./Kubernetes.md)
+- [Docker Deployment](./Deployment-Docker.md)
+- [Kubernetes Deployment](./Deployment-Kubernetes.md)

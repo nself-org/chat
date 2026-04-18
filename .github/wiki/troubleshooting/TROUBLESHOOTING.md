@@ -1092,7 +1092,7 @@ DEBUG=nself:* pnpm dev
 
 - [FAQ](FAQ.md)
 - [Operations Runbook](RUNBOOK.md)
-- [Installation Guide](../INSTALLATION.md)
+- [Installation Guide](../INSTALL.md)
 - [Configuration Guide](../configuration/Configuration.md)
 
 ---

@@ -675,6 +675,6 @@ Available scopes for API keys:
 
 ## Next Steps
 
-- [Users API](./users.md)
-- [Channels API](./channels.md)
-- [Messages API](./messages.md)
+- [Users API](./API-DOCUMENTATION.md)
+- [Channels API](./API-DOCUMENTATION.md)
+- [Messages API](./API-DOCUMENTATION.md)

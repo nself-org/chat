@@ -591,9 +591,9 @@ main (production)
 
 ## 🔗 Additional Resources
 
-- [Backend README](../backend/README.md) - Backend setup and services
-- [Frontend README](../frontend/README.md) - Frontend monorepo details
-- [Database Schema](Schema-Complete.md) - Complete schema documentation
+- [Backend README](./ARCHITECTURE.md) - Backend setup and services
+- [Frontend README](./Architecture-Overview.md) - Frontend monorepo details
+- [Database Schema](reference/Database-Schema.md) - Complete schema documentation
 - [API Reference](api/API.md) - GraphQL API documentation
 - [Deployment Guide](DEPLOYMENT-GUIDE.md) - Production deployment
 

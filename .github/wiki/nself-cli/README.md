@@ -16,10 +16,10 @@ Version: v1.0.9 | Last Updated: April 18, 2026
 | **[Commands](./Commands.md)**               | Complete command reference              | 1,229       |
 | **[Services](./Services.md)**               | All available services documentation    | 1,682       |
 | **[Configuration](../configuration/Configuration.md)**     | How to configure nself projects         | Coming Soon |
-| **[Migrations](./Migrations.md)**           | Database migration management           | Coming Soon |
-| **[Troubleshooting](./Troubleshooting.md)** | Common issues and solutions             | Coming Soon |
+| **[Migrations](./Commands.md)**           | Database migration management           | Coming Soon |
+| **[Troubleshooting](../troubleshooting/TROUBLESHOOTING.md)** | Common issues and solutions             | Coming Soon |
 | **[Architecture](../reference/Architecture.md)**       | How nself CLI works internally          | Coming Soon |
-| **[API Reference](./API-Reference.md)**     | nself CLI API reference                 | Coming Soon |
+| **[API Reference](../api/API-DOCUMENTATION.md)**     | nself CLI API reference                 | Coming Soon |
 
 **Total Documentation:** 5,077+ lines across 10 comprehensive guides
 
@@ -108,13 +108,13 @@ nself urls
 4. **[Services](./Services.md)** - Deep dive into each service (PostgreSQL, Hasura, Auth, etc.)
 5. **[Commands](./Commands.md)** - Master all available commands
 6. **[Configuration](../configuration/Configuration.md)** - Customize your stack
-7. **[Migrations](./Migrations.md)** - Manage database schema changes
+7. **[Migrations](./Commands.md)** - Manage database schema changes
 
 ### For Advanced Users
 
 8. **[Architecture](../reference/Architecture.md)** - Understand how nself CLI works internally
-9. **[API Reference](./API-Reference.md)** - Complete API documentation
-10. **[Troubleshooting](./Troubleshooting.md)** - Solve common issues
+9. **[API Reference](../api/API-DOCUMENTATION.md)** - Complete API documentation
+10. **[Troubleshooting](../troubleshooting/TROUBLESHOOTING.md)** - Solve common issues
 
 ---
 
@@ -415,7 +415,7 @@ nself restart
 # Docker Desktop → Settings → Resources → Memory → 8GB+
 ```
 
-[Full troubleshooting guide →](./Troubleshooting.md)
+[Full troubleshooting guide →](../troubleshooting/TROUBLESHOOTING.md)
 
 ---
 

@@ -140,7 +140,7 @@ export default function BotsManagementPage() {
     return null
   }
 
-  // Feature disabled
+  // Bundle upsell — bots plugin not installed
   if (!botsEnabled) {
     return (
       <AdminLayout>
@@ -148,11 +148,25 @@ export default function BotsManagementPage() {
           <div className="mb-4 rounded-full bg-muted p-4">
             <BotIcon className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h2 className="mb-2 text-xl font-semibold">Bots feature is disabled</h2>
-          <p className="max-w-md text-center text-muted-foreground">
-            The bots feature is currently disabled for this workspace. Enable it in the feature
-            settings to manage bot integrations.
+          <h2 className="mb-2 text-xl font-semibold">Bots require the nChat bundle</h2>
+          <p className="mb-6 max-w-md text-center text-muted-foreground">
+            The bots plugin — programmable bot accounts and slash-command runtime — is part of the
+            nChat bundle ($0.99/mo). Install it to create and manage bots for this workspace.
           </p>
+          <div className="flex flex-col items-center gap-3">
+            <a
+              href="https://nself.org/pricing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Get nChat Bundle
+              <Plus className="h-4 w-4" />
+            </a>
+            <code className="rounded bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">
+              nself plugin install bots &amp;&amp; nself build &amp;&amp; nself start
+            </code>
+          </div>
         </div>
       </AdminLayout>
     )

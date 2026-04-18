@@ -1,7 +1,7 @@
 # ɳChat Architecture
 
-**Version**: 0.9.2
-**Last Updated**: February 12, 2026
+**Version**: 1.0.9
+**Last Updated**: 2026-04-18
 
 ## Overview
 

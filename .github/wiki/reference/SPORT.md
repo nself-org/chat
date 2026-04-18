@@ -1194,7 +1194,7 @@ await switchUser('guest@nself.org')
 | Document                                               | Description             |
 | ------------------------------------------------------ | ----------------------- |
 | [Project-Structure.md](./Project-Structure.md)         | Complete file structure |
-| [Environment-Variables.md](./Environment-Variables.md) | All env vars            |
+| [Environment-Variables.md](../configuration/Environment-Variables.md) | All env vars            |
 | [Database-Schema.md](./Database-Schema.md)             | Full database docs      |
 | [Types.md](./Types.md)                                 | TypeScript types        |
 | [Roadmap.md](../about/Roadmap.md)                             | Development phases      |

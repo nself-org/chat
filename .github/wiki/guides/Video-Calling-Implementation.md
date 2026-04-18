@@ -483,10 +483,10 @@ function VideoLayout() {
 ## Related Documentation
 
 - [Video Calling Guide](./Video-Calling-Guide.md) - User guide
-- [Background Effects Guide](./Background-Effects-Guide.md) - Background effects
-- [Voice Calling Guide](./Voice-Calling-Guide.md) - Voice calling
+- [Background Effects Guide](./Video-Calling-Guide.md) - Background effects
+- [Voice Calling Guide](./Voice-Calling-Implementation.md) - Voice calling
 - [API Documentation](../api/API.md) - Complete API reference
-- [Troubleshooting](./Troubleshooting.md) - Common issues
+- [Troubleshooting](../troubleshooting/TROUBLESHOOTING.md) - Common issues
 
 ---
 

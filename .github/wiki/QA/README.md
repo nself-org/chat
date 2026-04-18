@@ -10,9 +10,9 @@
 
 | Document                                                     | Purpose                               | Status      | Priority      |
 | ------------------------------------------------------------ | ------------------------------------- | ----------- | ------------- |
-| [VERIFICATION-SUMMARY.md](VERIFICATION-SUMMARY.md)           | Quick reference - 1 page              | ✅ Complete | 🔥 READ FIRST |
-| [FINAL-VERIFICATION-REPORT.md](FINAL-VERIFICATION-REPORT.md) | Complete analysis - 10 pages          | ✅ Complete | 📋 Reference  |
-| [TASK-7-COVERAGE-REPORT.md](TASK-7-COVERAGE-REPORT.md)       | Coverage analysis                     | ✅ Complete | 🔬 Technical  |
+| [VERIFICATION-SUMMARY.md](V0.9.1-FINAL-VERIFICATION.md)           | Quick reference - 1 page              | ✅ Complete | 🔥 READ FIRST |
+| [FINAL-VERIFICATION-REPORT.md](FINAL-QA-SIGNOFF-v091.md) | Complete analysis - 10 pages          | ✅ Complete | 📋 Reference  |
+| [TASK-7-COVERAGE-REPORT.md](MASTER-TASK-LIST.md)       | Coverage analysis                     | ✅ Complete | 🔬 Technical  |
 | [ACTUAL-TEST-RESULTS.md](ACTUAL-TEST-RESULTS.md)             | **KEY DISCOVERY** - True test quality | ✅ Complete | ⭐ Important  |
 
 ---
@@ -21,7 +21,7 @@
 
 | Document                                                 | Purpose           | Status      | Priority     |
 | -------------------------------------------------------- | ----------------- | ----------- | ------------ |
-| [Executive Summary](PHASE-2-EXECUTIVE-SUMMARY.md)        | TL;DR findings    | ✅ Complete | 📋 Reference |
+| [Executive Summary](PHASE-2-ACTION-PLAN.md)        | TL;DR findings    | ✅ Complete | 📋 Reference |
 | [Full Verification Report](PHASE-2-CODE-VERIFICATION.md) | Detailed analysis | ✅ Complete | 📋 Reference |
 | [Action Plan](PHASE-2-ACTION-PLAN.md)                    | Fix instructions  | ✅ Complete | ⚠️ Implement |
 
@@ -87,7 +87,7 @@
 
 ### For Management/Stakeholders
 
-👉 **Start here**: [Executive Summary](PHASE-2-EXECUTIVE-SUMMARY.md)
+👉 **Start here**: [Executive Summary](PHASE-2-ACTION-PLAN.md)
 
 - High-level findings
 - Risk assessment
@@ -191,7 +191,7 @@ Some "implemented" features are actually:
 
 **Ready to fix?** Follow the [Action Plan](PHASE-2-ACTION-PLAN.md)
 
-**Need overview?** Read the [Executive Summary](PHASE-2-EXECUTIVE-SUMMARY.md)
+**Need overview?** Read the [Executive Summary](PHASE-2-ACTION-PLAN.md)
 
 ---
 

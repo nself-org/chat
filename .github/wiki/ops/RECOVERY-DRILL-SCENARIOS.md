@@ -935,4 +935,4 @@ echo "Cleanup complete"
 **Related Documents:**
 - [Incident Response Playbook](./INCIDENT-RESPONSE-PLAYBOOK.md)
 - [Disaster Recovery Procedures](./DISASTER-RECOVERY-PROCEDURES.md)
-- [Operations Runbook](./OPERATIONS-RUNBOOK.md)
+- [Operations Runbook](../troubleshooting/RUNBOOK.md)

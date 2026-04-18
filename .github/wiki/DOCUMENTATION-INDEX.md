@@ -62,8 +62,8 @@ Complete feature documentation:
 
 #### Communication Features
 - **[VOICE-CALLING-COMPLETE.md](features/VOICE-CALLING-COMPLETE.md)** - Voice calls
-- **[LIVE_STREAMING_IMPLEMENTATION_SUMMARY.md](features/LIVE_STREAMING_IMPLEMENTATION_SUMMARY.md)** - Live streaming
-- **[SCREEN-SHARING-SUMMARY.md](features/SCREEN-SHARING-SUMMARY.md)** - Screen sharing
+- **[LIVE_STREAMING_IMPLEMENTATION_SUMMARY.md](features/Live-Streaming-Complete.md)** - Live streaming
+- **[SCREEN-SHARING-SUMMARY.md](features/Screen-Sharing-Complete.md)** - Screen sharing
 - **[MOBILE-CALLS-IMPLEMENTATION.md](features/MOBILE-CALLS-IMPLEMENTATION.md)** - Mobile optimization
 
 #### Interactive Features
@@ -73,7 +73,7 @@ Complete feature documentation:
 
 #### Advanced Features
 - **[E2EE-Complete.md](features/E2EE-Complete.md)** - End-to-end encryption
-- **[SEARCH_IMPLEMENTATION_SUMMARY.md](features/SEARCH_IMPLEMENTATION_SUMMARY.md)** - MeiliSearch integration
+- **[SEARCH_IMPLEMENTATION_SUMMARY.md](guides/Search-Implementation.md)** - MeiliSearch integration
 
 #### Customization
 - **[White-Label-Guide.md](features/White-Label-Guide.md)** - Complete branding guide
@@ -106,7 +106,7 @@ Step-by-step implementation and usage guides:
 
 #### Deployment Guides
 - **[deployment/DEPLOYMENT-CHECKLIST.md](guides/deployment/DEPLOYMENT-CHECKLIST.md)** - Pre-deploy checklist
-- **[deployment/DEPLOYMENT.md](guides/deployment/DEPLOYMENT.md)** - Deployment overview
+- **[deployment/DEPLOYMENT.md](guides/deployment/production-deployment.md)** - Deployment overview
 
 ### 4. Configuration (10+ files)
 Location: `docs/configuration/`
@@ -187,7 +187,7 @@ Security features and best practices:
 #### Authentication & Authorization
 - **[2FA-Implementation-Summary.md](security/2FA-Implementation-Summary.md)** - Two-factor auth
 - **[PIN-LOCK-SYSTEM.md](security/PIN-LOCK-SYSTEM.md)** - PIN lock + biometrics
-- **[PIN-LOCK-IMPLEMENTATION-SUMMARY.md](security/PIN-LOCK-IMPLEMENTATION-SUMMARY.md)** - Technical details
+- **[PIN-LOCK-IMPLEMENTATION-SUMMARY.md](security/PIN-LOCK-SYSTEM.md)** - Technical details
 
 #### Encryption
 - **[E2EE-Implementation-Summary.md](security/E2EE-Implementation-Summary.md)** - E2E encryption
@@ -241,7 +241,7 @@ Version-specific documentation:
 #### v0.9.1 Release
 - **[v0.9.1/MISSION-ACCOMPLISHED.md](releases/v0.9.1/MISSION-ACCOMPLISHED.md)**
 - **[v0.9.1/reports/V0.9.1-QUALITY-REPORT.md](releases/v0.9.1/reports/V0.9.1-QUALITY-REPORT.md)**
-- **[v0.9.1/reports/V0.9.1-COMPLETION-REPORT.md](releases/v0.9.1/reports/V0.9.1-COMPLETION-REPORT.md)**
+- **[v0.9.1/reports/V0.9.1-COMPLETION-REPORT.md](releases/v0.9.1/reports/IMPLEMENTATION-REPORT-V0.9.1.md)**
 
 #### v0.9.0 Release
 - **[v0.9.0/RELEASE-NOTES.md](releases/v0.9.0/RELEASE-NOTES.md)**
@@ -251,8 +251,8 @@ Location: `docs/archive/`
 
 Historical documentation:
 - **[DOCUMENTATION-STATUS.md](archive/DOCUMENTATION-STATUS.md)**
-- **[FEATURE-PARITY-REPORT.md](archive/FEATURE-PARITY-REPORT.md)**
-- **[TESTING-SUMMARY.md](archive/TESTING-SUMMARY.md)**
+- **[FEATURE-PARITY-REPORT.md](archive/DOCUMENTATION-STATUS.md)**
+- **[TESTING-SUMMARY.md](archive/DOCUMENTATION-STATUS.md)**
 
 ---
 

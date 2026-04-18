@@ -684,4 +684,4 @@ For each incident:
 **Related Documents:**
 - [Disaster Recovery Procedures](./DISASTER-RECOVERY-PROCEDURES.md)
 - [Recovery Drill Scenarios](./RECOVERY-DRILL-SCENARIOS.md)
-- [Operations Runbook](./OPERATIONS-RUNBOOK.md)
+- [Operations Runbook](../troubleshooting/RUNBOOK.md)

@@ -259,7 +259,7 @@ pnpm run build:ios
 
 ### 8. App Store Submission
 
-See [platforms/capacitor/fastlane/README.md](../platforms/capacitor/fastlane/README.md) for automated build and deployment with Fastlane.
+See [platforms/capacitor/fastlane/README.md](./INSTALL.md) for automated build and deployment with Fastlane.
 
 ---
 
@@ -401,7 +401,7 @@ pnpm run build:android:bundle
 
 ### 8. Play Store Submission
 
-See [platforms/capacitor/fastlane/README.md](../platforms/capacitor/fastlane/README.md) for automated build and deployment with Fastlane.
+See [platforms/capacitor/fastlane/README.md](./INSTALL.md) for automated build and deployment with Fastlane.
 
 ---
 

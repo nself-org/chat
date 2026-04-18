@@ -1314,8 +1314,8 @@ nself db:migrate up
 
 - **Learn about Services** → [Services.md](./Services.md)
 - **Configuration Guide** → [Configuration.md](../configuration/Configuration.md)
-- **Database Migrations** → [Migrations.md](./Migrations.md)
-- **Troubleshooting** → [Troubleshooting.md](./Troubleshooting.md)
+- **Database Migrations** → [Migrations.md](./Commands.md)
+- **Troubleshooting** → [Troubleshooting.md](../troubleshooting/TROUBLESHOOTING.md)
 
 ---
 

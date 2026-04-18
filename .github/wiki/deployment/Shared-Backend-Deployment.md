@@ -1018,9 +1018,9 @@ Verify data isolation and authentication.
 
 ## Next Steps
 
-1. **Setup Monitoring**: [Monitoring.md](../operations/Monitoring.md)
-2. **Configure Backups**: [Backup-Strategy.md](../operations/Backup-Strategy.md)
-3. **Review Security**: [Security-Checklist.md](../security/Security-Checklist.md)
+1. **Setup Monitoring**: [Monitoring.md](./DEPLOYMENT.md)
+2. **Configure Backups**: [Backup-Strategy.md](./Production-Deployment-Checklist.md)
+3. **Review Security**: [Security-Checklist.md](../security/SECURITY-CONTROLS.md)
 
 ## Resources
 

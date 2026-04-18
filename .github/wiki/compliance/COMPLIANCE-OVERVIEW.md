@@ -653,7 +653,7 @@ For compliance-related questions:
 
 **Next Steps:**
 
-- [GDPR Implementation Guide](./GDPR-GUIDE.md)
-- [HIPAA Implementation Guide](./HIPAA-GUIDE.md)
-- [SOC 2 Implementation Guide](./SOC2-GUIDE.md)
-- [API Documentation](../api/COMPLIANCE-API.md)
+- [GDPR Implementation Guide](./COMPLIANCE-OVERVIEW.md)
+- [HIPAA Implementation Guide](./COMPLIANCE-OVERVIEW.md)
+- [SOC 2 Implementation Guide](./COMPLIANCE-OVERVIEW.md)
+- [API Documentation](../api/API-DOCUMENTATION.md)

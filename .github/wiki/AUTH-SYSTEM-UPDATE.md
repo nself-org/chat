@@ -342,9 +342,9 @@ pnpm build
 
 ## Related Documentation
 
-- [.claude/CLAUDE.md](../.claude/CLAUDE.md) - Main project documentation
+- [.claude/CLAUDE.md](./ARCHITECTURE.md) - Main project documentation
 - [docs/guides/setup/QUICK-START-PRODUCTION.md](guides/setup/QUICK-START-PRODUCTION.md) - Production deployment guide
-- [src/services/auth/README.md](../src/services/auth/README.md) - Auth service documentation
+- [src/services/auth/README.md](./AUTH-SYSTEM-COMPLETE.md) - Auth service documentation
 
 ---
 

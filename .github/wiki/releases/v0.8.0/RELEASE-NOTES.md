@@ -907,16 +907,16 @@ ELECTRON_APP_ID=org.nself.nchat
 
 - [iOS Deployment Guide](../../deployment/ios-deployment.md)
 - [Android Deployment Guide](../../deployment/android-deployment.md)
-- [Desktop Deployment Guide](/docs/deployment/desktop-deployment.md)
+- [Desktop Deployment Guide](../../deployment/desktop-deployment.md)
 - [Mobile Deployment Checklist](../../deployment/mobile-deployment-checklist.md)
 - [App Store Submission Guide](../../deployment/app-store-submission.md)
 - [Play Store Submission Guide](../../deployment/play-store-submission.md)
-- [Offline Mode Guide](/docs/guides/offline-mode.md)
-- [Background Sync Guide](/docs/guides/background-sync.md)
-- [Mobile API Reference](/docs/api/mobile-api.md)
-- [Platform Detection API](/docs/api/platform-detection.md)
-- [Analytics API](/docs/api/analytics-api.md)
-- [Troubleshooting Mobile](/docs/troubleshooting/mobile.md)
+- [Offline Mode Guide](../../features/Offline-Sync-Phase17.md)
+- [Background Sync Guide](../../features/Offline-Sync-Phase17.md)
+- [Mobile API Reference](../../api/API-DOCUMENTATION.md)
+- [Platform Detection API](../../api/API-DOCUMENTATION.md)
+- [Analytics API](../../api/API-DOCUMENTATION.md)
+- [Troubleshooting Mobile](../../troubleshooting/TROUBLESHOOTING.md)
 
 ### Updated Documentation
 

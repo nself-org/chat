@@ -133,19 +133,19 @@ See [Audit Logging Guide](./Audit-Logging.md) for detailed instructions.
 
 - **[SSO Setup Guide](./SSO-Setup.md)**: Complete SAML/SSO configuration
 - **[RBAC Guide](./RBAC-Guide.md)**: Advanced role-based access control
-- **[MFA Setup](./MFA-Setup.md)**: Multi-factor authentication (coming soon)
+- **[MFA Setup](./SSO-Setup.md)**: Multi-factor authentication (coming soon)
 
 ### Security & Compliance
 
 - **[Audit Logging Guide](./Audit-Logging.md)**: Tamper-proof audit trails
-- **[Compliance Guide](./Compliance.md)**: SOC 2, GDPR, HIPAA, PCI DSS (coming soon)
-- **[Security Best Practices](./Security.md)**: Security hardening guide (coming soon)
+- **[Compliance Guide](./Audit-Logging.md)**: SOC 2, GDPR, HIPAA, PCI DSS (coming soon)
+- **[Security Best Practices](./RBAC-Guide.md)**: Security hardening guide (coming soon)
 
 ### Integration & Customization
 
 - **[Webhooks Guide](../../Webhooks.md)**: Custom integrations (coming soon)
 - **[API Reference](../../api/API.md)**: GraphQL and REST APIs (coming soon)
-- **[Custom Apps](./Custom-Apps.md)**: Build custom applications (coming soon)
+- **[Custom Apps](../../features/Features.md)**: Build custom applications (coming soon)
 
 ## Security
 
@@ -368,7 +368,7 @@ Reduce costs with self-hosting:
 3. Configure SSO
 4. Train users
 
-See [Slack Migration Guide](./Migration-Slack.md) (coming soon)
+See [Slack Migration Guide](../../features/Features.md) (coming soon)
 
 ### From Microsoft Teams
 
@@ -377,7 +377,7 @@ See [Slack Migration Guide](./Migration-Slack.md) (coming soon)
 3. Configure Azure AD SSO
 4. Migrate content
 
-See [Teams Migration Guide](./Migration-Teams.md) (coming soon)
+See [Teams Migration Guide](../../features/Features.md) (coming soon)
 
 ### From Discord
 
@@ -386,7 +386,7 @@ See [Teams Migration Guide](./Migration-Teams.md) (coming soon)
 3. Import channels and messages
 4. Configure authentication
 
-See [Discord Migration Guide](./Migration-Discord.md) (coming soon)
+See [Discord Migration Guide](../../features/Features.md) (coming soon)
 
 ## Roadmap
 

@@ -471,11 +471,26 @@ export function emitCallError(
 }
 
 /**
- * Log call event to database (stub - implement with your database)
+ * Log call event to the backend via the calls events API
  */
 export async function logCallEventToDatabase(event: AnyCallEvent): Promise<void> {
-  // This would be implemented with your actual database layer
-  // Example: await insertCallEvent({ ... })
+  const payload = {
+    callId: event.callId,
+    type: event.type,
+    userId: event.userId,
+    timestamp: event.timestamp.toISOString(),
+    metadata: event.metadata ?? null,
+  }
+
+  const response = await fetch('/api/calls/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to log call event: ${response.status} ${response.statusText}`)
+  }
 }
 
 // =============================================================================
@@ -523,11 +538,16 @@ export function createEventLogger(filter?: {
 
     // Log to console
     if (logToConsole) {
+      // eslint-disable-next-line no-console
+      console.debug(`[call-event] ${event.type}`, { callId: event.callId, ts: event.timestamp })
     }
 
     // Log to database
     if (logToDatabase) {
-      logCallEventToDatabase(event)
+      logCallEventToDatabase(event).catch((err: Error) => {
+        // eslint-disable-next-line no-console
+        console.error('[call-event] Failed to persist event to database:', err)
+      })
     }
   }
 

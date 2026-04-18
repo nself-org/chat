@@ -2,25 +2,77 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { gql, useMutation } from '@apollo/client'
 import { CompletionStep } from '@/components/onboarding'
 import { useOnboardingStore } from '@/stores/onboarding-store'
+import { useAuth } from '@/contexts/auth-context'
+
+// ============================================================================
+// GraphQL
+// ============================================================================
+
+const COMPLETE_ONBOARDING = gql`
+  mutation CompleteOnboarding($userId: uuid!) {
+    update_nchat_user_onboarding(
+      where: { user_id: { _eq: $userId } }
+      _set: { status: "completed", completed_at: "now()" }
+    ) {
+      affected_rows
+      returning {
+        id
+        status
+        completed_at
+      }
+    }
+  }
+`
+
+// ============================================================================
+// Page
+// ============================================================================
 
 export default function OnboardingCompletePage() {
   const router = useRouter()
+  const { user, loading, isAuthenticated } = useAuth()
   const { onboarding, profileData, selectedChannels, teamInvitations, initialize, completeStep } =
     useOnboardingStore()
 
-  useEffect(() => {
-    // Initialize for demo user
-    const userId = 'demo-user-id'
-    initialize(userId)
-  }, [initialize])
+  const [completeOnboarding] = useMutation(COMPLETE_ONBOARDING)
 
-  const handleComplete = () => {
-    // Mark completion step as done
+  // Redirect unauthenticated visitors to login before completion page can load.
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      router.replace('/login?redirect=/onboarding/complete')
+    }
+  }, [loading, isAuthenticated, router])
+
+  useEffect(() => {
+    if (!user?.id) return
+    initialize(user.id)
+  }, [user?.id, initialize])
+
+  const handleComplete = async () => {
+    // Advance local store state
     completeStep()
-    // Navigate to chat
+
+    // Persist completion to DB so the onboarding gate knows this user is done
+    if (user?.id) {
+      await completeOnboarding({ variables: { userId: user.id } }).catch(() => {
+        // Non-fatal: local store is the source of truth for routing;
+        // DB write will be retried next time the store syncs.
+      })
+    }
+
     router.push('/chat')
+  }
+
+  // Guard render during auth resolution.
+  if (loading || !isAuthenticated || !user?.id) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-sm text-zinc-400">
+        Loading…
+      </div>
+    )
   }
 
   return (

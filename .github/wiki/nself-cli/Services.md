@@ -1749,10 +1749,10 @@ export function Providers({ children }) {
 ## Next Steps
 
 - **Configuration Guide** → [Configuration.md](../configuration/Configuration.md)
-- **Database Migrations** → [Migrations.md](./Migrations.md)
-- **Troubleshooting** → [Troubleshooting.md](./Troubleshooting.md)
+- **Database Migrations** → [Migrations.md](./Commands.md)
+- **Troubleshooting** → [Troubleshooting.md](../troubleshooting/TROUBLESHOOTING.md)
 - **Architecture Deep Dive** → [Architecture.md](../reference/Architecture.md)
 
 ---
 
-**Questions?** Check the [FAQ](./Troubleshooting.md#faq) or join our [Discord](https://discord.gg/nself).
+**Questions?** Check the [FAQ](../troubleshooting/FAQ.md) or join our [Discord](https://discord.gg/nself).

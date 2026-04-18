@@ -572,9 +572,9 @@ gh workflow run desktop-release.yml -f version=0.8.0
 ### Documentation
 
 - [Desktop Deployment Guide](./deployment/desktop-deployment.md)
-- [Electron README](../platforms/electron/README.md)
-- [Quick Start Guide](../platforms/electron/QUICK_START.md)
-- [Testing Checklist](../platforms/electron/TESTING.md)
+- [Electron README](./DESKTOP-PACKAGING.md)
+- [Quick Start Guide](./DESKTOP-PACKAGING.md)
+- [Testing Checklist](./DESKTOP-PACKAGING.md)
 
 ### External Resources
 

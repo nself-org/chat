@@ -76,7 +76,7 @@ If you're an admin setting up AI features:
 
 1. Navigate to **Admin Panel > AI Configuration**
 2. Choose your AI provider (OpenAI or Anthropic recommended)
-3. Enter your API key (see [Admin Guide](../../guides/admin/ai-management.md))
+3. Enter your API key (see [Admin Guide](../admin/ai-administration.md))
 4. Test the connection
 5. Enable features for your workspace
 
@@ -939,7 +939,7 @@ Reason: Policy violation
 - **Exemptions**: Exclude specific channels or users
 - **Notifications**: Configure who gets notified of violations
 
-**See**: [Admin Guide - AI Management](../admin/ai-management.md) for details
+**See**: [Admin Guide - AI Management](../admin/ai-administration.md) for details
 
 ---
 
@@ -1130,7 +1130,7 @@ Data Usage
 3. **Set defaults** for new users
 4. **Require/allow user opt-out**
 
-**See**: [Admin Guide - AI Management](../admin/ai-management.md)
+**See**: [Admin Guide - AI Management](../admin/ai-administration.md)
 
 ### Temporary Opt-Out
 
@@ -1332,7 +1332,7 @@ A: You'll see a message like "Rate limit reached. Please try again in a few minu
 - **[Smart Search Guide](smart-search-guide.md)** - Advanced search techniques
 - **[Auto-Moderation Guide](auto-moderation.md)** - Configure moderation settings
 - **[AI API Documentation](../../api/ai-endpoints.md)** - For developers
-- **[Admin Guide - AI Management](../admin/ai-management.md)** - Admin controls
+- **[Admin Guide - AI Management](../admin/ai-administration.md)** - Admin controls
 
 ---
 

@@ -631,16 +631,16 @@ query GetLargestFiles($entityId: String!, $limit: Int = 10) {
 
 ## Related Documentation
 
-- [File Upload System](./File-Upload.md)
-- [Media Management](./Media-Management.md)
-- [Data Retention](./Data-Retention.md)
-- [Backup & Recovery](./Backup-Recovery.md)
+- [File Upload System](./Storage-Management.md)
+- [Media Management](./Storage-Management.md)
+- [Data Retention](./Storage-Management.md)
+- [Backup & Recovery](./Storage-Management.md)
 
 ## Support
 
 For issues or questions about storage management:
 
-1. Check the [Common Issues](../COMMON-ISSUES.md) guide
+1. Check the [Common Issues](troubleshooting/TROUBLESHOOTING.md) guide
 2. Review the [Storage API](api/API.md#storage) documentation
 3. Search existing [GitHub Issues](https://github.com/your-org/nself-chat/issues)
 4. Create a new issue with the `storage` label

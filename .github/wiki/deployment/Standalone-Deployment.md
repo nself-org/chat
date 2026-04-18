@@ -769,10 +769,10 @@ See [Environment-Variables.md](./Environment-Variables.md) for complete list.
 
 ## Next Steps
 
-1. **Setup Monitoring**: [Monitoring.md](../operations/Monitoring.md)
-2. **Configure Backups**: [Backup-Strategy.md](../operations/Backup-Strategy.md)
+1. **Setup Monitoring**: [Monitoring.md](./DEPLOYMENT.md)
+2. **Configure Backups**: [Backup-Strategy.md](./Production-Deployment-Checklist.md)
 3. **Performance Tuning**: [Performance-Optimization.md](../Performance-Optimization.md)
-4. **Scaling Guide**: [Scaling-Guide.md](../operations/Scaling-Guide.md)
+4. **Scaling Guide**: [Scaling-Guide.md](./Deployment-Comparison.md)
 
 ## Resources
 

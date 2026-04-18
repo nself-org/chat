@@ -573,10 +573,10 @@ if (!result.isValid) {
 ## Documentation
 
 - [GDPR Compliance Guide](legal/GDPR-COMPLIANCE.md)
-- [Moderation Best Practices](/docs/guides/moderation-best-practices.md)
-- [AI Moderation Setup](/docs/ai/moderation-setup.md)
-- [Audit Trail Verification](/docs/security/audit-verification.md)
-- [Legal Hold Procedures](/docs/compliance/legal-hold-procedures.md)
+- [Moderation Best Practices](security/security-best-practices.md)
+- [AI Moderation Setup](AI-Moderation-v0.7.0.md)
+- [Audit Trail Verification](security/SECURITY-AUDIT.md)
+- [Legal Hold Procedures](compliance/COMPLIANCE-OVERVIEW.md)
 
 ## Support
 

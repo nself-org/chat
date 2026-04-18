@@ -632,7 +632,7 @@ pnpm build && pnpm start
 2. **Bot Sandbox** - Monaco editor requires additional setup for full IDE features
 3. **Voice Search** - Browser support varies (Chrome/Edge recommended)
 
-**Workarounds:** See [Troubleshooting Guide](../../troubleshooting/AI-TROUBLESHOOTING.md)
+**Workarounds:** See [Troubleshooting Guide](../../troubleshooting/ai-features.md)
 
 ---
 

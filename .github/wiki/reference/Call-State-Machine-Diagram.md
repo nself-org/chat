@@ -517,8 +517,8 @@ history.forEach((event, i) => {
 ## Related Documentation
 
 - [Call Management Guide](../guides/Call-Management-Guide.md)
-- [Call System Implementation](./Call-System-Implementation.md)
-- [WebRTC Guide](./WebRTC-Guide.md)
+- [Call System Implementation](./Call-Management-Quick-Reference.md)
+- [WebRTC Guide](./WEBRTC-QUICK-REFERENCE.md)
 
 ---
 

@@ -394,7 +394,7 @@ Icons are automatically mirrored for RTL languages.
 
 Translations are maintained by the community. Thank you to all contributors!
 
-View the full list of translators: [TRANSLATORS.md](./TRANSLATORS.md)
+View the full list of translators: [TRANSLATORS.md](./CONTRIBUTING.md)
 
 ## License
 

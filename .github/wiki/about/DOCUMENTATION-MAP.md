@@ -8,8 +8,8 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 | Document                                                    | Purpose                     | Audience  | Time   |
 | ----------------------------------------------------------- | --------------------------- | --------- | ------ |
-| [Quick Start](QUICK-START.md)                               | Get running in 5 minutes    | Everyone  | 5 min  |
-| [Installation](INSTALLATION.md)                             | Detailed setup instructions | Admins    | 15 min |
+| [Quick Start](../getting-started/QUICK-START.md)                               | Get running in 5 minutes    | Everyone  | 5 min  |
+| [Installation](../getting-started/Installation.md)                             | Detailed setup instructions | Admins    | 15 min |
 | [Getting Started Guide](../getting-started/Getting-Started.md) | First steps after install   | Users     | 10 min |
 | [User Guide](../guides/USER-GUIDE.md)                          | How to use the platform     | End Users | 20 min |
 
@@ -37,7 +37,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 | --------------------------------------------------------------- | ----------------------------------- |
 | [Configuration Guide](../configuration/Configuration.md)           | All configuration options           |
 | [Authentication Setup](../configuration/Authentication.md)         | Configure auth providers            |
-| [Environment Variables](configuration/Environment-Variables.md) | All environment variables explained |
+| [Environment Variables](../configuration/Environment-Variables.md) | All environment variables explained |
 | [White-Label Guide](../features/White-Label-Guide.md)              | Branding and theming                |
 
 **Use when:** Setting up or customizing the application
@@ -80,7 +80,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 | Document                                                      | Type           | What's Inside               |
 | ------------------------------------------------------------- | -------------- | --------------------------- |
 | [PIN Lock System](../security/PIN-LOCK-SYSTEM.md)                         | Overview       | PIN lock and biometric auth |
-| [PIN Lock Implementation](PIN-LOCK-IMPLEMENTATION-SUMMARY.md) | Implementation | Technical details           |
+| [PIN Lock Implementation](../security/PIN-LOCK-SYSTEM.md) | Implementation | Technical details           |
 | [PIN Lock Quick Start](../reference/PIN-LOCK-QUICK-START.md)               | Quick Guide    | Setup guide                 |
 
 ### 🔍 Enhanced Search
@@ -133,7 +133,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 | Document                                                     | Target | What's Inside               |
 | ------------------------------------------------------------ | ------ | --------------------------- |
-| [Deployment Overview](deployment/DEPLOYMENT.md)              | DevOps | Production deployment guide |
+| [Deployment Overview](../deployment/DEPLOYMENT.md)              | DevOps | Production deployment guide |
 | [Docker Deployment](../deployment/Deployment-Docker.md)         | DevOps | Deploy with Docker          |
 | [Kubernetes Deployment](../deployment/Deployment-Kubernetes.md) | DevOps | Deploy to K8s               |
 | [Helm Charts](../deployment/Deployment-Helm.md)                 | DevOps | Helm deployment             |
@@ -183,7 +183,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 | Document                                                         | What's Inside          |
 | ---------------------------------------------------------------- | ---------------------- |
-| [Security Overview](security/SECURITY.md)                        | Security features      |
+| [Security Overview](../security/SECURITY.md)                        | Security features      |
 | [Security Audit](../security/SECURITY-AUDIT.md)                     | Security audit results |
 | [Performance Optimization](../security/PERFORMANCE-OPTIMIZATION.md) | Performance tuning     |
 
@@ -212,7 +212,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 | Document                                                                  | What's Inside      |
 | ------------------------------------------------------------------------- | ------------------ |
 | [Documentation Audit](DOCUMENTATION-AUDIT.md)                             | Quality assessment |
-| [Documentation Improvements](DOCUMENTATION-IMPROVEMENT-SUMMARY-v0.3.0.md) | What was improved  |
+| [Documentation Improvements](DOCUMENTATION-AUDIT.md) | What was improved  |
 | [Documentation Map](DOCUMENTATION-MAP.md)                                 | This file          |
 
 ---
@@ -225,7 +225,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 **Essential reading:**
 
-1. [Quick Start Guide](QUICK-START.md) - 5 minutes
+1. [Quick Start Guide](../getting-started/QUICK-START.md) - 5 minutes
 2. [User Guide](../guides/USER-GUIDE.md) - 20 minutes
 3. [FAQ](../troubleshooting/FAQ.md) - As needed
 
@@ -249,16 +249,16 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 **Essential reading:**
 
-1. [Installation Guide](INSTALLATION.md) - 15 minutes
+1. [Installation Guide](../getting-started/Installation.md) - 15 minutes
 2. [Configuration Guide](../configuration/Configuration.md) - 30 minutes
-3. [Deployment Overview](deployment/DEPLOYMENT.md) - 30 minutes
+3. [Deployment Overview](../deployment/DEPLOYMENT.md) - 30 minutes
 4. [Production Checklist](../deployment/Production-Deployment-Checklist.md) - 20 minutes
 
 **Security setup:**
 
 - [Authentication Setup](../configuration/Authentication.md)
-- [Security Overview](security/SECURITY.md)
-- [Environment Variables](configuration/Environment-Variables.md)
+- [Security Overview](../security/SECURITY.md)
+- [Environment Variables](../configuration/Environment-Variables.md)
 
 **Operations:**
 
@@ -304,7 +304,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 **Essential reading:**
 
-1. [Deployment Overview](deployment/DEPLOYMENT.md) - 30 minutes
+1. [Deployment Overview](../deployment/DEPLOYMENT.md) - 30 minutes
 2. Your platform guide:
    - [Docker Deployment](../deployment/Deployment-Docker.md) - 20 minutes
    - [Kubernetes Deployment](../deployment/Deployment-Kubernetes.md) - 30 minutes
@@ -313,9 +313,9 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 **Before deployment:**
 
-- [Environment Variables](configuration/Environment-Variables.md)
+- [Environment Variables](../configuration/Environment-Variables.md)
 - [Production Checklist](../deployment/Production-Deployment-Checklist.md)
-- [Security Overview](security/SECURITY.md)
+- [Security Overview](../security/SECURITY.md)
 
 **After deployment:**
 
@@ -347,12 +347,12 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 | I want to...                | Read this...                                                                                                            |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Get started quickly         | [Quick Start Guide](QUICK-START.md)                                                                                     |
-| Install nself-chat          | [Installation Guide](INSTALLATION.md)                                                                                   |
+| Get started quickly         | [Quick Start Guide](../getting-started/QUICK-START.md)                                                                                     |
+| Install nself-chat          | [Installation Guide](../getting-started/Installation.md)                                                                                   |
 | Understand the architecture | [Architecture Diagrams](../reference/ARCHITECTURE-DIAGRAMS.md)                                                                       |
 | Configure authentication    | [Authentication Setup](../configuration/Authentication.md)                                                                 |
 | Build a bot                 | [Bot API Examples](../api/API-EXAMPLES.md)                                                                                 |
-| Deploy to production        | [Deployment Overview](deployment/DEPLOYMENT.md) + [Production Checklist](../deployment/Production-Deployment-Checklist.md) |
+| Deploy to production        | [Deployment Overview](../deployment/DEPLOYMENT.md) + [Production Checklist](../deployment/Production-Deployment-Checklist.md) |
 | Fix an issue                | [Troubleshooting Guide](../troubleshooting/TROUBLESHOOTING.md)                                                             |
 | Use 2FA                     | [2FA Quick Reference](../reference/2FA-Quick-Reference.md)                                                                           |
 | Set up search               | [Search Implementation](../guides/Search-Implementation.md)                                                                       |
@@ -363,7 +363,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 #### ⚡ 5 minutes
 
-- [Quick Start Guide](QUICK-START.md)
+- [Quick Start Guide](../getting-started/QUICK-START.md)
 - [2FA Quick Reference](../reference/2FA-Quick-Reference.md)
 - [PIN Lock Quick Start](../reference/PIN-LOCK-QUICK-START.md)
 - [Search Quick Start](../reference/Search-Quick-Start.md)
@@ -372,7 +372,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 
 - [Getting Started Guide](../getting-started/Getting-Started.md)
 - [Architecture Diagrams](../reference/ARCHITECTURE-DIAGRAMS.md)
-- [Installation Guide](INSTALLATION.md)
+- [Installation Guide](../getting-started/Installation.md)
 - [API Examples](../api/API-EXAMPLES.md) (pick language)
 
 #### 🚶 30 minutes
@@ -398,7 +398,7 @@ Quick reference guide to find any documentation in the nself-chat project.
 2. ✅ [Architecture Diagrams](../reference/ARCHITECTURE-DIAGRAMS.md) - 14 visual diagrams
 3. ✅ [API Examples](../api/API-EXAMPLES.md) - 7 languages, 50+ examples
 4. ✅ [Troubleshooting Guide](../troubleshooting/TROUBLESHOOTING.md) - 50+ issues
-5. ✅ [Documentation Improvements](DOCUMENTATION-IMPROVEMENT-SUMMARY-v0.3.0.md) - Summary
+5. ✅ [Documentation Improvements](DOCUMENTATION-AUDIT.md) - Summary
 
 ### Updated Files
 

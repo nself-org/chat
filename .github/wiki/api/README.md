@@ -155,37 +155,37 @@ const message = await client.messages.send({
 ### Core APIs
 
 - [Authentication](./authentication.md) - Sign in, sign up, OAuth, 2FA
-- [Users](./users.md) - User management and profiles
-- [Channels](./channels.md) - Channel creation and management
-- [Messages](./messages.md) - Send, edit, delete messages
-- [Direct Messages](./direct-messages.md) - One-on-one conversations
+- [Users](./API-DOCUMENTATION.md) - User management and profiles
+- [Channels](./API-DOCUMENTATION.md) - Channel creation and management
+- [Messages](./API-DOCUMENTATION.md) - Send, edit, delete messages
+- [Direct Messages](./API-DOCUMENTATION.md) - One-on-one conversations
 
 ### Advanced Features
 
-- [Threads](./threads.md) - Message threading
-- [Reactions](./reactions.md) - Emoji reactions
-- [Attachments](./attachments.md) - File uploads and media
-- [Search](./search.md) - Full-text search
-- [Notifications](./notifications.md) - Push notifications
+- [Threads](./API-DOCUMENTATION.md) - Message threading
+- [Reactions](./API-DOCUMENTATION.md) - Emoji reactions
+- [Attachments](./API-DOCUMENTATION.md) - File uploads and media
+- [Search](./API-DOCUMENTATION.md) - Full-text search
+- [Notifications](./API-DOCUMENTATION.md) - Push notifications
 
 ### Real-time
 
-- [WebSocket Events](./websocket-events.md) - Real-time updates
-- [Presence](./presence.md) - User online status
-- [Typing Indicators](./typing.md) - Live typing status
+- [WebSocket Events](./API-DOCUMENTATION.md) - Real-time updates
+- [Presence](./API-DOCUMENTATION.md) - User online status
+- [Typing Indicators](./API-DOCUMENTATION.md) - Live typing status
 
 ### Integrations
 
 - [Webhooks](../plugins/webhooks.md) - Outgoing webhooks
 - [Bots](../plugins/bots.md) - Bot API and management
-- [OAuth Apps](./oauth-apps.md) - Third-party integrations
+- [OAuth Apps](./API-DOCUMENTATION.md) - Third-party integrations
 
 ### Administration
 
-- [Admin API](./admin.md) - Administrative operations
-- [Analytics](./analytics.md) - Usage statistics
-- [Audit Logs](./audit-logs.md) - Activity tracking
-- [Moderation](./moderation.md) - Content moderation
+- [Admin API](./API-DOCUMENTATION.md) - Administrative operations
+- [Analytics](./API-DOCUMENTATION.md) - Usage statistics
+- [Audit Logs](./API-DOCUMENTATION.md) - Activity tracking
+- [Moderation](./API-DOCUMENTATION.md) - Content moderation
 
 ## Response Format
 
@@ -325,18 +325,18 @@ Webhook payload:
 Full GraphQL schema documentation:
 
 - [GraphQL Schema Reference](./graphql-schema.md)
-- [GraphQL Queries](./graphql-queries.md)
-- [GraphQL Mutations](./graphql-mutations.md)
-- [GraphQL Subscriptions](./graphql-subscriptions.md)
+- [GraphQL Queries](./graphql-schema.md)
+- [GraphQL Mutations](./graphql-schema.md)
+- [GraphQL Subscriptions](./graphql-schema.md)
 
 ## Code Examples
 
 Examples in multiple languages:
 
-- [TypeScript/JavaScript](./examples/typescript.md)
-- [Python](./examples/python.md)
-- [cURL](./examples/curl.md)
-- [Go](./examples/go.md)
+- [TypeScript/JavaScript](./API-EXAMPLES.md)
+- [Python](./API-EXAMPLES.md)
+- [cURL](./API-EXAMPLES.md)
+- [Go](./API-EXAMPLES.md)
 
 ## SDKs and Libraries
 

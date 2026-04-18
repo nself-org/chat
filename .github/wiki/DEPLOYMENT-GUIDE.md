@@ -1,7 +1,7 @@
 # nself-chat Deployment Guide
 
-**Version**: 1.0.0
-**Last Updated**: February 9, 2026
+**Version**: 1.0.9
+**Last Updated**: 2026-04-18
 **Status**: Production Ready
 
 ---
@@ -22,7 +22,7 @@
 
 ## Overview
 
-nself-chat provides comprehensive, deterministic deployment scripts for three environments:
+nself-chat provides deterministic deployment scripts for three environments:
 
 | Environment | Script | Purpose | Safety Level |
 |-------------|--------|---------|--------------|
@@ -63,7 +63,7 @@ scripts/
 ├── deploy-local.sh          # Local development deployment
 ├── deploy-staging.sh        # Staging environment deployment
 ├── deploy-production.sh     # Production deployment
-├── health-check.sh          # Comprehensive health checks
+├── health-check.sh          # Full health checks
 └── rollback.sh              # Rollback to previous version
 ```
 
@@ -86,7 +86,7 @@ All deployment scripts support these common options:
 
 - Docker and Docker Compose installed
 - Node.js 20+ and pnpm installed
-- nself CLI v0.4.2+ installed
+- nself CLI v1.0.9+ installed
 - `.backend/` directory initialized
 
 ### Quick Start
@@ -387,7 +387,7 @@ Production deployment includes **maximum safety checks**:
    - Waits for rollout (10 minute timeout)
    - Monitors pod status
 
-7. **Comprehensive health checks**
+7. **Health checks**
    - Verifies all pods running and ready
    - Checks pod restart counts
    - Tests health endpoints
@@ -887,6 +887,6 @@ For production emergencies:
 
 ---
 
-**Last Updated**: February 9, 2026
-**Version**: 1.0.0
+**Last Updated**: 2026-04-18
+**Version**: 1.0.9
 **Maintained by**: nself-chat DevOps Team

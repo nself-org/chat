@@ -659,10 +659,10 @@ npm run test:e2e -- --grep "channel discovery"
 
 ## Related Documentation
 
-- [Channel Management](./Channel-Management.md)
-- [Channel Permissions](./Channel-Permissions.md)
-- [GraphQL API](./GraphQL-API.md)
-- [Component Library](./Component-Library.md)
+- [Channel Management](./Channel-Discovery-System.md)
+- [Channel Permissions](./Channel-Discovery-System.md)
+- [GraphQL API](api/API-DOCUMENTATION.md)
+- [Component Library](Architecture-Overview.md)
 
 ---
 

@@ -465,7 +465,7 @@ If you encounter issues:
 
 After successful upgrade:
 
-1. **Explore New Features** - See [Feature Guide](FEATURE-GUIDE.md)
+1. **Explore New Features** - See [Feature Guide](RELEASE-NOTES.md)
 2. **Configure Integrations** - See [Integration Guide](../../guides/integrations/)
 3. **Train Team** - Review new capabilities
 4. **Monitor Performance** - Check Sentry dashboard
@@ -501,4 +501,4 @@ After successful upgrade:
 
 ---
 
-**[← Back to Release Notes](RELEASE-NOTES.md)** | **[Feature Guide →](FEATURE-GUIDE.md)**
+**[← Back to Release Notes](RELEASE-NOTES.md)** | **[Feature Guide →](RELEASE-NOTES.md)**

@@ -279,7 +279,7 @@ NODE_ENV=production NEXT_PUBLIC_ENV=production pnpm validate:env:prod
 - [Production Validation Guide](./Production-Validation.md)
 - [Environment Variables Reference](../.env.example)
 - [Deployment Guide](./Deployment.md)
-- [Troubleshooting Guide](./Troubleshooting.md)
+- [Troubleshooting Guide](../guides/deployment/self-hosted-troubleshooting.md)
 
 ---
 

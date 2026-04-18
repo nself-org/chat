@@ -1115,8 +1115,8 @@ Memory usage:
 
 ## Related Documentation
 
-- [WebRTC Documentation](./WebRTC-Guide.md)
-- [Call System Implementation](./Call-System-Implementation.md)
+- [WebRTC Documentation](./Call-Management-Guide.md)
+- [Call System Implementation](./Call-Management-Guide.md)
 - [API Documentation](../api/API-DOCUMENTATION.md)
 - [Architecture Overview](../reference/Architecture.md)
 

@@ -46,7 +46,7 @@ export default function SignUpPage() {
 
     try {
       await signUp(email, password, username, displayName || username)
-      router.push('/chat')
+      router.push('/onboarding')
     } catch {
       setError('Failed to create account. Please try again.')
     } finally {

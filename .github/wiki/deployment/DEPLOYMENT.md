@@ -3,7 +3,7 @@
 **Version**: 1.0.0
 **Last Updated**: 2026-01-29
 
-This guide covers deploying ɳChat to production environments. For a complete production checklist, see [PRODUCTION-CHECKLIST.md](./PRODUCTION-CHECKLIST.md).
+This guide covers deploying ɳChat to production environments. For a complete production checklist, see [PRODUCTION-CHECKLIST.md](./Production-Deployment-Checklist.md).
 
 ---
 

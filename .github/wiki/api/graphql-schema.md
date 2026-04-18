@@ -482,6 +482,6 @@ https://api.nchat.example.com/graphql
 
 ## Next Steps
 
-- [GraphQL Queries](./graphql-queries.md)
-- [GraphQL Mutations](./graphql-mutations.md)
-- [GraphQL Subscriptions](./graphql-subscriptions.md)
+- [GraphQL Queries](./graphql-schema.md)
+- [GraphQL Mutations](./graphql-schema.md)
+- [GraphQL Subscriptions](./graphql-schema.md)

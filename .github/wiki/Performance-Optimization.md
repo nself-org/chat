@@ -814,4 +814,4 @@ SELECT * FROM pg_stat_activity WHERE state = 'idle in transaction';
 ---
 
 **Maintained by**: nself-chat Team
-**Questions**: See [COMMON-ISSUES.md](../.claude/COMMON-ISSUES.md)
+**Questions**: See [COMMON-ISSUES.md](./troubleshooting/TROUBLESHOOTING.md)

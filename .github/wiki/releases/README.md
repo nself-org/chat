@@ -22,7 +22,7 @@ Release documentation, migration guides, and version-specific information for ns
 
 - **[v0.5.0 Plan](v0.5.0-PLAN.md)** - Detailed release plan and feature breakdown
 - **[v0.5.0 Changelog](CHANGELOG-v0.5.0.md)** - Complete changelog for v0.5.0
-- **[v0.5.0 Compliance Summary](v0.5.0-COMPLIANCE-SUMMARY.md)** - Compliance features and certifications
+- **[v0.5.0 Compliance Summary](CHANGELOG-v0.5.0.md)** - Compliance features and certifications
 
 #### v0.4.0 - Security & Communication
 
@@ -64,7 +64,7 @@ Release documentation, migration guides, and version-specific information for ns
 
 ### For Compliance Teams
 
-- **Compliance Updates**: [v0.5.0 Compliance Summary](v0.5.0-COMPLIANCE-SUMMARY.md)
+- **Compliance Updates**: [v0.5.0 Compliance Summary](CHANGELOG-v0.5.0.md)
 - **Audit Information**: See individual release notes for security updates
 
 ## Version Overview
@@ -142,7 +142,7 @@ Release documentation, migration guides, and version-specific information for ns
 
 - [v0.5.0 Plan](v0.5.0-PLAN.md) - Complete feature breakdown
 - [v0.5.0 Changelog](CHANGELOG-v0.5.0.md) - Detailed changelog
-- [v0.5.0 Compliance](v0.5.0-COMPLIANCE-SUMMARY.md) - Compliance updates
+- [v0.5.0 Compliance](CHANGELOG-v0.5.0.md) - Compliance updates
 
 ### v0.4.0 - January 2026
 

@@ -359,6 +359,6 @@ docs/
 ## Support
 
 - Setup Guide: [ANALYTICS-SETUP.md](./ANALYTICS-SETUP.md)
-- Implementation: [ANALYTICS-IMPLEMENTATION-SUMMARY.md](./ANALYTICS-IMPLEMENTATION-SUMMARY.md)
+- Implementation: [ANALYTICS-IMPLEMENTATION-SUMMARY.md](./ANALYTICS-SETUP.md)
 - Privacy Policy: [privacy/analytics-privacy.md](./privacy/analytics-privacy.md)
 - Email: dev@nself.org

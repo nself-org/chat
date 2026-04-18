@@ -355,7 +355,7 @@ Templates available for enterprise customers.
 ### Documentation
 
 - [COMPLIANCE-OVERVIEW.md](COMPLIANCE-OVERVIEW.md) - Complete compliance features
-- [v0.5.0 Compliance Summary](../releases/v0.5.0-COMPLIANCE-SUMMARY.md) - Latest compliance updates
+- [v0.5.0 Compliance Summary](../releases/CHANGELOG-v0.5.0.md) - Latest compliance updates
 - [Security Documentation](../security/README.md) - Security features and best practices
 
 ### External Resources

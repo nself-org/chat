@@ -1231,7 +1231,7 @@ For issues or questions:
 
 1. Check validation output: `pnpm validate:secrets --verbose`
 2. Review this documentation
-3. Check [Common Issues](../COMMON-ISSUES.md)
+3. Check [Common Issues](troubleshooting/TROUBLESHOOTING.md)
 4. Contact DevOps team
 5. File security incident (if secret compromised)
 

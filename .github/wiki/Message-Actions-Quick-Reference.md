@@ -290,7 +290,7 @@ import type { Message, MessageAction, MessageActionPermissions } from '@/types/m
 ## 📚 Full Documentation
 
 - [Complete Usage Guide](Message-Actions-Usage.md)
-- [Implementation Details](../implementation/Message-Actions-Implementation.md)
+- [Implementation Details](./Realtime-Implementation-Summary.md)
 - [Examples](/src/components/chat/MessageItemWithActions.example.tsx)
 
 ---

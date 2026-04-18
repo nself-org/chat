@@ -893,10 +893,10 @@ console.log('Push token:', token)
 
 ## Related Documentation
 
-- [Call System Implementation](/docs/features/Calls-Implementation.md)
-- [WebRTC Setup](/docs/features/WebRTC-Complete.md)
+- [Call System Implementation](../features/Mobile-Calls-Complete.md)
+- [WebRTC Setup](../features/WebRTC-Calling-Complete.md)
 - [Capacitor Native Plugins](README.md)
-- [Push Notifications](/docs/features/Push-Notifications.md)
+- [Push Notifications](../features/Features.md)
 
 ---
 
@@ -905,7 +905,7 @@ console.log('Push token:', token)
 For issues or questions:
 
 1. Check [Troubleshooting](#troubleshooting) section above
-2. Review [Common Issues](/docs/troubleshooting/Common-Issues.md)
+2. Review [Common Issues](../troubleshooting/TROUBLESHOOTING.md)
 3. Open GitHub issue with:
    - Platform (iOS/Android/Web)
    - Device model and OS version

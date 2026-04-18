@@ -183,7 +183,7 @@ nself-chat is designed with the following compliance considerations:
 
 - [Security Audit Report](security/SECURITY-AUDIT.md)
 - [Authentication Documentation](configuration/Authentication.md)
-- [Deployment Security Guide](docs/deployment/DEPLOYMENT.md#security)
+- [Deployment Security Guide](deployment/DEPLOYMENT.md)
 - [Environment Variables Reference](.env.example)
 
 ## Contact

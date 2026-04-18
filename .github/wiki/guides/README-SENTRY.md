@@ -424,10 +424,10 @@ Sentry pricing is based on events and transactions:
 
 ## Related Documentation
 
-- [Sentry Quick Reference](docs/guides/Sentry-Quick-Reference.md)
-- [Sentry Deployment Checklist](docs/guides/Sentry-Deployment-Checklist.md)
-- [Environment Variables](docs/configuration/Environment-Variables.md)
-- [Deployment Guide](docs/deployment/DEPLOYMENT.md)
+- [Sentry Quick Reference](./deployment/quick-reference.md)
+- [Sentry Deployment Checklist](./deployment/DEPLOYMENT-CHECKLIST.md)
+- [Environment Variables](../configuration/Environment-Variables.md)
+- [Deployment Guide](./deployment/production-deployment.md)
 
 ## Resources
 

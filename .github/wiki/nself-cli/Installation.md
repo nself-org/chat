@@ -834,8 +834,8 @@ echo 'export DOCKER_DEFAULT_PLATFORM=linux/arm64' >> ~/.zshrc
 If you encounter issues:
 
 1. **Check Documentation**
-   - [Troubleshooting Guide](./Troubleshooting.md)
-   - [Common Issues](../../COMMON-ISSUES.md)
+   - [Troubleshooting Guide](../troubleshooting/TROUBLESHOOTING.md)
+   - [Common Issues](../troubleshooting/TROUBLESHOOTING.md)
 
 2. **Search GitHub Issues**
    - https://github.com/nself/nself/issues

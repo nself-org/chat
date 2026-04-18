@@ -4,16 +4,24 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { TourOverlay } from '@/components/onboarding'
 import { useOnboardingStore } from '@/stores/onboarding-store'
+import { useAuth } from '@/contexts/auth-context'
 
 export default function TourPage() {
   const router = useRouter()
+  const { user, loading, isAuthenticated } = useAuth()
   const { tour, tourActive, initialize, startTour, setTourActive } = useOnboardingStore()
 
+  // Redirect unauthenticated visitors to login before tour can begin.
   useEffect(() => {
-    // Initialize for demo user
-    const userId = 'demo-user-id'
-    initialize(userId)
-  }, [initialize])
+    if (!loading && !isAuthenticated) {
+      router.replace('/login?redirect=/onboarding/tour')
+    }
+  }, [loading, isAuthenticated, router])
+
+  useEffect(() => {
+    if (!user?.id) return
+    initialize(user.id)
+  }, [user?.id, initialize])
 
   useEffect(() => {
     // Auto-start tour if not already in progress
@@ -39,11 +47,21 @@ export default function TourPage() {
     }
   }, [tour?.status, router])
 
+  // Guard render during auth resolution to avoid flashing the tour backdrop
+  // to unauthenticated visitors mid-redirect.
+  if (loading || !isAuthenticated || !user?.id) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-sm text-zinc-400">
+        Loading…
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-zinc-100 dark:bg-zinc-900">
-      {/* Placeholder content to simulate the chat interface for the tour */}
+      {/* Tour backdrop: static mock of the chat UI so tour highlights have real targets */}
       <div className="flex h-screen">
-        {/* Sidebar placeholder */}
+        {/* Tour backdrop — simulated chat UI */}
         <div
           data-tour="sidebar"
           className="flex w-64 flex-col border-r border-zinc-700 bg-zinc-800"

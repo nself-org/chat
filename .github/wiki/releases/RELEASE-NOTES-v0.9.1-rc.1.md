@@ -296,7 +296,7 @@ Will be generated with final release artifacts.
 - [Setup Guide](README.md#quick-start)
 - [Features Overview](../features/Features-Complete.md)
 - [API Documentation](../api/API.md)
-- [Deployment Guide](.claude/implementation/DEPLOYMENT.md)
+- [Deployment Guide](../deployment/DEPLOYMENT.md)
 - [Known Limitations](../KNOWN-LIMITATIONS.md)
 
 ---

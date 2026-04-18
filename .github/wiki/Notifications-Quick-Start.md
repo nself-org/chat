@@ -616,7 +616,7 @@ playNotificationSound('mention', 80)
 - [Complete Documentation](./Notifications-System.md)
 - [Implementation Summary](./Notifications-Implementation-Summary.md)
 - [API Documentation](api/API.md)
-- [Common Issues](../COMMON-ISSUES.md)
+- [Common Issues](troubleshooting/TROUBLESHOOTING.md)
 
 ---
 

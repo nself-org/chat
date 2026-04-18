@@ -61,8 +61,10 @@ fi
 log_info "Stopping all services..."
 
 if ! nself stop; then
-    log_warning "Failed to stop services gracefully, forcing stop..."
-    docker compose down
+    log_warning "Failed to stop services gracefully."
+    log_warning "If services remain running, check Docker status and run: nself logs"
+    log_error "Do NOT run 'docker compose down' directly — use 'nself stop' or 'nself restart'."
+    exit 1
 fi
 
 log_success "Services stopped"

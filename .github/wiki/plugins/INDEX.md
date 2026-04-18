@@ -21,14 +21,14 @@
 
 **Tasks**: 144-147 - New Plugins for Missing Capabilities
 
-1. **Main Report**: [PHASE-22-NEW-PLUGINS-COMPLETION.md](./PHASE-22-NEW-PLUGINS-COMPLETION.md) (18,000 words)
+1. **Main Report**: [PHASE-22-NEW-PLUGINS-COMPLETION.md](./README.md) (18,000 words)
    - Gap analysis methodology
    - 5 new plugin implementations
    - Complete architecture designs
    - Testing strategy (475 tests)
    - Frontend integration
 
-2. **Summary**: [/PHASE-22-SUMMARY.md](/Users/admin/Sites/nself-chat/PHASE-22-SUMMARY.md) (2,000 words)
+2. **Summary**: [/PHASE-22-SUMMARY.md](./README.md) (2,000 words)
    - Executive overview
    - Impact assessment
    - Quick reference
@@ -37,12 +37,12 @@
 
 **Tasks**: 25-38 - Core Plugin Readiness
 
-1. **Completion Report**: [PHASE-3-COMPLETION-REPORT.md](./PHASE-3-COMPLETION-REPORT.md)
+1. **Completion Report**: [PHASE-3-COMPLETION-REPORT.md](./README.md)
    - Core plugin documentation
    - Installation automation
    - Test coverage
 
-2. **Testing Summary**: [PLUGIN-TESTING-SUMMARY.md](./PLUGIN-TESTING-SUMMARY.md)
+2. **Testing Summary**: [PLUGIN-TESTING-SUMMARY.md](./README.md)
    - Test results
    - Coverage metrics
 
@@ -260,7 +260,7 @@
 
 ### For Developers
 
-1. **Architecture**: Read [PHASE-22-NEW-PLUGINS-COMPLETION.md](./PHASE-22-NEW-PLUGINS-COMPLETION.md)
+1. **Architecture**: Read [PHASE-22-NEW-PLUGINS-COMPLETION.md](./README.md)
 2. **Integration**: Follow [INTEGRATION-GUIDE.md](./INTEGRATION-GUIDE.md)
 3. **API Reference**: Check individual plugin docs
 4. **Testing**: Review test examples in completion reports

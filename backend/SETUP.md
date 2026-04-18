@@ -25,7 +25,7 @@ Complete guide for setting up the nself-chat backend infrastructure powered by n
 |----------|---------|--------------|
 | Docker | 20.10+ | [docs.docker.com](https://docs.docker.com/get-docker/) |
 | Docker Compose | 2.0+ | Included with Docker Desktop |
-| nself CLI | 0.9.8+ | [nself.org/docs/installation](https://nself.org/docs/installation) |
+| nself CLI | 1.0.9+ | [nself.org/docs/installation](https://nself.org/docs/installation) |
 | Node.js | 20.0+ | [nodejs.org](https://nodejs.org/) |
 | pnpm | 9.15.4+ | `npm install -g pnpm` |
 
@@ -286,11 +286,8 @@ nself db types typescript
 ### Database Shell
 
 ```bash
-# Open PostgreSQL shell
+# Open PostgreSQL shell via nself CLI
 nself db shell
-
-# Or use Docker directly
-docker exec -it $(docker ps -qf "name=postgres") psql -U postgres -d nself
 ```
 
 ### Common Queries
@@ -612,13 +609,24 @@ curl https://api.local.nself.org/v1/graphql \
 
 **Solution**:
 ```bash
-# Force stop with Docker Compose
-cd backend
-docker compose down
+# Check service status first
+nself status
 
-# Or force remove containers
-docker compose down -v --remove-orphans
+# View logs to diagnose the hang
+nself logs
+
+# Retry stop with verbose output
+nself stop
+
+# If a container is truly stuck, identify and remove it via Docker directly,
+# then run nself start to restore a clean state:
+#   docker ps  (find the stuck container name)
+#   docker rm -f <container_name>
+#   nself start
 ```
+
+Do NOT run `docker compose down` directly — bypassing nself omits `.env.computed`
+and leaves the project in an inconsistent state. Always use `nself stop` / `nself start`.
 
 ---
 

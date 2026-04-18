@@ -18,12 +18,12 @@ The **ɳSelf Plugins System** provides a modular, extensible architecture for ad
 
 | Plugin                          | Description                                     | Status    | Documentation                                     |
 | ------------------------------- | ----------------------------------------------- | --------- | ------------------------------------------------- |
-| **@nself/plugin-realtime**      | WebSocket-based realtime messaging and presence | ✅ Stable | [Realtime Plugin](./realtime-plugin.md)           |
-| **@nself/plugin-jobs**          | Background job processing with BullMQ           | ✅ Stable | [Jobs Plugin](./jobs-plugin.md)                   |
-| **@nself/plugin-search**        | Full-text search with MeiliSearch               | ✅ Stable | [Search Plugin](./search-plugin.md)               |
-| **@nself/plugin-storage**       | File storage with MinIO/S3                      | ✅ Stable | [Storage Plugin](./storage-plugin.md)             |
-| **@nself/plugin-analytics**     | Event tracking and analytics                    | ✅ Stable | [Analytics Plugin](./analytics-plugin.md)         |
-| **@nself/plugin-notifications** | Push notifications and email                    | ✅ Stable | [Notifications Plugin](./notifications-plugin.md) |
+| **@nself/plugin-realtime**      | WebSocket-based realtime messaging and presence | ✅ Stable | [Realtime Plugin](../Plugins.md)           |
+| **@nself/plugin-jobs**          | Background job processing with BullMQ           | ✅ Stable | [Jobs Plugin](../Plugins.md)                   |
+| **@nself/plugin-search**        | Full-text search with MeiliSearch               | ✅ Stable | [Search Plugin](../Plugins.md)               |
+| **@nself/plugin-storage**       | File storage with MinIO/S3                      | ✅ Stable | [Storage Plugin](../Plugins.md)             |
+| **@nself/plugin-analytics**     | Event tracking and analytics                    | ✅ Stable | [Analytics Plugin](../Plugins.md)         |
+| **@nself/plugin-notifications** | Push notifications and email                    | ✅ Stable | [Notifications Plugin](../Plugins.md) |
 
 ### Community Plugins
 
@@ -553,19 +553,19 @@ npm publish --access public
 
 See the [Plugin Examples](./examples/) directory for complete plugin implementations:
 
-- [Simple Plugin](./examples/simple-plugin.md) - Basic plugin structure
-- [Event-Driven Plugin](./examples/event-driven-plugin.md) - Using events
-- [Storage Plugin](./examples/storage-plugin.md) - File storage integration
-- [AI Plugin](./examples/ai-plugin.md) - AI/ML integration
+- [Simple Plugin](../Plugins.md) - Basic plugin structure
+- [Event-Driven Plugin](../Plugins.md) - Using events
+- [Storage Plugin](../Plugins.md) - File storage integration
+- [AI Plugin](../Plugins.md) - AI/ML integration
 
 ---
 
 ## Resources
 
-- **[Plugin Core API](./api/plugin-core.md)** - Complete API reference
-- **[Plugin Registry](./api/plugin-registry.md)** - Registry API documentation
-- **[Plugin Context](./api/plugin-context.md)** - Context API reference
-- **[Plugin Events](./api/plugin-events.md)** - Available events
+- **[Plugin Core API](../Plugins.md)** - Complete API reference
+- **[Plugin Registry](../Plugins.md)** - Registry API documentation
+- **[Plugin Context](../Plugins.md)** - Context API reference
+- **[Plugin Events](../Plugins.md)** - Available events
 - **[Plugin Examples](./examples/)** - Example implementations
 
 ---

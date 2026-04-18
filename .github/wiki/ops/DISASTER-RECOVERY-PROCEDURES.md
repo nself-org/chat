@@ -804,5 +804,5 @@ s3://company-backups/
 **Related Documents:**
 - [Incident Response Playbook](./INCIDENT-RESPONSE-PLAYBOOK.md)
 - [Recovery Drill Scenarios](./RECOVERY-DRILL-SCENARIOS.md)
-- [Operations Runbook](./OPERATIONS-RUNBOOK.md)
-- [Backup Configuration](./BACKUP-CONFIGURATION.md)
+- [Operations Runbook](../troubleshooting/RUNBOOK.md)
+- [Backup Configuration](./DISASTER-RECOVERY-PROCEDURES.md)

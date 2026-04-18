@@ -756,9 +756,9 @@ Planned features for future releases:
 
 ## Related Documentation
 
-- [Architecture Overview](../../CLAUDE.md)
+- [Architecture Overview](../../ARCHITECTURE.md)
 - [API Documentation](../../api/API.md)
-- [Deployment Guide](../../../.claude/implementation/DEPLOYMENT.md)
+- [Deployment Guide](../../deployment/DEPLOYMENT.md)
 - [OpenAI API Docs](https://platform.openai.com/docs)
 - [Anthropic API Docs](https://docs.anthropic.com)
 
@@ -769,7 +769,7 @@ Planned features for future releases:
 For issues or questions about AI features:
 
 1. Check this documentation
-2. Review [Common Issues](../../../.claude/COMMON-ISSUES.md)
+2. Review [Common Issues](../../troubleshooting/TROUBLESHOOTING.md)
 3. Open an issue on GitHub
 4. Contact support@nself.org
 

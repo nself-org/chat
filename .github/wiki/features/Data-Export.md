@@ -450,8 +450,8 @@ Track these metrics:
 
 ## Related Documentation
 
-- [Privacy & Security](./Privacy-Security.md)
-- [GDPR Compliance](./GDPR-Compliance.md)
+- [Privacy & Security](./E2EE-Quick-Reference.md)
+- [GDPR Compliance](./E2EE-Complete.md)
 - [API Documentation](../api/README.md)
 - [Data Export Library](README.md)
 

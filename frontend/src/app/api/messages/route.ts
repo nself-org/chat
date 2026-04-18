@@ -34,6 +34,7 @@ import {
   notFoundResponse,
   forbiddenResponse,
 } from '@/lib/api/response'
+import { indexMessage, hasLinks } from '@/lib/search/indexer'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -426,6 +427,27 @@ async function createMessageHandler(request: AuthenticatedRequest) {
       { status: result.error?.status || 500 }
     )
   }
+
+  // Index message in MeiliSearch for full-text search (async, don't block response)
+  indexMessage({
+    id: result.data.id,
+    content: data.content,
+    author_id: user.id,
+    author_name: result.data.user.displayName,
+    channel_id: data.channelId,
+    channel_name: '',
+    thread_id: data.threadId ?? null,
+    created_at: result.data.createdAt instanceof Date
+      ? result.data.createdAt.toISOString()
+      : String(result.data.createdAt),
+    has_link: hasLinks(data.content),
+    has_file: (data.attachments?.length ?? 0) > 0,
+    has_image: data.attachments?.some((a) => a.mimetype.startsWith('image/')) ?? false,
+    is_pinned: false,
+    is_starred: false,
+  }).catch((err: Error) => {
+    logger.warn('Failed to index message in MeiliSearch', { error: err, messageId: result.data!.id })
+  })
 
   // Send mention notifications (async, don't wait)
   if (mentionedUserIds.length > 0 || mentionService.hasMentions(data.content)) {

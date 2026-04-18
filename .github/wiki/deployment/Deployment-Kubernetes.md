@@ -450,5 +450,5 @@ kubectl describe resourcequota -n nself-chat
 
 ## Related Documentation
 
-- [Docker Deployment](./Docker.md)
-- [Helm Deployment](./Helm.md)
+- [Docker Deployment](./Deployment-Docker.md)
+- [Helm Deployment](./Deployment-Helm.md)

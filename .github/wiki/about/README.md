@@ -20,7 +20,7 @@ Welcome to the About section. This directory contains project information, histo
 
 - **[Documentation Map](DOCUMENTATION-MAP.md)** - Complete documentation structure overview
 - **[Documentation Audit](DOCUMENTATION-AUDIT.md)** - Documentation quality assessment
-- **[Documentation Improvement Summary](DOCUMENTATION-IMPROVEMENT-SUMMARY.md)** - Recent documentation improvements
+- **[Documentation Improvement Summary](DOCUMENTATION-AUDIT.md)** - Recent documentation improvements
 - **[Advanced Messaging Report](ADVANCED_MESSAGING_REPORT.md)** - Advanced messaging features analysis
 - **[Implementation Complete](IMPLEMENTATION_COMPLETE.md)** - Feature implementation status
 

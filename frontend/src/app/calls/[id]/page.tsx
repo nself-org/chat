@@ -3,6 +3,10 @@
  *
  * Full-screen call interface using LiveKit for voice/video calls.
  * Supports 1-on-1 and group calls with screen sharing.
+ *
+ * Requires the livekit plugin from the nChat bundle. When the plugin is absent
+ * (NEXT_PUBLIC_LIVEKIT_URL is not set) the page renders an upsell CTA instead
+ * of attempting a connection.
  */
 
 'use client'
@@ -14,16 +18,57 @@ import { CallNotification } from '@/components/voice-video/CallNotification'
 import { useCallStore } from '@/stores/call-store'
 import { useAuth } from '@/contexts/auth-context'
 import { getLiveKitClient, getLiveKitToken } from '@/lib/webrtc/livekit-client'
+import { nchatBundle } from '@/lib/features/bundle-detect'
 import { logger } from '@/lib/logger'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Video, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import type { CallParticipant } from '@/components/voice-video/CallWindow'
+
+// =============================================================================
+// Bundle upsell — shown when livekit plugin is not installed
+// =============================================================================
+
+function LiveKitBundleUpsell() {
+  return (
+    <div className="flex h-screen w-full items-center justify-center bg-gray-900">
+      <div className="flex flex-col items-center gap-4 text-center max-w-sm px-6">
+        <div className="rounded-full bg-white/10 p-4">
+          <Video className="h-10 w-10 text-white" />
+        </div>
+        <h2 className="text-xl font-semibold text-white">Voice &amp; video calls</h2>
+        <p className="text-sm text-gray-400">
+          Voice and video calls require the nChat bundle (livekit plugin). Install it with a Basic
+          license ($0.99/mo) to unlock calls, screen sharing, and recording.
+        </p>
+        <a
+          href="https://nself.org/pricing"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700"
+        >
+          Get nChat Bundle
+          <ExternalLink className="h-4 w-4" />
+        </a>
+        <p className="text-xs text-gray-500">
+          Already have a key?{' '}
+          <code className="rounded bg-white/10 px-1 py-0.5 font-mono text-xs">
+            nself license set nself_pro_...
+          </code>
+        </p>
+      </div>
+    </div>
+  )
+}
 
 // =============================================================================
 // Component
 // =============================================================================
 
 export default function CallPage() {
+  // Guard: livekit plugin must be installed
+  if (!nchatBundle.livekit) {
+    return <LiveKitBundleUpsell />
+  }
   const params = useParams()
   const router = useRouter()
   const { user } = useAuth()

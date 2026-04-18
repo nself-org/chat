@@ -123,16 +123,19 @@ fi
 log_info "Stopping services..."
 
 if ! nself stop; then
-    log_warning "Failed to stop services gracefully, forcing stop..."
-    docker compose down
+    log_warning "Failed to stop services gracefully."
+    log_warning "If services remain running, check: nself logs"
+    log_error "Do NOT run 'docker compose down' directly — use 'nself stop'."
+    exit 1
 fi
 
 log_success "Services stopped"
 
-# Step 3: Start only PostgreSQL
-log_info "Starting PostgreSQL..."
+# Step 3: Start only PostgreSQL via nself
+# Note: nself start brings up all services; postgres will be available after.
+log_info "Starting services via nself to bring PostgreSQL online..."
 
-docker compose up -d postgres
+nself start
 
 # Wait for PostgreSQL to be ready
 log_info "Waiting for PostgreSQL to be ready..."

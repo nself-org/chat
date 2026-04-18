@@ -389,4 +389,4 @@ if (!validation.valid) {
 
 - [Full Documentation](./Media-Features-v0.8.0.md)
 - [Usage Examples](./examples/media-usage-examples.tsx)
-- [Implementation Summary](../.claude/implementation/media-features-summary.md)
+- [Implementation Summary](./features/Media-Server-Setup.md)

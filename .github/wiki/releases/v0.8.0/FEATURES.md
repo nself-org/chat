@@ -834,6 +834,6 @@ See [UPGRADE-GUIDE.md](./UPGRADE-GUIDE.md) for migration instructions and [DEPLO
 
 For complete API documentation, see:
 
-- [Mobile API Reference](/docs/api/mobile-api.md)
-- [Platform Detection API](/docs/api/platform-detection.md)
-- [Analytics API](/docs/api/analytics-api.md)
+- [Mobile API Reference](../../api/API-DOCUMENTATION.md)
+- [Platform Detection API](../../api/API-DOCUMENTATION.md)
+- [Analytics API](../../api/API-DOCUMENTATION.md)

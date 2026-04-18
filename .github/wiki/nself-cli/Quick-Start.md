@@ -465,7 +465,7 @@ See [nChat Bundle](../plugins/nChat-Bundle.md) for full plugin reference and env
    - Set environment variables
    - Configure SSL
 
-4. **Database Migrations** → [Migrations.md](./Migrations.md)
+4. **Database Migrations** → [Migrations.md](./Commands.md)
    - Create migrations
    - Apply migrations
    - Rollback changes
@@ -588,6 +588,6 @@ docker stats
 
 ---
 
-**Questions?** Join our [Discord community](https://discord.gg/nself) or check the [FAQ](./Troubleshooting.md#faq).
+**Questions?** Join our [Discord community](https://discord.gg/nself) or check the [FAQ](../troubleshooting/FAQ.md).
 
 **Found a bug?** [Report it on GitHub](https://github.com/nself/nself/issues/new).

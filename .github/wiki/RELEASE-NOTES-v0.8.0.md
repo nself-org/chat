@@ -415,7 +415,7 @@ pnpm electron:build
 - ✅ New: [Offline Mode Guide](Offline-Mode-v0.8.0.md) - Offline features
 - ✅ New: [Media Features Guide](Media-Features-v0.8.0.md) - Camera, photos, etc.
 - ✅ New: [Desktop Implementation](desktop-v0.8.0-implementation.md) - Desktop apps
-- ✅ Updated: [README.md](../README.md) - Platform support, features
+- ✅ Updated: [README.md](./README.md) - Platform support, features
 - ✅ Updated: [CHANGELOG.md](about/Changelog.md) - v0.8.0 changes
 
 ---
@@ -461,7 +461,7 @@ Need help?
 - **Bug Reports**: [GitHub Issues](https://github.com/nself-org/chat/issues)
 - **Questions**: [GitHub Discussions](https://github.com/nself-org/chat/discussions)
 - **Documentation**: [Full Docs](docs/)
-- **Mobile Specific**: [Capacitor README](../platforms/capacitor/README.md)
+- **Mobile Specific**: [Capacitor README](./ARCHITECTURE.md)
 
 ---
 

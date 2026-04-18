@@ -388,4 +388,4 @@ These estimates inform RTO target setting.
 - [Incident Response Playbook](./INCIDENT-RESPONSE-PLAYBOOK.md)
 - [Disaster Recovery Procedures](./DISASTER-RECOVERY-PROCEDURES.md)
 - [Recovery Drill Scenarios](./RECOVERY-DRILL-SCENARIOS.md)
-- [Backup Configuration](./BACKUP-CONFIGURATION.md)
+- [Backup Configuration](./DISASTER-RECOVERY-PROCEDURES.md)

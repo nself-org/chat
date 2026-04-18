@@ -2748,7 +2748,7 @@ Help us improve this guide:
 - [AI Features Complete Guide](ai-features-complete.md)
 - [Auto-Moderation Guide](auto-moderation.md)
 - [Search API Documentation](../../api/ai-endpoints.md#search)
-- [Admin AI Management](/docs/guides/admin/ai-management.md)
+- [Admin AI Management](../admin/ai-administration.md)
 
 **For Developers**:
 

@@ -219,7 +219,7 @@ Install: `npm install -g pnpm`
 - **Kubernetes** (scalable clusters)
 - **Traditional VPS** (Nginx + PM2)
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed guides.
+See [DEPLOYMENT.md](../deployment/DEPLOYMENT.md) for detailed guides.
 
 ### How much does hosting cost?
 
@@ -383,7 +383,7 @@ E2E encryption is on the roadmap (v0.4.0). Current encryption:
 
 ### How do I report a security issue?
 
-See [SECURITY.md](./SECURITY.md) for responsible disclosure:
+See [SECURITY.md](../security/SECURITY.md) for responsible disclosure:
 
 - Email: security@nself.org
 - DO NOT open public GitHub issues

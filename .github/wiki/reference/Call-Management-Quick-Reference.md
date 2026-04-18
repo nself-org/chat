@@ -568,7 +568,7 @@ console.log(statusManager.getStats())
 
 - [Call Management Guide](../guides/Call-Management-Guide.md) - Complete guide
 - [State Machine Diagram](./Call-State-Machine-Diagram.md) - Visual reference
-- [WebRTC Guide](./WebRTC-Guide.md) - WebRTC integration
+- [WebRTC Guide](./WEBRTC-QUICK-REFERENCE.md) - WebRTC integration
 
 ---
 

@@ -755,8 +755,8 @@ console.log('Local settings:', settings)
 - [Offline Mode v0.8.0](../Offline-Mode-v0.8.0.md)
 - [Offline Integration Guide](../OFFLINE-INTEGRATION-GUIDE.md)
 - [Offline Sync Implementation](../OFFLINE-SYNC-IMPLEMENTATION.md)
-- [PWA Guide](./PWA.md)
-- [Service Workers](./Service-Workers.md)
+- [PWA Guide](./Offline-Sync-Phase17.md)
+- [Service Workers](./Offline-Sync-Phase17.md)
 
 ## Support
 

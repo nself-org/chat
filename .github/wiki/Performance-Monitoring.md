@@ -624,6 +624,6 @@ A: Use the Export buttons in the Admin Panel or call `exportToCSV(metrics)`.
 
 ## Related Documentation
 
-- [Sentry Setup](./Sentry-Setup.md)
-- [Architecture](../ARCHITECTURE-DECISIONS.md)
+- [Sentry Setup](./Performance-Monitoring.md)
+- [Architecture](./ARCHITECTURE.md)
 - [Performance Best Practices](https://web.dev/vitals/)

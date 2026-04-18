@@ -467,6 +467,6 @@ cd platforms/capacitor/android
 
 For issues:
 
-1. Check [Common Issues](../COMMON-ISSUES.md)
+1. Check [Common Issues](troubleshooting/TROUBLESHOOTING.md)
 2. Search GitHub issues
 3. Contact: dev@nself.org

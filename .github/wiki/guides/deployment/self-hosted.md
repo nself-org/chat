@@ -1053,15 +1053,15 @@ docker compose -f docker-compose.production.yml exec redis \
 
 ### From Slack
 
-See [Slack Import Guide](../features/slack-import.md)
+See [Slack Import Guide](../../features/Features.md)
 
 ### From Discord
 
-See [Discord Import Guide](../features/discord-import.md)
+See [Discord Import Guide](../../features/Features.md)
 
 ### From Mattermost
 
-See [Mattermost Import Guide](../features/mattermost-import.md)
+See [Mattermost Import Guide](../../features/Features.md)
 
 ---
 

@@ -404,7 +404,7 @@ curl -X POST http://localhost:3000/api/social/accounts \
 ## Resources
 
 - [Full Documentation](../features/Social-Media-Integration.md)
-- [Implementation Summary](../SOCIAL-MEDIA-IMPLEMENTATION-SUMMARY.md)
+- [Implementation Summary](../features/Social-Media-Integration.md)
 - [Twitter API Docs](https://developer.twitter.com/en/docs/twitter-api)
 - [Instagram API Docs](https://developers.facebook.com/docs/instagram-api)
 - [LinkedIn API Docs](https://learn.microsoft.com/en-us/linkedin/)

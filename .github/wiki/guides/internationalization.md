@@ -774,9 +774,9 @@ This will log:
 
 ### Documentation
 
-- [i18n Architecture](../architecture/i18n-architecture.md)
-- [Translation API Reference](../api/i18n-api.md)
-- [RTL Design Guide](../design/rtl-design.md)
+- [i18n Architecture](../Architecture-Overview.md)
+- [Translation API Reference](../api/API-DOCUMENTATION.md)
+- [RTL Design Guide](./accessibility.md)
 
 ### External Resources
 

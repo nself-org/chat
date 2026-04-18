@@ -363,5 +363,5 @@ Further optimization:
 
 ## Related Documentation
 
-- [Kubernetes Deployment](./Kubernetes.md)
-- [Helm Deployment](./Helm.md)
+- [Kubernetes Deployment](./Deployment-Kubernetes.md)
+- [Helm Deployment](./Deployment-Helm.md)

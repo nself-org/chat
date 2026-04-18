@@ -930,7 +930,7 @@ sequenceDiagram
 - [Architecture Reference](Architecture.md)
 - [Database Schema](Database-Schema.md)
 - [API Documentation](../api/API-DOCUMENTATION.md)
-- [Deployment Guide](deployment/DEPLOYMENT.md)
+- [Deployment Guide](../deployment/DEPLOYMENT.md)
 - [Project Structure](Project-Structure.md)
 
 ---
