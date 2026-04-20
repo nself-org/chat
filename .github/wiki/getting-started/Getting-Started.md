@@ -1,5 +1,11 @@
 # Getting Started
 
+> **v1.0.9 LIMITATION — Voice/Video calls require bring your own LiveKit + coturn**
+>
+> nChat's `livekit` plugin is an API wrapper around an externally-hosted LiveKit Server cluster. To enable real-time voice/video calls in v1.0.9, you must run `livekit/livekit-server` and `coturn` separately — `nself` does not yet ship compose templates for these (planned for v1.1.0). Without these, audio/video calls will fail to connect behind NAT. See the [Self-Hosted Deployment Guide](https://docs.nself.org/docs/chat/self-hosted-deployment) for copy-pasteable `docker run` snippets covering livekit-server + coturn.
+>
+> Core messaging (text, files, channels, DMs) works without LiveKit.
+
 Get nchat up and running in under 5 minutes with this quick start guide.
 
 ## Prerequisites

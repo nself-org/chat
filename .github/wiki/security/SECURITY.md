@@ -1,5 +1,22 @@
 # Security Policy
 
+## Encryption Scope (v1.0.9)
+
+> **Chat E2EE and call encryption are different features.** Read this before assuming calls are private.
+
+| Channel | Encryption | E2EE? |
+|---|---|---|
+| Chat messages | Post-quantum Kyber (S09) | **Yes** — operator cannot read messages |
+| Voice/video calls | TLS in transit | **No** — streams pass through LiveKit Server in cleartext |
+
+nChat **chat messages** are end-to-end encrypted via post-quantum Kyber. The server never holds plaintext.
+
+nChat **voice/video calls** via LiveKit are TLS-encrypted in transit but NOT end-to-end encrypted at v1.0.9. Call streams pass through your LiveKit Server and could be inspected by anyone with server access. SFrame-based AV E2EE is planned for v1.1.0.
+
+For full details: [Encryption Scope](https://docs.nself.org/docs/chat/encryption-scope)
+
+---
+
 ## Supported Versions
 
 ɳChat is currently in active development. Security updates are provided for the following versions:

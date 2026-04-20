@@ -12,6 +12,8 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 
 Powered by [ɳSelf CLI](https://github.com/nself-org/cli) for backend infrastructure.
 
+> **v1.0.9 note on voice/video calls:** The `livekit` plugin wraps an external LiveKit Server cluster — `nself` does not yet ship compose templates for `livekit/livekit-server` or `coturn` (planned for v1.1.0). To enable calls, bring your own LiveKit + coturn deployment. Text messaging, file sharing, and all other features work without it. See the [Self-Hosted Deployment Guide](https://docs.nself.org/docs/chat/self-hosted-deployment) for setup instructions.
+
 ---
 
 ## Quick Start
