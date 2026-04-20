@@ -573,6 +573,35 @@ No backend required for basic testing!
 
 See [nself CLI documentation](https://nself.org/docs) for advanced configuration.
 
+### Video and voice calls (nChat bundle required)
+
+**v1.0.9 requires bring-your-own LiveKit Server and coturn.**
+
+Video/voice calls use LiveKit SFU (Selective Forwarding Unit) and coturn TURN server. These
+are NOT bundled with the nSelf CLI at v1.0.9. You must deploy them separately and supply the
+URLs via env vars.
+
+**LiveKit Server setup:**
+- Official install guide: https://docs.livekit.io/home/self-hosting/deployment/
+- Minimum recommended: 2-core VPS, ports 7880/7881 (TCP) + 50000–60000/UDP for WebRTC
+
+**coturn setup:**
+- Official repo and docs: https://github.com/coturn/coturn
+- Install on the same server as LiveKit or a separate VPS
+
+Once deployed, add to `.backend/.env.local`:
+
+```bash
+LIVEKIT_HOST=wss://livekit.yourdomain.com
+LIVEKIT_API_KEY=your-api-key
+LIVEKIT_API_SECRET=your-api-secret
+NEXT_PUBLIC_LIVEKIT_URL=wss://livekit.yourdomain.com
+```
+
+A LiveKit Server nSelf plugin is planned for v1.1.0 so this can be provisioned via
+`nself plugin install livekit-server` without a separate VPS. Track progress:
+https://github.com/nself-org/cli/issues
+
 ---
 
 ## Troubleshooting
