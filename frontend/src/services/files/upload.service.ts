@@ -573,13 +573,41 @@ export class UploadService {
 
       return response.json()
     } catch (error) {
-      // Log warning if virus scanning is enabled but service unavailable
+      // When the virus scanning service is unavailable, behavior is controlled by
+      // NEXT_PUBLIC_ALLOW_UNSCANNED_UPLOADS. Default (flag absent/false): reject the
+      // upload with a user-facing error so files are never silently skipped. If the
+      // operator explicitly opts in to unscanned uploads, log a loud security warning
+      // and a telemetry event before allowing the skipped-scan path.
       if (operations.includes('scan')) {
+        const allowUnscanned =
+          process.env.NEXT_PUBLIC_ALLOW_UNSCANNED_UPLOADS === 'true'
+
+        if (!allowUnscanned) {
+          throw new Error(
+            'Virus scanner unavailable. Please retry in a few minutes.'
+          )
+        }
+
+        // Operator has explicitly opted in — emit loud security warning and telemetry.
         console.warn(
-          '[UploadService] Virus scanning service unavailable. File uploaded without scanning.'
+          `SECURITY: virus scan skipped for file ${file.id}; ALLOW_UNSCANNED_UPLOADS=true`
         )
+        // Fire-and-forget telemetry — must not block the rejection/upload path.
+        void fetch('/api/telemetry/security-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'virus_scan_skipped',
+            fileId: file.id,
+            reason: 'scanner_unavailable',
+            allowUnscanned: true,
+          }),
+        }).catch(() => {
+          // Telemetry failure must never affect the upload path.
+        })
       }
-      // Return dummy job for processing
+
+      // Flag is ON or scan was not requested — return skipped job.
       return {
         jobId: `local-${file.id}`,
         status: 'skipped',

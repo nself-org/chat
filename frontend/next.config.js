@@ -19,13 +19,13 @@ const nextConfig = {
   // Disable static export - app uses dynamic features (useSearchParams, etc.)
   // Use standalone for Docker builds without export
   // output: 'standalone',
-  // TypeScript and ESLint temporarily relaxed for v0.3.0 release
-  // TODO v0.3.1: Fix remaining type errors and unused variable warnings, then re-enable
+  // TypeScript strict mode re-enabled for v1.0.9 — pnpm tsc --noEmit returns 0 errors.
+  // ESLint re-enabled: all warnings resolved.
   typescript: {
-    ignoreBuildErrors: true, // Temporarily disabled for v0.3.0 release
+    ignoreBuildErrors: false,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   experimental: {
     // Optimize package imports to reduce bundle size
