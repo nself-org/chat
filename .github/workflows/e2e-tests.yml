@@ -65,6 +65,7 @@ jobs:
       - name: Build application
         run: pnpm build
         env:
+          HASURA_ADMIN_SECRET: 'dev-secret'
           NEXT_PUBLIC_USE_DEV_AUTH: 'true'
 
       - name: Run Playwright E2E tests
