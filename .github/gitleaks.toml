@@ -45,4 +45,6 @@ paths = [
 regexes = [
   # Crockford Base32 alphabet constant used in token generation (not a secret)
   '''ABCDEFGHJKLMNPQRSTUVWXYZ23456789''',
+  # Apple .p8 key placeholder text in OAuth setup guide (historical commit, file removed)
+  '''\.\.\.contents of \.p8 file\.\.\.''',
 ]
