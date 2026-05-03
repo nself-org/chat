@@ -37,6 +37,9 @@ env:
   FAIL_ON_HIGH: 'true'
   MAX_MEDIUM_ALLOWED: '10'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   # ==========================================================================
   # SAST - Static Application Security Testing

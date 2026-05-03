@@ -3,6 +3,9 @@ name: Visual Regression Tests
 on:
   workflow_dispatch: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   chromatic:
     name: Chromatic Visual Tests
