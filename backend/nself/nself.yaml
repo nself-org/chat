@@ -1,7 +1,7 @@
 project: nchat
 title: "ɳChat"
 description: "Self-hosted team communication platform built on nSelf"
-version: "1.0.9"
+version: "1.1.0"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Optional Services
