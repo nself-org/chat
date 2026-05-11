@@ -5,6 +5,25 @@ All notable changes to ɳChat will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] — PENDING (v1.1.0 ecosystem release)
+
+First stable release. Full-featured self-hosted chat. ɳChat bundle (9 plugins) available at nself.org.
+
+### Added
+
+- **Stable v1.0.0 tag**: first production-ready release — all core messaging features complete.
+- **ɳChat bundle v1.1.0 integration**: requires chat, livekit, recording, moderation, bots, realtime, auth, support (8 paid plugins) + free chat companion. `nself bundle install chat`.
+- **chat.nself.org SaaS**: hosted multi-tenant ɳChat instance available at `chat.nself.org` (web/nchat).
+- **Bundle pricing UI**: in-app upgrade prompt reflects $0.99/mo / $9.99/yr.
+- **`nself bundle install chat` support**: one-command install for all 9 ɳChat bundle plugins.
+
+### Changed
+
+- Version promoted from `0.9.1-rc.1` to `1.0.0` (stable release).
+- Minimum nSelf CLI version: v1.1.0.
+
+---
+
 ## [0.9.1-rc.1] - 2026-02-09
 
 ### Release Candidate 1
