@@ -1,0 +1,151 @@
+name: SBOM Verify (P101-S1.T07)
+
+# Generate + validate SBOMs for nchat (Go backend + Next.js/pnpm frontend).
+# Runs on every PR and push to main as a verification gate. Release-time
+# signing+publishing is handled by release workflows; this catches breakage
+# early without publishing anything.
+#
+# Syft auto-detects Go modules, package.json/pnpm-lock.yaml manifests
+# across backend/ and frontend/. Grype scans the SBOM and fails the gate
+# on CRITICAL CVEs (HIGH findings are surfaced for triage).
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write  # required for cosign keyless OIDC
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sbom-verify:
+    name: Generate + validate SBOMs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+          cache: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install syft
+        uses: anchore/sbom-action/download-syft@v0
+
+      - name: Install grype
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh \
+            | sh -s -- -b /usr/local/bin
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: 'v2.4.1'
+
+      # CycloneDX SBOM (primary, signed)
+      - name: Generate CycloneDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+
+      - name: Validate CycloneDX schema
+        run: |
+          python3 -c "
+          import json, sys
+          with open('sbom.cdx.json') as f:
+              doc = json.load(f)
+          assert 'bomFormat' in doc, 'missing bomFormat'
+          assert doc['bomFormat'] == 'CycloneDX', f'unexpected bomFormat: {doc[\"bomFormat\"]}'
+          assert 'components' in doc, 'missing components array'
+          count = len(doc['components'])
+          print(f'CycloneDX SBOM valid: {count} components')
+          assert count > 0, 'expected at least one component (Go and/or npm deps)'
+          "
+
+      # SPDX SBOM (secondary)
+      - name: Generate SPDX SBOM
+        run: |
+          syft packages . --output spdx-json=sbom.spdx.json
+          echo "SPDX SBOM: $(wc -c < sbom.spdx.json) bytes"
+
+      - name: Validate SPDX output
+        run: |
+          python3 -c "
+          import json, sys
+          with open('sbom.spdx.json') as f:
+              doc = json.load(f)
+          assert 'spdxVersion' in doc, 'missing spdxVersion'
+          pkgs = len(doc.get('packages', []))
+          print(f'SPDX SBOM valid: {pkgs} packages')
+          assert pkgs > 0, 'expected at least one package'
+          "
+
+      # Cosign sign + verify roundtrip (dry-run)
+      - name: Cosign sign + verify roundtrip
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cosign sign-blob sbom.cdx.json \
+            --bundle sbom.cdx.json.bundle \
+            --yes
+          cosign verify-blob sbom.cdx.json \
+            --bundle sbom.cdx.json.bundle \
+            --certificate-identity-regexp "^https://github.com/nself-org/nchat/" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
+          echo "Cosign sign+verify roundtrip: PASS"
+
+      - name: Cosign verify tampered SBOM exits 1
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cp sbom.cdx.json sbom.cdx.tampered.json
+          printf 'X' | dd of=sbom.cdx.tampered.json bs=1 seek=10 conv=notrunc 2>/dev/null
+          if cosign verify-blob sbom.cdx.tampered.json \
+              --bundle sbom.cdx.json.bundle \
+              --certificate-identity-regexp "^https://github.com/nself-org/nchat/" \
+              --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+              2>/dev/null; then
+            echo "ERROR: tampered SBOM passed verification"
+            exit 1
+          else
+            echo "Tamper detection: PASS"
+          fi
+
+      # Grype vulnerability scan: fail on CRITICAL only
+      - name: Grype vulnerability scan
+        run: |
+          grype sbom:sbom.cdx.json \
+            --fail-on critical \
+            --output table
+
+      - name: Compute SHA-256 of both SBOMs
+        run: |
+          sha256sum sbom.cdx.json sbom.spdx.json | tee sbom-checksums.txt
+
+      - name: Upload SBOMs as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-dryrun-${{ github.sha }}
+          path: |
+            sbom.cdx.json
+            sbom.spdx.json
+            sbom.cdx.json.bundle
+            sbom-checksums.txt
+          retention-days: 7
