@@ -18,6 +18,7 @@ const apolloClient = createApolloClient({ uri: '/graphql' })
 import { usePushNotifications } from './hooks/use-push-notifications'
 import { useNetworkStatus } from './hooks/use-network-status'
 import { mobileStorage } from './adapters/storage'
+import { MobileRouterProvider } from './adapters/router'
 import { AppNavigator } from './navigation/AppNavigator'
 
 import '@nself-chat/ui/styles.css'
@@ -95,6 +96,7 @@ export function App() {
   return (
     <ApolloProvider client={apolloClient}>
       <BrowserRouter>
+        <MobileRouterProvider>
         <div className="app">
           {networkStatus.offline && (
             <div
@@ -120,6 +122,7 @@ export function App() {
           )}
           <AppNavigator />
         </div>
+        </MobileRouterProvider>
       </BrowserRouter>
     </ApolloProvider>
   )

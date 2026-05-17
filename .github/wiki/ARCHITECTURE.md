@@ -944,6 +944,58 @@ Or via console:
 
 ---
 
+## Desktop Platform — Tauri 2
+
+**Added:** S12 (P103 sprint). Replaces the Electron shell at `platforms/desktop/`.
+
+### Stack
+
+| Layer | Technology |
+|---|---|
+| Renderer | React/Vite (`@nself-chat/web` workspace package) |
+| Shell | Rust + Tauri 2 |
+| IPC | Tauri `invoke()` commands (18 channels) |
+| Packaging | Tauri `bundle` → DMG (macOS), MSI/NSIS (Windows), AppImage/deb (Linux) |
+| Distribution | GitHub Releases + S3 updater feed at `packages.nself.org` |
+
+### Workspace package
+
+`nchat/desktop/` — `@nself-chat/desktop`. All Tauri 2 source lives here, separate from the
+legacy Electron shell at `platforms/desktop/` (removed in T19).
+
+### Key features
+
+- Native menus (File/Edit/View/Window) with keyboard shortcuts
+- System tray with hide-to-tray on macOS close
+- Deep-link handler for `nchat://chat/<room>` and `nchat://invite/<token>`
+- Window state persistence (size, position, maximized, fullscreen)
+- Auto-updater with semver downgrade guard
+- macOS dock badge via `app_set_badge_count`
+- Optional crash reporting via sentry-tauri (DSN from env)
+
+### Build
+
+```bash
+cd nchat && pnpm install
+cd desktop && pnpm tauri:dev     # dev mode
+cd desktop && pnpm tauri:build   # release build
+cd desktop && pnpm test          # vitest unit tests
+cd desktop && pnpm ipc-parity    # IPC channel parity check
+cd desktop && pnpm test:e2e      # Playwright e2e (requires built binary)
+```
+
+### CI workflows
+
+| Workflow | Trigger | Notes |
+|---|---|---|
+| `.github/workflows/desktop-macos.yml` | tag push, PR, dispatch | arm64 + x64 matrix; bundle size gate (≤90 MB); e2e job |
+| `.github/workflows/desktop-linux.yml` | tag push, PR, dispatch | Ubuntu 22.04; libwebkit2gtk-4.1-dev; Wayland DMA-BUF disabled |
+| `.github/workflows/desktop-windows.yml` | tag push, PR, dispatch | x64; EV signing via SSL.com eSigner |
+
+Full documentation: [DESKTOP.md](./DESKTOP.md)
+
+---
+
 ## License
 
 MIT License - See [LICENSE](./LICENSE) file for details.
