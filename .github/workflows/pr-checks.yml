@@ -16,7 +16,6 @@ concurrency:
 
 env:
   NODE_VERSION: '22'
-  PNPM_VERSION: '9'
 
 jobs:
   changes:
@@ -100,9 +99,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -153,9 +149,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -199,9 +192,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -243,9 +233,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -261,6 +248,7 @@ jobs:
         env:
           NEXT_PUBLIC_USE_DEV_AUTH: 'false'
           NODE_ENV: production
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET || 'ci-placeholder-not-a-real-secret' }}
 
       - name: Check build size
         run: |
@@ -281,9 +269,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -327,9 +312,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -367,9 +349,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -409,9 +388,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -453,9 +429,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -471,6 +444,8 @@ jobs:
 
       - name: Build app
         run: pnpm build
+        env:
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET || 'ci-placeholder-not-a-real-secret' }}
 
       - name: Start server
         run: pnpm start &
@@ -500,9 +475,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -515,6 +487,8 @@ jobs:
 
       - name: Build app
         run: pnpm build
+        env:
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET || 'ci-placeholder-not-a-real-secret' }}
 
       - name: Run Lighthouse CI
         run: pnpm lighthouse || true
