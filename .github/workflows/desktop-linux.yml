@@ -40,7 +40,12 @@ jobs:
             librsvg2-dev \
             patchelf \
             libssl-dev \
-            libglib2.0-dev
+            libglib2.0-dev \
+            libgif-dev \
+            libcairo2-dev \
+            libpango1.0-dev \
+            libjpeg-dev \
+            libpixman-1-dev
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
