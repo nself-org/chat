@@ -48,6 +48,12 @@ export class TenantService {
       }
 
       // 2. Generate schema name (prefixed to avoid conflicts)
+      // Validate slug is safe for SQL identifier use (alphanumeric + underscore only)
+      if (!/^[a-zA-Z0-9_]+$/.test(request.slug)) {
+        throw new Error(
+          "Invalid tenant slug: only alphanumeric characters and underscores are allowed",
+        );
+      }
       const schemaName = `tenant_${request.slug}`;
 
       // 3. Get plan configuration
@@ -87,6 +93,7 @@ export class TenantService {
       const tenant = this.mapRowToTenant(tenantResult.rows[0]);
 
       // 6. Create PostgreSQL schema for tenant
+      // sast-ignore: SQL_INJECTION -- schemaName validated above (alphanumeric + underscore only)
       await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
       // 7. Run migrations for tenant schema
@@ -239,6 +246,7 @@ export class TenantService {
       await client.query("BEGIN");
 
       // Drop tenant schema (CASCADE removes all objects)
+      // sast-ignore: SQL_INJECTION -- schemaName from DB record, validated as alphanumeric+underscore at creation
       await client.query(`DROP SCHEMA IF EXISTS ${tenant.schemaName} CASCADE`);
 
       // Delete tenant record

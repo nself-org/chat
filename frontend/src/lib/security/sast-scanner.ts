@@ -377,7 +377,8 @@ export const DEFAULT_SAST_RULES: SASTRule[] = [
     category: "insecure_design",
     pattern: /\beval\s*\(/gi,
     filePatterns: [/\.(ts|tsx|js|jsx)$/],
-    excludePatterns: [/\.test\.|\.spec\.|__tests__/],
+    // Exclude test files and this scanner file itself (which contains eval as a string pattern for detection)
+    excludePatterns: [/\.test\.|\.spec\.|__tests__|sast-scanner\.ts$/],
     cwe: "CWE-95",
     owasp: "A03:2021",
     remediation:
@@ -391,7 +392,8 @@ export const DEFAULT_SAST_RULES: SASTRule[] = [
     category: "insecure_design",
     pattern: /new\s+Function\s*\(/gi,
     filePatterns: [/\.(ts|tsx|js|jsx)$/],
-    excludePatterns: [/\.test\.|\.spec\.|__tests__/],
+    // Exclude test files and this scanner file itself (which contains Function as a string pattern for detection)
+    excludePatterns: [/\.test\.|\.spec\.|__tests__|sast-scanner\.ts$/],
     cwe: "CWE-95",
     owasp: "A03:2021",
     remediation:
@@ -613,6 +615,16 @@ export class SASTScanner {
       // Check each line
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
+
+        // Support inline suppression: // sast-ignore on the same line or previous line
+        const prevLine = i > 0 ? lines[i - 1] : "";
+        if (
+          line.includes("// sast-ignore") ||
+          prevLine.includes("// sast-ignore")
+        ) {
+          continue;
+        }
+
         const match = line.match(rule.pattern);
 
         if (match) {

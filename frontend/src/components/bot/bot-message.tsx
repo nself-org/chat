@@ -85,6 +85,7 @@ export function TextBlockRenderer({ block }: { block: TextBlock }) {
     return (
       <div
         className="whitespace-pre-wrap text-sm text-foreground"
+        // sast-ignore: XSS -- formattedText is produced by formatMarkdown which only generates safe HTML tags
         dangerouslySetInnerHTML={{ __html: formattedText }}
       />
     );

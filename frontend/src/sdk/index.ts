@@ -10,6 +10,7 @@
  *
  * @example
  * ```typescript
+ * // sast-ignore: HARDCODED_CREDENTIAL -- JSDoc example with placeholder values, not real credentials
  * import { NChatClient } from '@nchat/sdk'
  *
  * const client = new NChatClient({

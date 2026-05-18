@@ -186,6 +186,7 @@ export class TelegramProvider extends BaseAuthProvider {
     }
 
     // Clear previous widget
+    // sast-ignore: XSS -- assigning empty string to innerHTML is safe; clears widget for re-render
     container.innerHTML = "";
 
     // Set up the callback function

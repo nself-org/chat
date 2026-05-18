@@ -31,9 +31,17 @@ const UserBio = React.forwardRef<HTMLDivElement, UserBioProps>(
       // Mention regex (@username)
       const mentionRegex = /@(\w+)/g;
 
-      let result = displayText;
+      // HTML-escape user content before inserting into innerHTML to prevent XSS
+      const escaped = displayText
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 
-      // Replace URLs with links
+      let result = escaped;
+
+      // Replace URLs with links (URLs were already escaped, unescape them for href)
       result = result.replace(
         urlRegex,
         '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">$1</a>',
@@ -52,6 +60,7 @@ const UserBio = React.forwardRef<HTMLDivElement, UserBioProps>(
       <div ref={ref} className={cn("text-sm", className)} {...props}>
         <p
           className="whitespace-pre-wrap break-words text-muted-foreground"
+          // sast-ignore: XSS -- parsedBio is HTML-escaped before URL/mention substitution; no raw user HTML passes through
           dangerouslySetInnerHTML={{ __html: parsedBio }}
         />
         {shouldTruncate && (

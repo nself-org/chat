@@ -3,18 +3,23 @@
  */
 
 import { spawn } from "child_process";
-import chalk from "chalk";
 import ora from "ora";
 
-export const deployCommands = {
-  async vercel(options: any) {
-    const spinner = ora("Deploying to Vercel...").start();
-    const args = ["deploy", options.prod ? "--prod" : ""];
+export interface DeployOptions {
+  prod?: boolean;
+  tag?: string;
+  push?: boolean;
+  file?: string;
+  namespace?: string;
+}
 
-    const child = spawn("vercel", args.filter(Boolean), {
-      stdio: "inherit",
-      shell: true,
-    });
+export const deployCommands = {
+  async vercel(options: DeployOptions) {
+    const spinner = ora("Deploying to Vercel...").start();
+    const args = ["deploy", ...(options.prod ? ["--prod"] : [])];
+
+    // shell: false (default) prevents command injection — args passed as array
+    const child = spawn("vercel", args, { stdio: "inherit" });
 
     child.on("exit", (code) => {
       if (code === 0) {
@@ -26,13 +31,14 @@ export const deployCommands = {
     });
   },
 
-  async docker(options: any) {
+  async docker(options: DeployOptions) {
     const spinner = ora("Building Docker image...").start();
-    const tag = options.tag || "latest";
+    // Validate tag to alphanumeric/dash/dot only to prevent injection
+    const tag = (options.tag || "latest").replace(/[^a-zA-Z0-9._-]/g, "");
 
+    // shell: false (default) prevents command injection — args passed as array
     const child = spawn("docker", ["build", "-t", `nchat:${tag}`, "."], {
       stdio: "inherit",
-      shell: true,
     });
 
     child.on("exit", (code) => {
@@ -49,20 +55,18 @@ export const deployCommands = {
     });
   },
 
-  async k8s(options: any) {
+  async k8s(options: DeployOptions) {
     const spinner = ora("Deploying to Kubernetes...").start();
     const args = [
       "apply",
       "-f",
       options.file || "deploy/k8s/",
       "-n",
-      options.namespace,
+      options.namespace || "default",
     ];
 
-    const child = spawn("kubectl", args, {
-      stdio: "inherit",
-      shell: true,
-    });
+    // shell: false (default) prevents command injection — args passed as array
+    const child = spawn("kubectl", args, { stdio: "inherit" });
 
     child.on("exit", (code) => {
       if (code === 0) {

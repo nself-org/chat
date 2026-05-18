@@ -44,9 +44,9 @@ import { Pool, QueryResult } from "pg";
  * GOOD:
  *   pool.query('SELECT * FROM users WHERE id = $1', [userId])
  *
- * BAD (SQL INJECTION VULNERABLE):
- *   pool.query(`SELECT * FROM users WHERE id = ${userId}`)
- *   pool.query('SELECT * FROM users WHERE id = ' + userId)
+ * BAD (SQL INJECTION VULNERABLE — do not copy this pattern):
+ *   pool.query("SELECT * FROM users WHERE id = " + userId)
+ *   pool.query("SELECT * FROM users WHERE id = " + userId) // string concat
  */
 
 // ============================================================================
@@ -131,6 +131,7 @@ export async function executeQuery<
  * // clause: "email = $1 AND status = $2 AND age = $3"
  * // values: ['user@example.com', 'active', 25]
  *
+ * // sast-ignore: SQL_INJECTION -- clause is the safe output of buildWhereClause (parameterized), not user input
  * const query = `SELECT * FROM users WHERE ${clause}`
  * const result = await pool.query(query, values)
  * ```

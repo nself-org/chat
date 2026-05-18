@@ -245,6 +245,7 @@ export const CodeBlock = memo(function CodeBlock({
                   highlightedCode={highlightedCode}
                 />
               ) : (
+                // sast-ignore: XSS -- highlightedCode is the output of highlight.js syntax highlighter which escapes all user content
                 <div
                   dangerouslySetInnerHTML={{ __html: highlightedCode }}
                   className="hljs"
@@ -299,6 +300,7 @@ function CodeWithLineNumbers({
           <div
             key={index}
             className="hover:bg-muted/30"
+            // sast-ignore: XSS -- line content is from highlight.js which escapes all user input
             dangerouslySetInnerHTML={{ __html: line || "&#8203;" }} // Zero-width space for empty lines
           />
         ))}

@@ -40,6 +40,7 @@ export interface AuthResponse {
  *
  * @example
  * ```typescript
+ * // sast-ignore: HARDCODED_CREDENTIAL -- JSDoc example with placeholder values, not real credentials
  * // Sign in
  * const { user, token } = await client.auth.signIn({
  *   email: 'user@example.com',

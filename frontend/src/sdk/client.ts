@@ -76,6 +76,7 @@ export interface NChatOptions extends NChatConfig {
  *
  * @example
  * ```typescript
+ * // sast-ignore: HARDCODED_CREDENTIAL -- JSDoc example with placeholder values, not real credentials
  * const client = new NChatClient({
  *   apiUrl: 'https://api.nchat.example.com',
  *   apiKey: 'your-api-key'

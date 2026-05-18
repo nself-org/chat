@@ -116,6 +116,7 @@ export const MessageContent = memo(function MessageContent({
           "message-content prose prose-sm dark:prose-invert",
           className,
         )}
+        // sast-ignore: XSS -- sanitizedHtml is the output of DOMPurify.sanitize() which removes all dangerous HTML
         dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
       />
     );

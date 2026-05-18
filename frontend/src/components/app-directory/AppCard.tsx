@@ -255,6 +255,7 @@ export function AppIcon({ icon, name, size = "md", className }: AppIconProps) {
             target.style.display = "none";
             const parent = target.parentElement;
             if (parent) {
+              // sast-ignore: XSS -- name.charAt(0).toUpperCase() produces a single uppercase letter; not user-injectable
               parent.innerHTML = name.charAt(0).toUpperCase();
               parent.className = cn(
                 "rounded-lg bg-primary/10 flex items-center justify-center font-semibold text-primary flex-shrink-0",

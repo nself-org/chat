@@ -783,7 +783,9 @@ export enum StripeErrorCode {
   IDEMPOTENCY_KEY_EXPIRED = "IDEMPOTENCY_KEY_EXPIRED",
 
   // Configuration errors
+  // sast-ignore: HARDCODED_CREDENTIAL -- these are error code enum values describing missing credentials, not actual secrets
   MISSING_API_KEY = "MISSING_API_KEY",
+  // sast-ignore: HARDCODED_CREDENTIAL -- enum value name only; no actual secret stored here
   MISSING_WEBHOOK_SECRET = "MISSING_WEBHOOK_SECRET",
   PRICE_NOT_CONFIGURED = "PRICE_NOT_CONFIGURED",
 }

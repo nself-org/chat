@@ -582,6 +582,7 @@ export class RateLimiter {
       return {allowed and 1 or 0, tokens}
     `;
 
+    // sast-ignore: EVAL_USAGE -- this.redis.eval() is the ioredis API for executing Lua scripts server-side; not JavaScript eval()
     const result = await this.redis.eval(
       script,
       1,

@@ -840,6 +840,7 @@ export function validateCSPHeader(cspHeader: string): {
   }
 
   // Check for unsafe-eval
+  // sast-ignore: EVAL_USAGE -- this string is a CSP policy check description, not an eval() call
   if (cspHeader.includes("'unsafe-eval'")) {
     warnings.push(
       "'unsafe-eval' allows potentially dangerous eval() and related functions",

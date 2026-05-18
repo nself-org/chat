@@ -704,6 +704,7 @@ function isAllowlisted(
 /**
  * Get remediation advice for a finding
  */
+// sast-ignore: HARDCODED_CREDENTIAL -- remediation advice strings containing token/key/secret type names; not actual credential values
 function getRemediation(type: SecretType): string {
   const remediations: Record<SecretType, string> = {
     aws_key:

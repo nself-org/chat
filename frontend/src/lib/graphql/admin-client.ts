@@ -109,6 +109,7 @@ function validateEnvironment(): {
       graphqlUrl:
         process.env.NEXT_PUBLIC_GRAPHQL_URL ||
         "http://localhost:8080/v1/graphql",
+      // sast-ignore: HARDCODED_CREDENTIAL -- placeholder string used during SSG build; not an actual secret
       adminSecret: "__build_time_placeholder__",
     };
   }

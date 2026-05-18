@@ -188,6 +188,7 @@ export function TwitterEmbed({
       const twttr = (window as unknown as { twttr?: TwitterWidgets }).twttr;
       if (twttr && twttr.widgets && embedRef.current) {
         // Clear any existing content
+        // sast-ignore: XSS -- assigning empty string to innerHTML is safe; clears content only
         embedRef.current.innerHTML = "";
 
         twttr.widgets
