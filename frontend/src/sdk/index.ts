@@ -25,14 +25,14 @@
  * ```
  */
 
-export * from './client'
-export * from './types'
-export * from './errors'
-export * from './resources'
+export * from "./client";
+export * from "./types";
+export * from "./errors";
+export * from "./resources";
 
 // Re-export main client
-export { NChatClient } from './client'
-export type { NChatConfig, NChatOptions } from './client'
+export { NChatClient } from "./client";
+export type { NChatConfig, NChatOptions } from "./client";
 
 // Version
-export const SDK_VERSION = '1.0.0'
+export const SDK_VERSION = "1.0.0";
