@@ -111,6 +111,8 @@ jobs:
 
       - name: Run ESLint
         run: pnpm lint
+        env:
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET || 'ci-placeholder-not-a-real-secret' }}
 
       - name: Check formatting
         run: pnpm format:check
