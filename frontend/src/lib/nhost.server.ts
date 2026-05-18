@@ -1,17 +1,15 @@
 /**
  * Server-only Nhost Client
  *
- * Use this in API routes and server components to avoid bundling
- * React context code on the server side.
+ * Use this in API routes and server components. Uses NhostClient from @nhost/nextjs
+ * (pinned at ^2.3.1) to ensure consistent types with the client-side nhost.ts and
+ * avoid workspace-level @nhost/nhost-js v4 resolution that removes getSession().
  */
 
-import { createNhostClient } from '@nhost/nhost-js'
+import { NhostClient } from '@nhost/nextjs'
 
 // Create nhost client with proper configuration for self-hosted backend.
-// Note: We're using @nhost/nhost-js instead of @nhost/nextjs to avoid React context issues.
-// All params (authUrl, graphqlUrl, storageUrl, functionsUrl, devTools, autoSignIn,
-// autoRefreshToken) are valid per NhostClientConstructorParams from @nhost/nhost-js 3.x.
-export const nhost = createNhostClient({
+export const nhost = new NhostClient({
   // For self-hosted nhost, we use explicit URLs instead of subdomain
   authUrl: 'https://auth.localhost',
   graphqlUrl: 'https://hasura.localhost/v1/graphql',
